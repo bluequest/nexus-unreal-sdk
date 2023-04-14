@@ -22,7 +22,7 @@ namespace NexusSDK
 	class FCatFactsRequestContext : public FRequestContext
 	{
 	public:
-		FCatFactsRequestContext(FGetCatFacts& InCallback) : Callback(InCallback) {}
+		FCatFactsRequestContext(FOnGetCatFactsComplete& InCallback) : Callback(InCallback) {}
 
 		void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
 		{
@@ -30,11 +30,19 @@ namespace NexusSDK
 
 			if (!bConnectedSuccessfully || !Response.IsValid())
 			{
-				// Noo!
+				// Didn't connect, or the response is null, bail
 				Callback.ExecuteIfBound(Facts, false);
 				return;
 			}
 
+			if (!EHttpResponseCodes::IsOk(Response->GetResponseCode()))
+			{
+				// We connected and got a response, but the code was bad, bail
+				Callback.ExecuteIfBound(Facts, false);
+				return;
+			}
+
+			// Create a Json object and parser
 			const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
 			TSharedPtr<FJsonObject> RootObject;
 
@@ -68,6 +76,7 @@ namespace NexusSDK
 					FString Fact;
 					if (Object->Get()->TryGetStringField(TEXT("fact"), Fact))
 					{
+						// Add it to the array
 						Facts.Add(MoveTemp(Fact));
 					}
 				}
@@ -81,12 +90,12 @@ namespace NexusSDK
 		}
 
 	private:
-		FGetCatFacts& Callback;
+		FOnGetCatFactsComplete& Callback;
 
 	};
 #endif
 
-	void GetCatFacts(int32 MaxLength, int32 Limit, FGetCatFacts& Callback)
+	void GetCatFacts(int32 MaxLength, int32 Limit, FOnGetCatFactsComplete& Callback)
 	{
 #ifdef NEXUS_SDK_STUB
 		TArray<FString> FakeFacts

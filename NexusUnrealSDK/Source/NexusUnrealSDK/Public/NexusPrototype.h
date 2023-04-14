@@ -19,7 +19,8 @@ namespace NexusSDK
 	/** The class above as a unique pointer. */
 	using FRequestContextPtr = TUniquePtr<FRequestContext>;
 
-	// Don't know yet if we want to go with structs or not for the interface
+	// Here for posterity, this is what the input / output would look like if we went with
+	// structs rather than function parameters.
 	/*struct FGetCatFactsRequest
 	{
 		int32 MaxLength;		// Maximum length of returned fact
@@ -33,15 +34,24 @@ namespace NexusSDK
 	};*/
 	
 	/**
-	 * Declares the delegate type that returns an array of cat fact strings, and a bool to
-	 * indicate whether the data is valid or not.
+	 * Declares a delegate that is executed when GetCatFacts has recieved
+	 * and decoded an HTTP response (even on failure).
+	 * Keep in mind that this is executed on the HTTP thread.
+	 * Returns an array of strings containing the cat facts, and a bool indicating
+	 * success, you should not use any of the returned data if this bool is false.
+	 *
+	 * @param Facts An array of strings containing cat facts.
+	 * @param bSuccess Whether the operation was successful, and whether the other parameters are valid.
 	 */
-	DECLARE_DELEGATE_TwoParams(FGetCatFacts, TArray<FString>&, bool);
+	DECLARE_DELEGATE_TwoParams(FOnGetCatFactsComplete, TArray<FString>& /*Facts*/, bool /*bSuccess*/);
 
 	/**
-	 * Requests cat facts. Some cool Unreal style javadoc comment would go here, talking
-	 * about the parameters, and that Callback will be fired on the HTTP thread.
+	 * Returns a list of cat facts from the cat facts API.
+	 *
+	 * @param MaxLength The max length of returned cat fact strings.
+	 * @param Limit The number of cat facts to retrieve.
+	 * @param Callback The callback to fire.
 	 */
-	NEXUSUNREALSDK_API void GetCatFacts(int32 MaxLength, int32 Limit, FGetCatFacts& Callback);
+	NEXUSUNREALSDK_API void GetCatFacts(int32 MaxLength, int32 Limit, FOnGetCatFactsComplete& Callback);
 
 }
