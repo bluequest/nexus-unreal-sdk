@@ -36,7 +36,4 @@ private:
 	 * here to keep the interface as simple as possible.
 	 */
 	TArray<NexusSDK::FRequestContextPtr> ActiveRequestContexts;
-
-	/** Singleton for the module while loaded and available */
-	static FNexusUnrealSDKModule* Singleton;
 };

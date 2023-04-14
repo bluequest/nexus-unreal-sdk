@@ -4,21 +4,15 @@
 
 #define LOCTEXT_NAMESPACE "FNexusUnrealSDKModule"
 
-FNexusUnrealSDKModule* FNexusUnrealSDKModule::Singleton = NULL;
-
 void FNexusUnrealSDKModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
-	
-	Singleton = this;
 }
 
 void FNexusUnrealSDKModule::ShutdownModule()
 {
 	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
 	// we call this function before unloading the module.
-
-	Singleton = nullptr;
 }
 
 void FNexusUnrealSDKModule::RemoveRequest(NexusSDK::FRequestContext* Request)
@@ -39,13 +33,8 @@ void FNexusUnrealSDKModule::RemoveRequest(NexusSDK::FRequestContext* Request)
 
 FNexusUnrealSDKModule& FNexusUnrealSDKModule::Get()
 {
-	if (Singleton == NULL)
-	{
-		check(IsInGameThread());
-		FModuleManager::LoadModuleChecked<FNexusUnrealSDKModule>("NexusUnrealSDK");
-	}
-	check(Singleton != NULL);
-	return *Singleton;
+	check(IsInGameThread());
+	return FModuleManager::LoadModuleChecked<FNexusUnrealSDKModule>("NexusUnrealSDK");
 }
 
 #undef LOCTEXT_NAMESPACE
