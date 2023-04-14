@@ -33,7 +33,6 @@ void FNexusUnrealSDKModule::RemoveRequest(NexusSDK::FRequestContext* Request)
 
 FNexusUnrealSDKModule& FNexusUnrealSDKModule::Get()
 {
-	check(IsInGameThread());
 	return FModuleManager::LoadModuleChecked<FNexusUnrealSDKModule>("NexusUnrealSDK");
 }
 
