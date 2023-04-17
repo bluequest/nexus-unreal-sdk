@@ -9,6 +9,20 @@
  * This file will go away once the SDK generator is ready, and we know what we want the interface to look like.
  */
 
+// Here for posterity, this is what the input / output would look like if we went with
+// structs rather than function parameters.
+/*struct FGetCatFactsRequest
+{
+	int32 MaxLength;		// Maximum length of returned fact
+	int32 Limit;			// Limit the amount of results returned
+};
+
+struct FGetCatFactsResponse
+{
+	TArray<FString> Facts;	// A list of strings of cat facts
+	bool success;
+};*/
+
 namespace NexusSDK
 {
 	/** Simple abstract base class that represents the state of a request, should not need a virtual destructor. */
@@ -18,20 +32,6 @@ namespace NexusSDK
 
 	/** The class above as a unique pointer. */
 	using FRequestContextPtr = TUniquePtr<FRequestContext>;
-
-	// Here for posterity, this is what the input / output would look like if we went with
-	// structs rather than function parameters.
-	/*struct FGetCatFactsRequest
-	{
-		int32 MaxLength;		// Maximum length of returned fact
-		int32 Limit;			// Limit the amount of results returned
-	};
-
-	struct FGetCatFactsResponse
-	{
-		TArray<FString> Facts;	// A list of strings of cat facts
-		bool success;
-	};*/
 	
 	/**
 	 * Declares a delegate that is executed when GetCatFacts has recieved
