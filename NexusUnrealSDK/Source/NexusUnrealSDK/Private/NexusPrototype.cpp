@@ -25,33 +25,33 @@ namespace NexusSDK
 		FCatFactsRequestContext() = delete;
 		FCatFactsRequestContext(FOnGetCatFactsComplete& InCallback) : Callback(InCallback) {}
 
-		void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
+		void ProcessRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bConnectedSuccessfully)
 		{
-			TArray<FString> Facts;
+			FGetCatFactsResponse Response;
 
-			if (!bConnectedSuccessfully || !Response.IsValid())
+			if (!bConnectedSuccessfully || !HttpResponse.IsValid())
 			{
 				// Didn't connect, or the response is null, bail
-				Callback.ExecuteIfBound(Facts, false);
+				Callback.ExecuteIfBound(Response);
 				return;
 			}
 
-			if (!EHttpResponseCodes::IsOk(Response->GetResponseCode()))
+			if (!EHttpResponseCodes::IsOk(HttpResponse->GetResponseCode()))
 			{
 				// We connected and got a response, but the code was bad, bail
-				Callback.ExecuteIfBound(Facts, false);
+				Callback.ExecuteIfBound(Response);
 				return;
 			}
 
 			// Create a Json object and parser
-			const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
+			const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(HttpResponse->GetContentAsString());
 			TSharedPtr<FJsonObject> RootObject;
 
 			// Parse it!
 			if (!FJsonSerializer::Deserialize(Reader, RootObject))
 			{
 				// Parse error
-				Callback.ExecuteIfBound(Facts, false);
+				Callback.ExecuteIfBound(Response);
 				return;
 			}
 
@@ -61,7 +61,7 @@ namespace NexusSDK
 			if (!RootObject->TryGetArrayField(TEXT("data"), OutArray))
 			{
 				// Facts are missing!
-				Callback.ExecuteIfBound(Facts, false);
+				Callback.ExecuteIfBound(Response);
 				return;
 			}
 
@@ -78,13 +78,16 @@ namespace NexusSDK
 					if (Object->Get()->TryGetStringField(TEXT("fact"), Fact))
 					{
 						// Add it to the array
-						Facts.Add(MoveTemp(Fact));
+						Response.Facts.Add(MoveTemp(Fact));
 					}
 				}
 			}
 
+			// Mark success!
+			Response.bSuccess = true;
+
 			// Run the callback successfully!
-			Callback.ExecuteIfBound(Facts, true);
+			Callback.ExecuteIfBound(Response);
 
 			// Now remove and delete ourselves from the module cache
 			FNexusUnrealSDKModule::Get().RemoveRequest(this);
@@ -129,6 +132,117 @@ namespace NexusSDK
 		// Send it!
 		HttpRequest->ProcessRequest();
 #endif
+	}
+
+	/**
+	 * Return all creators and their creator details, including unique id and creator code
+	 */
+
+	//
+	//
+	//
+	// TODO(JoshD): UNFINISHED!!!!
+	//
+	//
+	//
+	class FGetCreatorsRequestContext final : public FRequestContext
+	{
+	public:
+		FGetCreatorsRequestContext() = delete;
+		FGetCreatorsRequestContext(FOnGetCreatorsComplete& InCallback) : Callback(InCallback) {}
+
+		void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
+		{
+			FGetCreatorsResponse Facts;
+
+			if (!bConnectedSuccessfully || !Response.IsValid())
+			{
+				// Didn't connect, or the response is null, bail
+				Callback.ExecuteIfBound(Facts);
+				return;
+			}
+
+			if (!EHttpResponseCodes::IsOk(Response->GetResponseCode()))
+			{
+				// We connected and got a response, but the code was bad, bail
+				Callback.ExecuteIfBound(Facts);
+				return;
+			}
+
+			// Create a Json object and parser
+			const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
+			TSharedPtr<FJsonObject> RootObject;
+
+			// Parse it!
+			if (!FJsonSerializer::Deserialize(Reader, RootObject))
+			{
+				// Parse error
+				Callback.ExecuteIfBound(Facts);
+				return;
+			}
+
+			// The cat facts API returns a bunch of stuff we don't care about, we want those facts!
+			// There's an array called "data" with the facts in it
+			const TArray<TSharedPtr<FJsonValue>>* OutArray;
+			if (!RootObject->TryGetArrayField(TEXT("data"), OutArray))
+			{
+				// Facts are missing!
+				Callback.ExecuteIfBound(Facts);
+				return;
+			}
+
+			check(OutArray);
+
+			// Parse the facts!
+			for (const TSharedPtr<FJsonValue>& Value : *OutArray)
+			{
+				const TSharedPtr<FJsonObject>* Object;
+				if (Value->TryGetObject(Object))
+				{
+					check(Object);
+					FString Fact;
+					if (Object->Get()->TryGetStringField(TEXT("fact"), Fact))
+					{
+						// Add it to the array
+						//Facts.Add(MoveTemp(Fact));
+					}
+				}
+			}
+
+			// Run the callback successfully!
+			Callback.ExecuteIfBound(Facts);
+
+			// Now remove and delete ourselves from the module cache
+			FNexusUnrealSDKModule::Get().RemoveRequest(this);
+		}
+
+	private:
+		FOnGetCreatorsComplete& Callback;
+
+	};
+
+	NEXUSUNREALSDK_API void GetCreators(const FGetCreatorsRequest& Request, FOnGetCreatorsComplete& Callback)
+	{
+		FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
+
+		{
+			// Initialise some bits and pieces ahead of time
+			FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/attributions/creators"));
+			TUniquePtr<FGetCreatorsRequestContext> RequestContext = MakeUnique<FGetCreatorsRequestContext>(Callback);
+
+			// Set-up the HTTP request
+			HttpRequest->SetVerb(TEXT("GET"));
+			HttpRequest->SetHeader(TEXT("accept"), TEXT("application/json"));
+			HttpRequest->SetHeader(TEXT("x-shared-secret"), Request.PublicKey);
+			HttpRequest->SetURL(URLString);
+			HttpRequest->OnProcessRequestComplete().BindRaw(RequestContext.Get(), &FGetCreatorsRequestContext::ProcessRequestComplete);
+
+			// Hand ownership of the request over to the module
+			FNexusUnrealSDKModule::Get().AddRequest(MoveTemp(RequestContext));
+		}
+
+		// Send it!
+		HttpRequest->ProcessRequest();
 	}
 
 }
