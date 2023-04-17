@@ -19,9 +19,10 @@ namespace NexusSDK
 {
 #ifndef NEXUS_SDK_STUB
 	/** Specialised request context for recieving cat facts. */
-	class FCatFactsRequestContext : public FRequestContext
+	class FCatFactsRequestContext final : public FRequestContext
 	{
 	public:
+		FCatFactsRequestContext() = delete;
 		FCatFactsRequestContext(FOnGetCatFactsComplete& InCallback) : Callback(InCallback) {}
 
 		void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
