@@ -99,7 +99,7 @@ namespace NexusSDK
 	};
 #endif
 
-	void GetCatFacts(int32 MaxLength, int32 Limit, FOnGetCatFactsComplete& Callback)
+	NEXUSUNREALSDK_API void GetCatFacts(const FGetCatFactsRequest& Request, FOnGetCatFactsComplete& Callback)
 	{
 #ifdef NEXUS_SDK_STUB
 		TArray<FString> FakeFacts
@@ -117,7 +117,7 @@ namespace NexusSDK
 
 		{
 			// Initialise some bits and pieces ahead of time
-			FString URLString = FString::Printf(TEXT("https://catfact.ninja/facts?max_length=%d&limit=%d"), MaxLength, Limit);
+			FString URLString = FString::Printf(TEXT("https://catfact.ninja/facts?max_length=%d&limit=%d"), Request.MaxLength, Request.Limit);
 			TUniquePtr<FCatFactsRequestContext> RequestContext = MakeUnique<FCatFactsRequestContext>(Callback);
 
 			// Set-up the HTTP request
