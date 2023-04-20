@@ -11,14 +11,6 @@
 
 namespace NexusSDK
 {
-	/** Simple abstract base class that represents the state of a request, should not need a virtual destructor. */
-	class FRequestContext
-	{
-	};
-
-	/** The class above as a unique pointer. */
-	using FRequestContextPtr = TUniquePtr<FRequestContext>;
-
 	/**
 	 * The cat facts API!
 	 * 

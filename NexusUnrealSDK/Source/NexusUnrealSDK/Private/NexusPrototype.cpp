@@ -3,6 +3,7 @@
 
 #include "NexusPrototype.h"
 #include "NexusUnrealSDK.h"
+#include "NexusShared.h"
 #include "Http.h"
 #include "HttpManager.h"
 #include "PlatformHttp.h"

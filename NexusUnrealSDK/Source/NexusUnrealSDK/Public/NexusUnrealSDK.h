@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 #include "NexusPrototype.h"
+#include "NexusShared.h"
 
 class FNexusUnrealSDKModule : public IModuleInterface
 {
