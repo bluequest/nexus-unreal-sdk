@@ -28,10 +28,11 @@ Then enable the plugin by launching the engine, then navigate to Edit -> Plugins
 
 ## Features
 ### Nexus API
-Included are a number of methods used to communicate with Nexus services.
-
-[NexusSDK::GetCatFacts](https://catfact.ninja/#/Facts/getFacts) - Returns a a list of facts // TODO REMOVE ME
-<!TODO Add rest of functionality in this format–>
+Included in the SDK are a number of functions used to communicate with Nexus services.
+Documentation for each API can be found here: 
+- [Attribution (Creator Program) API](https://app.swaggerhub.com/apis-docs/nexus-gg/Attribution/1.5.1)
+- [Referral API](https://app.swaggerhub.com/apis-docs/nexus-gg/Referral/1.0.0)
+- [Bounty API](https://app.swaggerhub.com/apis-docs/nexus-gg/Bounty/1.0.0)
 
 ### Blueprint support 
 
