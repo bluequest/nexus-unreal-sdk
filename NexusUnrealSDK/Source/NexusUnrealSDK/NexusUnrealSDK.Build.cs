@@ -27,6 +27,7 @@ public class NexusUnrealSDK : ModuleRules
 			{
 				"Core",
 				// ... add other public dependencies that you statically link with here ...
+				"DeveloperSettings"
 			}
 			);
 			
