@@ -23,7 +23,10 @@ namespace FGetBountiesHelpers
 	{
 	public:
 	FOnGetBountiesRequestContext() = delete;
-		FOnGetBountiesRequestContext(FNexusBountyAPI::FOnGetBountiesResponse InCallback) : Callback(InCallback) {}
+		FOnGetBountiesRequestContext(FNexusBountyAPI::FOnGetBountiesResponse InCallback, FNexusOnHttpErrorDelegate InErrorDelegate) 
+		: Callback(InCallback)
+		, ErrorDelegate(InErrorDelegate)
+	{}
 
 	void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
 	{
@@ -34,6 +37,7 @@ namespace FGetBountiesHelpers
 		//TODO: HANDLE THIS GRACEFULLY
 		return;
 		}
+	
 
 		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(200))
 		{
@@ -47,7 +51,7 @@ namespace FGetBountiesHelpers
 			if (!FJsonSerializer::Deserialize(Reader, RootObject))
 			{
 				// Parse error
-					Callback.On200Response.ExecuteIfBound(OutputResponse);
+				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 				return;
 			}
 
@@ -55,7 +59,9 @@ namespace FGetBountiesHelpers
 			// TODO(JoshD): Parse it!
 
 			// Run the callback successfully!
-			Callback.On200Response.ExecuteIfBound(OutputResponse);
+				Callback.On200Response.ExecuteIfBound(OutputResponse);	
+
+			
 		}	
 
 		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(400))
@@ -70,7 +76,7 @@ namespace FGetBountiesHelpers
 			if (!FJsonSerializer::Deserialize(Reader, RootObject))
 			{
 				// Parse error
-					Callback.On400Response.ExecuteIfBound(OutputResponse);
+				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 				return;
 			}
 
@@ -78,16 +84,23 @@ namespace FGetBountiesHelpers
 			// TODO(JoshD): Parse it!
 
 			// Run the callback successfully!
-			Callback.On400Response.ExecuteIfBound(OutputResponse);
+				Callback.On400Response.ExecuteIfBound(OutputResponse);	
+
+			
 		}	
-	
-		
+
+		if(Response->GetResponseCode() != 200 || Response->GetResponseCode() != 400)
+		{
+			ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+		}
+			
 		// Now remove and delete ourselves from the module cache
 		FNexusUnrealSDKModule::Get().RemoveRequest(this);
 	}
 
 	private:
 		FNexusBountyAPI::FOnGetBountiesResponse Callback;
+		FNexusOnHttpErrorDelegate ErrorDelegate;
 
 	};
 
@@ -108,12 +121,12 @@ namespace FGetBountiesHelpers
 	}	
 }
 
-void FNexusBountyAPI::GetBounties(const FNexusBountyGetBountiesRequestParams& RequestParams, FOnGetBountiesResponse Response)
+void FNexusBountyAPI::GetBounties(const FNexusBountyGetBountiesRequestParams& RequestParams, FOnGetBountiesResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate)
 {
 
 	if(!FGetBountiesHelpers::GetBounties_IsValid(RequestParams))
 	{
-		//TODO:Handle This Gracefully
+		ErrorDelegate.ExecuteIfBound(0);
 		return;
 	}
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
@@ -124,7 +137,7 @@ void FNexusBountyAPI::GetBounties(const FNexusBountyGetBountiesRequestParams& Re
 		//		Only Parameter names indicated in the Path with {variable} are put in the url
 		//		This will need to be fixed
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/bounties/?groupId=%s&page=%d&pageSize=%d"), *RequestParams.groupId, RequestParams.page, RequestParams.pageSize);
-		TUniquePtr<FGetBountiesHelpers::FOnGetBountiesRequestContext> RequestContext = MakeUnique<FGetBountiesHelpers::FOnGetBountiesRequestContext>(Response);
+		TUniquePtr<FGetBountiesHelpers::FOnGetBountiesRequestContext> RequestContext = MakeUnique<FGetBountiesHelpers::FOnGetBountiesRequestContext>(Response, ErrorDelegate);
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
@@ -146,7 +159,10 @@ namespace FGetBountyHelpers
 	{
 	public:
 	FOnGetBountyRequestContext() = delete;
-		FOnGetBountyRequestContext(FNexusBountyAPI::FOnGetBountyResponse InCallback) : Callback(InCallback) {}
+		FOnGetBountyRequestContext(FNexusBountyAPI::FOnGetBountyResponse InCallback, FNexusOnHttpErrorDelegate InErrorDelegate) 
+		: Callback(InCallback)
+		, ErrorDelegate(InErrorDelegate)
+	{}
 
 	void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
 	{
@@ -157,6 +173,7 @@ namespace FGetBountyHelpers
 		//TODO: HANDLE THIS GRACEFULLY
 		return;
 		}
+	
 
 		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(200))
 		{
@@ -170,7 +187,7 @@ namespace FGetBountyHelpers
 			if (!FJsonSerializer::Deserialize(Reader, RootObject))
 			{
 				// Parse error
-					Callback.On200Response.ExecuteIfBound(OutputResponse);
+				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 				return;
 			}
 
@@ -178,7 +195,9 @@ namespace FGetBountyHelpers
 			// TODO(JoshD): Parse it!
 
 			// Run the callback successfully!
-			Callback.On200Response.ExecuteIfBound(OutputResponse);
+				Callback.On200Response.ExecuteIfBound(OutputResponse);	
+
+			
 		}	
 
 		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(400))
@@ -193,7 +212,7 @@ namespace FGetBountyHelpers
 			if (!FJsonSerializer::Deserialize(Reader, RootObject))
 			{
 				// Parse error
-					Callback.On400Response.ExecuteIfBound(OutputResponse);
+				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 				return;
 			}
 
@@ -201,16 +220,23 @@ namespace FGetBountyHelpers
 			// TODO(JoshD): Parse it!
 
 			// Run the callback successfully!
-			Callback.On400Response.ExecuteIfBound(OutputResponse);
+				Callback.On400Response.ExecuteIfBound(OutputResponse);	
+
+			
 		}	
-	
-		
+
+		if(Response->GetResponseCode() != 200 || Response->GetResponseCode() != 400)
+		{
+			ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+		}
+			
 		// Now remove and delete ourselves from the module cache
 		FNexusUnrealSDKModule::Get().RemoveRequest(this);
 	}
 
 	private:
 		FNexusBountyAPI::FOnGetBountyResponse Callback;
+		FNexusOnHttpErrorDelegate ErrorDelegate;
 
 	};
 
@@ -231,12 +257,12 @@ namespace FGetBountyHelpers
 	}	
 }
 
-void FNexusBountyAPI::GetBounty(const FNexusBountyGetBountyRequestParams& RequestParams, FOnGetBountyResponse Response)
+void FNexusBountyAPI::GetBounty(const FNexusBountyGetBountyRequestParams& RequestParams, FOnGetBountyResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate)
 {
 
 	if(!FGetBountyHelpers::GetBounty_IsValid(RequestParams))
 	{
-		//TODO:Handle This Gracefully
+		ErrorDelegate.ExecuteIfBound(0);
 		return;
 	}
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
@@ -247,7 +273,7 @@ void FNexusBountyAPI::GetBounty(const FNexusBountyGetBountyRequestParams& Reques
 		//		Only Parameter names indicated in the Path with {variable} are put in the url
 		//		This will need to be fixed
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/bounties/{bountyId}?groupId=%s&includeProgress=%c&page=%d&pageSize=%d&bountyId=%s"), *RequestParams.groupId, RequestParams.includeProgress, RequestParams.page, RequestParams.pageSize, *RequestParams.bountyId);
-		TUniquePtr<FGetBountyHelpers::FOnGetBountyRequestContext> RequestContext = MakeUnique<FGetBountyHelpers::FOnGetBountyRequestContext>(Response);
+		TUniquePtr<FGetBountyHelpers::FOnGetBountyRequestContext> RequestContext = MakeUnique<FGetBountyHelpers::FOnGetBountyRequestContext>(Response, ErrorDelegate);
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
@@ -269,7 +295,10 @@ namespace FGetCreatorBountiesByIDHelpers
 	{
 	public:
 	FOnGetCreatorBountiesByIDRequestContext() = delete;
-		FOnGetCreatorBountiesByIDRequestContext(FNexusBountyAPI::FOnGetCreatorBountiesByIDResponse InCallback) : Callback(InCallback) {}
+		FOnGetCreatorBountiesByIDRequestContext(FNexusBountyAPI::FOnGetCreatorBountiesByIDResponse InCallback, FNexusOnHttpErrorDelegate InErrorDelegate) 
+		: Callback(InCallback)
+		, ErrorDelegate(InErrorDelegate)
+	{}
 
 	void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
 	{
@@ -280,6 +309,7 @@ namespace FGetCreatorBountiesByIDHelpers
 		//TODO: HANDLE THIS GRACEFULLY
 		return;
 		}
+	
 
 		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(200))
 		{
@@ -293,7 +323,7 @@ namespace FGetCreatorBountiesByIDHelpers
 			if (!FJsonSerializer::Deserialize(Reader, RootObject))
 			{
 				// Parse error
-					Callback.On200Response.ExecuteIfBound(OutputResponse);
+				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 				return;
 			}
 
@@ -301,7 +331,9 @@ namespace FGetCreatorBountiesByIDHelpers
 			// TODO(JoshD): Parse it!
 
 			// Run the callback successfully!
-			Callback.On200Response.ExecuteIfBound(OutputResponse);
+				Callback.On200Response.ExecuteIfBound(OutputResponse);	
+
+			
 		}	
 
 		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(400))
@@ -316,7 +348,7 @@ namespace FGetCreatorBountiesByIDHelpers
 			if (!FJsonSerializer::Deserialize(Reader, RootObject))
 			{
 				// Parse error
-					Callback.On400Response.ExecuteIfBound(OutputResponse);
+				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 				return;
 			}
 
@@ -324,16 +356,23 @@ namespace FGetCreatorBountiesByIDHelpers
 			// TODO(JoshD): Parse it!
 
 			// Run the callback successfully!
-			Callback.On400Response.ExecuteIfBound(OutputResponse);
+				Callback.On400Response.ExecuteIfBound(OutputResponse);	
+
+			
 		}	
-	
-		
+
+		if(Response->GetResponseCode() != 200 || Response->GetResponseCode() != 400)
+		{
+			ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+		}
+			
 		// Now remove and delete ourselves from the module cache
 		FNexusUnrealSDKModule::Get().RemoveRequest(this);
 	}
 
 	private:
 		FNexusBountyAPI::FOnGetCreatorBountiesByIDResponse Callback;
+		FNexusOnHttpErrorDelegate ErrorDelegate;
 
 	};
 
@@ -354,12 +393,12 @@ namespace FGetCreatorBountiesByIDHelpers
 	}	
 }
 
-void FNexusBountyAPI::GetCreatorBountiesByID(const FNexusBountyGetCreatorBountiesByIDRequestParams& RequestParams, FOnGetCreatorBountiesByIDResponse Response)
+void FNexusBountyAPI::GetCreatorBountiesByID(const FNexusBountyGetCreatorBountiesByIDRequestParams& RequestParams, FOnGetCreatorBountiesByIDResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate)
 {
 
 	if(!FGetCreatorBountiesByIDHelpers::GetCreatorBountiesByID_IsValid(RequestParams))
 	{
-		//TODO:Handle This Gracefully
+		ErrorDelegate.ExecuteIfBound(0);
 		return;
 	}
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
@@ -370,7 +409,7 @@ void FNexusBountyAPI::GetCreatorBountiesByID(const FNexusBountyGetCreatorBountie
 		//		Only Parameter names indicated in the Path with {variable} are put in the url
 		//		This will need to be fixed
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/bounties/creator/id/{creatorId}?groupId=%s&page=%d&pageSize=%d&creatorId=%s"), *RequestParams.groupId, RequestParams.page, RequestParams.pageSize, *RequestParams.creatorId);
-		TUniquePtr<FGetCreatorBountiesByIDHelpers::FOnGetCreatorBountiesByIDRequestContext> RequestContext = MakeUnique<FGetCreatorBountiesByIDHelpers::FOnGetCreatorBountiesByIDRequestContext>(Response);
+		TUniquePtr<FGetCreatorBountiesByIDHelpers::FOnGetCreatorBountiesByIDRequestContext> RequestContext = MakeUnique<FGetCreatorBountiesByIDHelpers::FOnGetCreatorBountiesByIDRequestContext>(Response, ErrorDelegate);
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
@@ -393,6 +432,12 @@ UNexusGetBountiesNode::UNexusGetBountiesNode()
 
 }
 
+void UNexusGetBountiesNode::WhenError(int32 ErrorCode)
+{
+	OnError.Broadcast(ErrorCode);
+	SetReadyToDestroy();
+}
+
 
 UNexusGetBountiesNode* UNexusGetBountiesNode::GetBounties(UObject* WorldContextObject, const FNexusBountyGetBountiesRequestParams& InRequestParams)
 {
@@ -405,10 +450,11 @@ UNexusGetBountiesNode* UNexusGetBountiesNode::GetBounties(UObject* WorldContextO
 
 void UNexusGetBountiesNode::Activate()
 {	
+
 	FNexusBountyAPI::FOnGetBountiesResponse Callback;
 	Callback.On200Response = FNexusBountyAPI::FOnGetBounties200ResponseCallback::CreateUObject(this, &ThisClass::When200Callback);
 	Callback.On400Response = FNexusBountyAPI::FOnGetBounties400ResponseCallback::CreateUObject(this, &ThisClass::When400Callback);
-	FNexusBountyAPI::GetBounties(RequestParams, Callback);
+	FNexusBountyAPI::GetBounties(RequestParams, Callback, FNexusOnHttpErrorDelegate::CreateUObject(this, &ThisClass::WhenError));
 }
 
 
@@ -430,6 +476,12 @@ UNexusGetBountyNode::UNexusGetBountyNode()
 
 }
 
+void UNexusGetBountyNode::WhenError(int32 ErrorCode)
+{
+	OnError.Broadcast(ErrorCode);
+	SetReadyToDestroy();
+}
+
 
 UNexusGetBountyNode* UNexusGetBountyNode::GetBounty(UObject* WorldContextObject, const FNexusBountyGetBountyRequestParams& InRequestParams)
 {
@@ -442,10 +494,11 @@ UNexusGetBountyNode* UNexusGetBountyNode::GetBounty(UObject* WorldContextObject,
 
 void UNexusGetBountyNode::Activate()
 {	
+
 	FNexusBountyAPI::FOnGetBountyResponse Callback;
 	Callback.On200Response = FNexusBountyAPI::FOnGetBounty200ResponseCallback::CreateUObject(this, &ThisClass::When200Callback);
 	Callback.On400Response = FNexusBountyAPI::FOnGetBounty400ResponseCallback::CreateUObject(this, &ThisClass::When400Callback);
-	FNexusBountyAPI::GetBounty(RequestParams, Callback);
+	FNexusBountyAPI::GetBounty(RequestParams, Callback, FNexusOnHttpErrorDelegate::CreateUObject(this, &ThisClass::WhenError));
 }
 
 
@@ -467,6 +520,12 @@ UNexusGetCreatorBountiesByIDNode::UNexusGetCreatorBountiesByIDNode()
 
 }
 
+void UNexusGetCreatorBountiesByIDNode::WhenError(int32 ErrorCode)
+{
+	OnError.Broadcast(ErrorCode);
+	SetReadyToDestroy();
+}
+
 
 UNexusGetCreatorBountiesByIDNode* UNexusGetCreatorBountiesByIDNode::GetCreatorBountiesByID(UObject* WorldContextObject, const FNexusBountyGetCreatorBountiesByIDRequestParams& InRequestParams)
 {
@@ -479,10 +538,11 @@ UNexusGetCreatorBountiesByIDNode* UNexusGetCreatorBountiesByIDNode::GetCreatorBo
 
 void UNexusGetCreatorBountiesByIDNode::Activate()
 {	
+
 	FNexusBountyAPI::FOnGetCreatorBountiesByIDResponse Callback;
 	Callback.On200Response = FNexusBountyAPI::FOnGetCreatorBountiesByID200ResponseCallback::CreateUObject(this, &ThisClass::When200Callback);
 	Callback.On400Response = FNexusBountyAPI::FOnGetCreatorBountiesByID400ResponseCallback::CreateUObject(this, &ThisClass::When400Callback);
-	FNexusBountyAPI::GetCreatorBountiesByID(RequestParams, Callback);
+	FNexusBountyAPI::GetCreatorBountiesByID(RequestParams, Callback, FNexusOnHttpErrorDelegate::CreateUObject(this, &ThisClass::WhenError));
 }
 
 

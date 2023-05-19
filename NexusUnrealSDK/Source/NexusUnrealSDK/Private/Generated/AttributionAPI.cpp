@@ -23,7 +23,10 @@ namespace FGetCreatorsHelpers
 	{
 	public:
 	FOnGetCreatorsRequestContext() = delete;
-		FOnGetCreatorsRequestContext(FNexusAttributionAPI::FOnGetCreators200ResponseCallback InCallback) : Callback(InCallback) {}
+		FOnGetCreatorsRequestContext(FNexusAttributionAPI::FOnGetCreators200ResponseCallback InCallback, FNexusOnHttpErrorDelegate InErrorDelegate) 
+		: Callback(InCallback)
+		, ErrorDelegate(InErrorDelegate)
+	{}
 
 	void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
 	{
@@ -34,37 +37,45 @@ namespace FGetCreatorsHelpers
 		//TODO: HANDLE THIS GRACEFULLY
 		return;
 		}
-
-	if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(200))
-	{
-	FNexusAttributionGetCreators200Response OutputResponse;
-
-	// Create a Json object and parser
-	const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
-	TSharedPtr<FJsonObject> RootObject;
-
-	// Parse it!
-	if (!FJsonSerializer::Deserialize(Reader, RootObject))
-	{
-	// Parse error
-	Callback.ExecuteIfBound(OutputResponse);
-	return;
-	}
-
-	// Parse the response!
-	// TODO(JoshD): Parse it!
-
-	// Run the callback successfully!
-	Callback.ExecuteIfBound(OutputResponse);
-	}
 	
-		
+
+		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(200))
+		{
+			FNexusAttributionGetCreators200Response OutputResponse;
+
+			// Create a Json object and parser
+			const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
+			TSharedPtr<FJsonObject> RootObject;
+
+			// Parse it!
+			if (!FJsonSerializer::Deserialize(Reader, RootObject))
+			{
+				// Parse error
+				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+				return;
+			}
+
+			// Parse the response!
+			// TODO(JoshD): Parse it!
+
+			// Run the callback successfully!
+				Callback.ExecuteIfBound(OutputResponse);
+
+			
+		}	
+
+		if(Response->GetResponseCode() != 200)
+		{
+			ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+		}
+			
 		// Now remove and delete ourselves from the module cache
 		FNexusUnrealSDKModule::Get().RemoveRequest(this);
 	}
 
 	private:
 		FNexusAttributionAPI::FOnGetCreators200ResponseCallback Callback;
+		FNexusOnHttpErrorDelegate ErrorDelegate;
 
 	};
 
@@ -85,12 +96,12 @@ namespace FGetCreatorsHelpers
 	}	
 }
 
-void FNexusAttributionAPI::GetCreators(const FNexusAttributionGetCreatorsRequestParams& RequestParams, FOnGetCreators200ResponseCallback Response)
+void FNexusAttributionAPI::GetCreators(const FNexusAttributionGetCreatorsRequestParams& RequestParams, FOnGetCreators200ResponseCallback Response, FNexusOnHttpErrorDelegate ErrorDelegate)
 {
 
 	if(!FGetCreatorsHelpers::GetCreators_IsValid(RequestParams))
 	{
-		//TODO:Handle This Gracefully
+		ErrorDelegate.ExecuteIfBound(0);
 		return;
 	}
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
@@ -101,7 +112,7 @@ void FNexusAttributionAPI::GetCreators(const FNexusAttributionGetCreatorsRequest
 		//		Only Parameter names indicated in the Path with {variable} are put in the url
 		//		This will need to be fixed
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/attributions/creators?page=%d&pageSize=%d&groupId=%s"), RequestParams.page, RequestParams.pageSize, *RequestParams.groupId);
-		TUniquePtr<FGetCreatorsHelpers::FOnGetCreatorsRequestContext> RequestContext = MakeUnique<FGetCreatorsHelpers::FOnGetCreatorsRequestContext>(Response);
+		TUniquePtr<FGetCreatorsHelpers::FOnGetCreatorsRequestContext> RequestContext = MakeUnique<FGetCreatorsHelpers::FOnGetCreatorsRequestContext>(Response, ErrorDelegate);
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
@@ -123,7 +134,10 @@ namespace FGetCreatorByUuidHelpers
 	{
 	public:
 	FOnGetCreatorByUuidRequestContext() = delete;
-		FOnGetCreatorByUuidRequestContext(FNexusAttributionAPI::FOnGetCreatorByUuid200ResponseCallback InCallback) : Callback(InCallback) {}
+		FOnGetCreatorByUuidRequestContext(FNexusAttributionAPI::FOnGetCreatorByUuid200ResponseCallback InCallback, FNexusOnHttpErrorDelegate InErrorDelegate) 
+		: Callback(InCallback)
+		, ErrorDelegate(InErrorDelegate)
+	{}
 
 	void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
 	{
@@ -134,44 +148,52 @@ namespace FGetCreatorByUuidHelpers
 		//TODO: HANDLE THIS GRACEFULLY
 		return;
 		}
-
-	if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(200))
-	{
-	FNexusAttributionGetCreatorByUuid200Response OutputResponse;
-
-	// Create a Json object and parser
-	const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
-	TSharedPtr<FJsonObject> RootObject;
-
-	// Parse it!
-	if (!FJsonSerializer::Deserialize(Reader, RootObject))
-	{
-	// Parse error
-	Callback.ExecuteIfBound(OutputResponse);
-	return;
-	}
-
-	// Parse the response!
-	// TODO(JoshD): Parse it!
-
-	// Run the callback successfully!
-	Callback.ExecuteIfBound(OutputResponse);
-	}
 	
-		
+
+		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(200))
+		{
+			FNexusAttributionGetCreatorByUuid200Response OutputResponse;
+
+			// Create a Json object and parser
+			const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
+			TSharedPtr<FJsonObject> RootObject;
+
+			// Parse it!
+			if (!FJsonSerializer::Deserialize(Reader, RootObject))
+			{
+				// Parse error
+				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+				return;
+			}
+
+			// Parse the response!
+			// TODO(JoshD): Parse it!
+
+			// Run the callback successfully!
+				Callback.ExecuteIfBound(OutputResponse);
+
+			
+		}	
+
+		if(Response->GetResponseCode() != 200)
+		{
+			ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+		}
+			
 		// Now remove and delete ourselves from the module cache
 		FNexusUnrealSDKModule::Get().RemoveRequest(this);
 	}
 
 	private:
 		FNexusAttributionAPI::FOnGetCreatorByUuid200ResponseCallback Callback;
+		FNexusOnHttpErrorDelegate ErrorDelegate;
 
 	};
 
 
 }
 
-void FNexusAttributionAPI::GetCreatorByUuid(const FNexusAttributionGetCreatorByUuidRequestParams& RequestParams, FOnGetCreatorByUuid200ResponseCallback Response)
+void FNexusAttributionAPI::GetCreatorByUuid(const FNexusAttributionGetCreatorByUuidRequestParams& RequestParams, FOnGetCreatorByUuid200ResponseCallback Response, FNexusOnHttpErrorDelegate ErrorDelegate)
 {
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
 
@@ -181,7 +203,7 @@ void FNexusAttributionAPI::GetCreatorByUuid(const FNexusAttributionGetCreatorByU
 		//		Only Parameter names indicated in the Path with {variable} are put in the url
 		//		This will need to be fixed
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/attributions/creators/{creatorSlugOrId}?creatorSlugOrId=%s"), *RequestParams.creatorSlugOrId);
-		TUniquePtr<FGetCreatorByUuidHelpers::FOnGetCreatorByUuidRequestContext> RequestContext = MakeUnique<FGetCreatorByUuidHelpers::FOnGetCreatorByUuidRequestContext>(Response);
+		TUniquePtr<FGetCreatorByUuidHelpers::FOnGetCreatorByUuidRequestContext> RequestContext = MakeUnique<FGetCreatorByUuidHelpers::FOnGetCreatorByUuidRequestContext>(Response, ErrorDelegate);
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
@@ -204,6 +226,12 @@ UNexusGetCreatorsNode::UNexusGetCreatorsNode()
 
 }
 
+void UNexusGetCreatorsNode::WhenError(int32 ErrorCode)
+{
+	OnError.Broadcast(ErrorCode);
+	SetReadyToDestroy();
+}
+
 
 UNexusGetCreatorsNode* UNexusGetCreatorsNode::GetCreators(UObject* WorldContextObject, const FNexusAttributionGetCreatorsRequestParams& InRequestParams)
 {
@@ -216,7 +244,10 @@ UNexusGetCreatorsNode* UNexusGetCreatorsNode::GetCreators(UObject* WorldContextO
 
 void UNexusGetCreatorsNode::Activate()
 {	
-	FNexusAttributionAPI::GetCreators(RequestParams, FNexusAttributionAPI::FOnGetCreators200ResponseCallback::CreateUObject(this, &ThisClass::When200Callback));
+
+	FNexusAttributionAPI::GetCreators(RequestParams, 
+		FNexusAttributionAPI::FOnGetCreators200ResponseCallback::CreateUObject(this, &ThisClass::When200Callback),
+		FNexusOnHttpErrorDelegate::CreateUObject(this, &ThisClass::WhenError));
 }
 
 
@@ -232,6 +263,12 @@ UNexusGetCreatorByUuidNode::UNexusGetCreatorByUuidNode()
 
 }
 
+void UNexusGetCreatorByUuidNode::WhenError(int32 ErrorCode)
+{
+	OnError.Broadcast(ErrorCode);
+	SetReadyToDestroy();
+}
+
 
 UNexusGetCreatorByUuidNode* UNexusGetCreatorByUuidNode::GetCreatorByUuid(UObject* WorldContextObject, const FNexusAttributionGetCreatorByUuidRequestParams& InRequestParams)
 {
@@ -244,7 +281,10 @@ UNexusGetCreatorByUuidNode* UNexusGetCreatorByUuidNode::GetCreatorByUuid(UObject
 
 void UNexusGetCreatorByUuidNode::Activate()
 {	
-	FNexusAttributionAPI::GetCreatorByUuid(RequestParams, FNexusAttributionAPI::FOnGetCreatorByUuid200ResponseCallback::CreateUObject(this, &ThisClass::When200Callback));
+
+	FNexusAttributionAPI::GetCreatorByUuid(RequestParams, 
+		FNexusAttributionAPI::FOnGetCreatorByUuid200ResponseCallback::CreateUObject(this, &ThisClass::When200Callback),
+		FNexusOnHttpErrorDelegate::CreateUObject(this, &ThisClass::WhenError));
 }
 
 

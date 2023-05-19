@@ -8,6 +8,7 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
+#include "NexusShared.h"
 #include "ReferralAPI.generated.h"
 
 /**
@@ -238,7 +239,7 @@ public:
 			FOnGetReferralInfoByPlayerId200ResponseCallback On200Response;
 			FOnGetReferralInfoByPlayerId400ResponseCallback On400Response;
 	};
-	static void GetReferralInfoByPlayerId(const FNexusReferralGetReferralInfoByPlayerIdRequestParams& RequestParams, FOnGetReferralInfoByPlayerIdResponse Response);
+	static void GetReferralInfoByPlayerId(const FNexusReferralGetReferralInfoByPlayerIdRequestParams& RequestParams, FOnGetReferralInfoByPlayerIdResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
 
 	DECLARE_DELEGATE_OneParam(FOnGetPlayerCurrentReferral200ResponseCallback, FString);
 	DECLARE_DELEGATE_OneParam(FOnGetPlayerCurrentReferral404ResponseCallback, FNexusReferralGetPlayerCurrentReferral404Response);
@@ -248,7 +249,7 @@ public:
 			FOnGetPlayerCurrentReferral200ResponseCallback On200Response;
 			FOnGetPlayerCurrentReferral404ResponseCallback On404Response;
 	};
-	static void GetPlayerCurrentReferral(const FNexusReferralGetPlayerCurrentReferralRequestParams& RequestParams, FOnGetPlayerCurrentReferralResponse Response);
+	static void GetPlayerCurrentReferral(const FNexusReferralGetPlayerCurrentReferralRequestParams& RequestParams, FOnGetPlayerCurrentReferralResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
 
 	DECLARE_DELEGATE_OneParam(FOnGetReferralInfoByCode200ResponseCallback, FNexusReferralGetReferralInfoByCode200Response);
 	DECLARE_DELEGATE_OneParam(FOnGetReferralInfoByCode400ResponseCallback, FNexusReferralReferralError);
@@ -258,7 +259,7 @@ public:
 			FOnGetReferralInfoByCode200ResponseCallback On200Response;
 			FOnGetReferralInfoByCode400ResponseCallback On400Response;
 	};
-	static void GetReferralInfoByCode(const FNexusReferralGetReferralInfoByCodeRequestParams& RequestParams, FOnGetReferralInfoByCodeResponse Response);
+	static void GetReferralInfoByCode(const FNexusReferralGetReferralInfoByCodeRequestParams& RequestParams, FOnGetReferralInfoByCodeResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
 
 };
 
@@ -289,6 +290,14 @@ public:
 	FGetReferralInfoByPlayerId400Response On400Response;
 
 	void When400Callback(FNexusReferralReferralError Param0);
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNexusGetReferralInfoByPlayerIdError, int32, ErrorCode);
+
+	UPROPERTY(BlueprintAssignable)
+	FNexusGetReferralInfoByPlayerIdError OnError;
+
+	void WhenError(int32 ErrorCode);
+
 
 	virtual void Activate() override;
 
@@ -322,6 +331,14 @@ public:
 
 	void When404Callback(FNexusReferralGetPlayerCurrentReferral404Response Param0);
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNexusGetPlayerCurrentReferralError, int32, ErrorCode);
+
+	UPROPERTY(BlueprintAssignable)
+	FNexusGetPlayerCurrentReferralError OnError;
+
+	void WhenError(int32 ErrorCode);
+
+
 	virtual void Activate() override;
 
 private:
@@ -353,6 +370,14 @@ public:
 	FGetReferralInfoByCode400Response On400Response;
 
 	void When400Callback(FNexusReferralReferralError Param0);
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNexusGetReferralInfoByCodeError, int32, ErrorCode);
+
+	UPROPERTY(BlueprintAssignable)
+	FNexusGetReferralInfoByCodeError OnError;
+
+	void WhenError(int32 ErrorCode);
+
 
 	virtual void Activate() override;
 

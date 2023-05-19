@@ -8,6 +8,7 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
+#include "NexusShared.h"
 #include "AttributionAPI.generated.h"
 
 /**
@@ -191,10 +192,10 @@ NEXUSUNREALSDK_API class FNexusAttributionAPI
 {
 public:
 	DECLARE_DELEGATE_OneParam(FOnGetCreators200ResponseCallback, FNexusAttributionGetCreators200Response);
-	static void GetCreators(const FNexusAttributionGetCreatorsRequestParams& RequestParams, FOnGetCreators200ResponseCallback Response);
+	static void GetCreators(const FNexusAttributionGetCreatorsRequestParams& RequestParams, FOnGetCreators200ResponseCallback Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
 
 	DECLARE_DELEGATE_OneParam(FOnGetCreatorByUuid200ResponseCallback, FNexusAttributionGetCreatorByUuid200Response);
-	static void GetCreatorByUuid(const FNexusAttributionGetCreatorByUuidRequestParams& RequestParams, FOnGetCreatorByUuid200ResponseCallback Response);
+	static void GetCreatorByUuid(const FNexusAttributionGetCreatorByUuidRequestParams& RequestParams, FOnGetCreatorByUuid200ResponseCallback Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
 
 };
 
@@ -218,6 +219,14 @@ public:
 	FGetCreators200Response On200Response;
 
 	void When200Callback(FNexusAttributionGetCreators200Response Param0);
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNexusGetCreatorsError, int32, ErrorCode);
+
+	UPROPERTY(BlueprintAssignable)
+	FNexusGetCreatorsError OnError;
+
+	void WhenError(int32 ErrorCode);
+
 
 	virtual void Activate() override;
 
@@ -243,6 +252,14 @@ public:
 	FGetCreatorByUuid200Response On200Response;
 
 	void When200Callback(FNexusAttributionGetCreatorByUuid200Response Param0);
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNexusGetCreatorByUuidError, int32, ErrorCode);
+
+	UPROPERTY(BlueprintAssignable)
+	FNexusGetCreatorByUuidError OnError;
+
+	void WhenError(int32 ErrorCode);
+
 
 	virtual void Activate() override;
 

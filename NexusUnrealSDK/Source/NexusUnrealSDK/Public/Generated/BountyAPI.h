@@ -8,6 +8,7 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
+#include "NexusShared.h"
 #include "BountyAPI.generated.h"
 
 /**
@@ -589,7 +590,7 @@ public:
 			FOnGetBounties200ResponseCallback On200Response;
 			FOnGetBounties400ResponseCallback On400Response;
 	};
-	static void GetBounties(const FNexusBountyGetBountiesRequestParams& RequestParams, FOnGetBountiesResponse Response);
+	static void GetBounties(const FNexusBountyGetBountiesRequestParams& RequestParams, FOnGetBountiesResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
 
 	DECLARE_DELEGATE_OneParam(FOnGetBounty200ResponseCallback, FNexusBountyGetBounty200Response);
 	DECLARE_DELEGATE_OneParam(FOnGetBounty400ResponseCallback, FNexusBountyBountyError);
@@ -599,7 +600,7 @@ public:
 			FOnGetBounty200ResponseCallback On200Response;
 			FOnGetBounty400ResponseCallback On400Response;
 	};
-	static void GetBounty(const FNexusBountyGetBountyRequestParams& RequestParams, FOnGetBountyResponse Response);
+	static void GetBounty(const FNexusBountyGetBountyRequestParams& RequestParams, FOnGetBountyResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
 
 	DECLARE_DELEGATE_OneParam(FOnGetCreatorBountiesByID200ResponseCallback, FNexusBountyGetCreatorBountiesByID200Response);
 	DECLARE_DELEGATE_OneParam(FOnGetCreatorBountiesByID400ResponseCallback, FNexusBountyBountyError);
@@ -609,7 +610,7 @@ public:
 			FOnGetCreatorBountiesByID200ResponseCallback On200Response;
 			FOnGetCreatorBountiesByID400ResponseCallback On400Response;
 	};
-	static void GetCreatorBountiesByID(const FNexusBountyGetCreatorBountiesByIDRequestParams& RequestParams, FOnGetCreatorBountiesByIDResponse Response);
+	static void GetCreatorBountiesByID(const FNexusBountyGetCreatorBountiesByIDRequestParams& RequestParams, FOnGetCreatorBountiesByIDResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
 
 };
 
@@ -640,6 +641,14 @@ public:
 	FGetBounties400Response On400Response;
 
 	void When400Callback(FNexusBountyBountyError Param0);
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNexusGetBountiesError, int32, ErrorCode);
+
+	UPROPERTY(BlueprintAssignable)
+	FNexusGetBountiesError OnError;
+
+	void WhenError(int32 ErrorCode);
+
 
 	virtual void Activate() override;
 
@@ -673,6 +682,14 @@ public:
 
 	void When400Callback(FNexusBountyBountyError Param0);
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNexusGetBountyError, int32, ErrorCode);
+
+	UPROPERTY(BlueprintAssignable)
+	FNexusGetBountyError OnError;
+
+	void WhenError(int32 ErrorCode);
+
+
 	virtual void Activate() override;
 
 private:
@@ -704,6 +721,14 @@ public:
 	FGetCreatorBountiesByID400Response On400Response;
 
 	void When400Callback(FNexusBountyBountyError Param0);
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNexusGetCreatorBountiesByIDError, int32, ErrorCode);
+
+	UPROPERTY(BlueprintAssignable)
+	FNexusGetCreatorBountiesByIDError OnError;
+
+	void WhenError(int32 ErrorCode);
+
 
 	virtual void Activate() override;
 

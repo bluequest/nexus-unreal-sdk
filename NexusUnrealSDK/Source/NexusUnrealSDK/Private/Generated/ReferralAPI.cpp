@@ -23,7 +23,10 @@ namespace FGetReferralInfoByPlayerIdHelpers
 	{
 	public:
 	FOnGetReferralInfoByPlayerIdRequestContext() = delete;
-		FOnGetReferralInfoByPlayerIdRequestContext(FNexusReferralAPI::FOnGetReferralInfoByPlayerIdResponse InCallback) : Callback(InCallback) {}
+		FOnGetReferralInfoByPlayerIdRequestContext(FNexusReferralAPI::FOnGetReferralInfoByPlayerIdResponse InCallback, FNexusOnHttpErrorDelegate InErrorDelegate) 
+		: Callback(InCallback)
+		, ErrorDelegate(InErrorDelegate)
+	{}
 
 	void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
 	{
@@ -34,6 +37,7 @@ namespace FGetReferralInfoByPlayerIdHelpers
 		//TODO: HANDLE THIS GRACEFULLY
 		return;
 		}
+	
 
 		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(200))
 		{
@@ -47,7 +51,7 @@ namespace FGetReferralInfoByPlayerIdHelpers
 			if (!FJsonSerializer::Deserialize(Reader, RootObject))
 			{
 				// Parse error
-					Callback.On200Response.ExecuteIfBound(OutputResponse);
+				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 				return;
 			}
 
@@ -55,7 +59,9 @@ namespace FGetReferralInfoByPlayerIdHelpers
 			// TODO(JoshD): Parse it!
 
 			// Run the callback successfully!
-			Callback.On200Response.ExecuteIfBound(OutputResponse);
+				Callback.On200Response.ExecuteIfBound(OutputResponse);	
+
+			
 		}	
 
 		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(400))
@@ -70,7 +76,7 @@ namespace FGetReferralInfoByPlayerIdHelpers
 			if (!FJsonSerializer::Deserialize(Reader, RootObject))
 			{
 				// Parse error
-					Callback.On400Response.ExecuteIfBound(OutputResponse);
+				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 				return;
 			}
 
@@ -78,16 +84,23 @@ namespace FGetReferralInfoByPlayerIdHelpers
 			// TODO(JoshD): Parse it!
 
 			// Run the callback successfully!
-			Callback.On400Response.ExecuteIfBound(OutputResponse);
+				Callback.On400Response.ExecuteIfBound(OutputResponse);	
+
+			
 		}	
-	
-		
+
+		if(Response->GetResponseCode() != 200 || Response->GetResponseCode() != 400)
+		{
+			ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+		}
+			
 		// Now remove and delete ourselves from the module cache
 		FNexusUnrealSDKModule::Get().RemoveRequest(this);
 	}
 
 	private:
 		FNexusReferralAPI::FOnGetReferralInfoByPlayerIdResponse Callback;
+		FNexusOnHttpErrorDelegate ErrorDelegate;
 
 	};
 
@@ -108,12 +121,12 @@ namespace FGetReferralInfoByPlayerIdHelpers
 	}	
 }
 
-void FNexusReferralAPI::GetReferralInfoByPlayerId(const FNexusReferralGetReferralInfoByPlayerIdRequestParams& RequestParams, FOnGetReferralInfoByPlayerIdResponse Response)
+void FNexusReferralAPI::GetReferralInfoByPlayerId(const FNexusReferralGetReferralInfoByPlayerIdRequestParams& RequestParams, FOnGetReferralInfoByPlayerIdResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate)
 {
 
 	if(!FGetReferralInfoByPlayerIdHelpers::GetReferralInfoByPlayerId_IsValid(RequestParams))
 	{
-		//TODO:Handle This Gracefully
+		ErrorDelegate.ExecuteIfBound(0);
 		return;
 	}
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
@@ -124,7 +137,7 @@ void FNexusReferralAPI::GetReferralInfoByPlayerId(const FNexusReferralGetReferra
 		//		Only Parameter names indicated in the Path with {variable} are put in the url
 		//		This will need to be fixed
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/referrals/player/{playerId}?playerId=%s&groupId=%s&page=%d&pageSize=%d&excludeReferralList=%c"), *RequestParams.playerId, *RequestParams.groupId, RequestParams.page, RequestParams.pageSize, RequestParams.excludeReferralList);
-		TUniquePtr<FGetReferralInfoByPlayerIdHelpers::FOnGetReferralInfoByPlayerIdRequestContext> RequestContext = MakeUnique<FGetReferralInfoByPlayerIdHelpers::FOnGetReferralInfoByPlayerIdRequestContext>(Response);
+		TUniquePtr<FGetReferralInfoByPlayerIdHelpers::FOnGetReferralInfoByPlayerIdRequestContext> RequestContext = MakeUnique<FGetReferralInfoByPlayerIdHelpers::FOnGetReferralInfoByPlayerIdRequestContext>(Response, ErrorDelegate);
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
@@ -146,7 +159,10 @@ namespace FGetPlayerCurrentReferralHelpers
 	{
 	public:
 	FOnGetPlayerCurrentReferralRequestContext() = delete;
-		FOnGetPlayerCurrentReferralRequestContext(FNexusReferralAPI::FOnGetPlayerCurrentReferralResponse InCallback) : Callback(InCallback) {}
+		FOnGetPlayerCurrentReferralRequestContext(FNexusReferralAPI::FOnGetPlayerCurrentReferralResponse InCallback, FNexusOnHttpErrorDelegate InErrorDelegate) 
+		: Callback(InCallback)
+		, ErrorDelegate(InErrorDelegate)
+	{}
 
 	void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
 	{
@@ -157,6 +173,7 @@ namespace FGetPlayerCurrentReferralHelpers
 		//TODO: HANDLE THIS GRACEFULLY
 		return;
 		}
+	
 
 		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(200))
 		{
@@ -170,7 +187,7 @@ namespace FGetPlayerCurrentReferralHelpers
 			if (!FJsonSerializer::Deserialize(Reader, RootObject))
 			{
 				// Parse error
-					Callback.On200Response.ExecuteIfBound(OutputResponse);
+				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 				return;
 			}
 
@@ -178,7 +195,9 @@ namespace FGetPlayerCurrentReferralHelpers
 			// TODO(JoshD): Parse it!
 
 			// Run the callback successfully!
-			Callback.On200Response.ExecuteIfBound(OutputResponse);
+				Callback.On200Response.ExecuteIfBound(OutputResponse);	
+
+			
 		}	
 
 		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(404))
@@ -193,7 +212,7 @@ namespace FGetPlayerCurrentReferralHelpers
 			if (!FJsonSerializer::Deserialize(Reader, RootObject))
 			{
 				// Parse error
-					Callback.On404Response.ExecuteIfBound(OutputResponse);
+				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 				return;
 			}
 
@@ -201,23 +220,30 @@ namespace FGetPlayerCurrentReferralHelpers
 			// TODO(JoshD): Parse it!
 
 			// Run the callback successfully!
-			Callback.On404Response.ExecuteIfBound(OutputResponse);
+				Callback.On404Response.ExecuteIfBound(OutputResponse);	
+
+			
 		}	
-	
-		
+
+		if(Response->GetResponseCode() != 200 || Response->GetResponseCode() != 404)
+		{
+			ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+		}
+			
 		// Now remove and delete ourselves from the module cache
 		FNexusUnrealSDKModule::Get().RemoveRequest(this);
 	}
 
 	private:
 		FNexusReferralAPI::FOnGetPlayerCurrentReferralResponse Callback;
+		FNexusOnHttpErrorDelegate ErrorDelegate;
 
 	};
 
 
 }
 
-void FNexusReferralAPI::GetPlayerCurrentReferral(const FNexusReferralGetPlayerCurrentReferralRequestParams& RequestParams, FOnGetPlayerCurrentReferralResponse Response)
+void FNexusReferralAPI::GetPlayerCurrentReferral(const FNexusReferralGetPlayerCurrentReferralRequestParams& RequestParams, FOnGetPlayerCurrentReferralResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate)
 {
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
 
@@ -227,7 +253,7 @@ void FNexusReferralAPI::GetPlayerCurrentReferral(const FNexusReferralGetPlayerCu
 		//		Only Parameter names indicated in the Path with {variable} are put in the url
 		//		This will need to be fixed
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/referrals/player/{playerId}/code?playerId=%s&groupId=%s"), *RequestParams.playerId, *RequestParams.groupId);
-		TUniquePtr<FGetPlayerCurrentReferralHelpers::FOnGetPlayerCurrentReferralRequestContext> RequestContext = MakeUnique<FGetPlayerCurrentReferralHelpers::FOnGetPlayerCurrentReferralRequestContext>(Response);
+		TUniquePtr<FGetPlayerCurrentReferralHelpers::FOnGetPlayerCurrentReferralRequestContext> RequestContext = MakeUnique<FGetPlayerCurrentReferralHelpers::FOnGetPlayerCurrentReferralRequestContext>(Response, ErrorDelegate);
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
@@ -249,7 +275,10 @@ namespace FGetReferralInfoByCodeHelpers
 	{
 	public:
 	FOnGetReferralInfoByCodeRequestContext() = delete;
-		FOnGetReferralInfoByCodeRequestContext(FNexusReferralAPI::FOnGetReferralInfoByCodeResponse InCallback) : Callback(InCallback) {}
+		FOnGetReferralInfoByCodeRequestContext(FNexusReferralAPI::FOnGetReferralInfoByCodeResponse InCallback, FNexusOnHttpErrorDelegate InErrorDelegate) 
+		: Callback(InCallback)
+		, ErrorDelegate(InErrorDelegate)
+	{}
 
 	void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
 	{
@@ -260,6 +289,7 @@ namespace FGetReferralInfoByCodeHelpers
 		//TODO: HANDLE THIS GRACEFULLY
 		return;
 		}
+	
 
 		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(200))
 		{
@@ -273,7 +303,7 @@ namespace FGetReferralInfoByCodeHelpers
 			if (!FJsonSerializer::Deserialize(Reader, RootObject))
 			{
 				// Parse error
-					Callback.On200Response.ExecuteIfBound(OutputResponse);
+				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 				return;
 			}
 
@@ -281,7 +311,9 @@ namespace FGetReferralInfoByCodeHelpers
 			// TODO(JoshD): Parse it!
 
 			// Run the callback successfully!
-			Callback.On200Response.ExecuteIfBound(OutputResponse);
+				Callback.On200Response.ExecuteIfBound(OutputResponse);	
+
+			
 		}	
 
 		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(400))
@@ -296,7 +328,7 @@ namespace FGetReferralInfoByCodeHelpers
 			if (!FJsonSerializer::Deserialize(Reader, RootObject))
 			{
 				// Parse error
-					Callback.On400Response.ExecuteIfBound(OutputResponse);
+				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 				return;
 			}
 
@@ -304,16 +336,23 @@ namespace FGetReferralInfoByCodeHelpers
 			// TODO(JoshD): Parse it!
 
 			// Run the callback successfully!
-			Callback.On400Response.ExecuteIfBound(OutputResponse);
+				Callback.On400Response.ExecuteIfBound(OutputResponse);	
+
+			
 		}	
-	
-		
+
+		if(Response->GetResponseCode() != 200 || Response->GetResponseCode() != 400)
+		{
+			ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+		}
+			
 		// Now remove and delete ourselves from the module cache
 		FNexusUnrealSDKModule::Get().RemoveRequest(this);
 	}
 
 	private:
 		FNexusReferralAPI::FOnGetReferralInfoByCodeResponse Callback;
+		FNexusOnHttpErrorDelegate ErrorDelegate;
 
 	};
 
@@ -334,12 +373,12 @@ namespace FGetReferralInfoByCodeHelpers
 	}	
 }
 
-void FNexusReferralAPI::GetReferralInfoByCode(const FNexusReferralGetReferralInfoByCodeRequestParams& RequestParams, FOnGetReferralInfoByCodeResponse Response)
+void FNexusReferralAPI::GetReferralInfoByCode(const FNexusReferralGetReferralInfoByCodeRequestParams& RequestParams, FOnGetReferralInfoByCodeResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate)
 {
 
 	if(!FGetReferralInfoByCodeHelpers::GetReferralInfoByCode_IsValid(RequestParams))
 	{
-		//TODO:Handle This Gracefully
+		ErrorDelegate.ExecuteIfBound(0);
 		return;
 	}
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
@@ -350,7 +389,7 @@ void FNexusReferralAPI::GetReferralInfoByCode(const FNexusReferralGetReferralInf
 		//		Only Parameter names indicated in the Path with {variable} are put in the url
 		//		This will need to be fixed
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/referrals/code/{code}?code=%s&groupId=%s&page=%d&pageSize=%d&excludeReferralList=%c"), *RequestParams.code, *RequestParams.groupId, RequestParams.page, RequestParams.pageSize, RequestParams.excludeReferralList);
-		TUniquePtr<FGetReferralInfoByCodeHelpers::FOnGetReferralInfoByCodeRequestContext> RequestContext = MakeUnique<FGetReferralInfoByCodeHelpers::FOnGetReferralInfoByCodeRequestContext>(Response);
+		TUniquePtr<FGetReferralInfoByCodeHelpers::FOnGetReferralInfoByCodeRequestContext> RequestContext = MakeUnique<FGetReferralInfoByCodeHelpers::FOnGetReferralInfoByCodeRequestContext>(Response, ErrorDelegate);
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
@@ -373,6 +412,12 @@ UNexusGetReferralInfoByPlayerIdNode::UNexusGetReferralInfoByPlayerIdNode()
 
 }
 
+void UNexusGetReferralInfoByPlayerIdNode::WhenError(int32 ErrorCode)
+{
+	OnError.Broadcast(ErrorCode);
+	SetReadyToDestroy();
+}
+
 
 UNexusGetReferralInfoByPlayerIdNode* UNexusGetReferralInfoByPlayerIdNode::GetReferralInfoByPlayerId(UObject* WorldContextObject, const FNexusReferralGetReferralInfoByPlayerIdRequestParams& InRequestParams)
 {
@@ -385,10 +430,11 @@ UNexusGetReferralInfoByPlayerIdNode* UNexusGetReferralInfoByPlayerIdNode::GetRef
 
 void UNexusGetReferralInfoByPlayerIdNode::Activate()
 {	
+
 	FNexusReferralAPI::FOnGetReferralInfoByPlayerIdResponse Callback;
 	Callback.On200Response = FNexusReferralAPI::FOnGetReferralInfoByPlayerId200ResponseCallback::CreateUObject(this, &ThisClass::When200Callback);
 	Callback.On400Response = FNexusReferralAPI::FOnGetReferralInfoByPlayerId400ResponseCallback::CreateUObject(this, &ThisClass::When400Callback);
-	FNexusReferralAPI::GetReferralInfoByPlayerId(RequestParams, Callback);
+	FNexusReferralAPI::GetReferralInfoByPlayerId(RequestParams, Callback, FNexusOnHttpErrorDelegate::CreateUObject(this, &ThisClass::WhenError));
 }
 
 
@@ -410,6 +456,12 @@ UNexusGetPlayerCurrentReferralNode::UNexusGetPlayerCurrentReferralNode()
 
 }
 
+void UNexusGetPlayerCurrentReferralNode::WhenError(int32 ErrorCode)
+{
+	OnError.Broadcast(ErrorCode);
+	SetReadyToDestroy();
+}
+
 
 UNexusGetPlayerCurrentReferralNode* UNexusGetPlayerCurrentReferralNode::GetPlayerCurrentReferral(UObject* WorldContextObject, const FNexusReferralGetPlayerCurrentReferralRequestParams& InRequestParams)
 {
@@ -422,10 +474,11 @@ UNexusGetPlayerCurrentReferralNode* UNexusGetPlayerCurrentReferralNode::GetPlaye
 
 void UNexusGetPlayerCurrentReferralNode::Activate()
 {	
+
 	FNexusReferralAPI::FOnGetPlayerCurrentReferralResponse Callback;
 	Callback.On200Response = FNexusReferralAPI::FOnGetPlayerCurrentReferral200ResponseCallback::CreateUObject(this, &ThisClass::When200Callback);
 	Callback.On404Response = FNexusReferralAPI::FOnGetPlayerCurrentReferral404ResponseCallback::CreateUObject(this, &ThisClass::When404Callback);
-	FNexusReferralAPI::GetPlayerCurrentReferral(RequestParams, Callback);
+	FNexusReferralAPI::GetPlayerCurrentReferral(RequestParams, Callback, FNexusOnHttpErrorDelegate::CreateUObject(this, &ThisClass::WhenError));
 }
 
 
@@ -447,6 +500,12 @@ UNexusGetReferralInfoByCodeNode::UNexusGetReferralInfoByCodeNode()
 
 }
 
+void UNexusGetReferralInfoByCodeNode::WhenError(int32 ErrorCode)
+{
+	OnError.Broadcast(ErrorCode);
+	SetReadyToDestroy();
+}
+
 
 UNexusGetReferralInfoByCodeNode* UNexusGetReferralInfoByCodeNode::GetReferralInfoByCode(UObject* WorldContextObject, const FNexusReferralGetReferralInfoByCodeRequestParams& InRequestParams)
 {
@@ -459,10 +518,11 @@ UNexusGetReferralInfoByCodeNode* UNexusGetReferralInfoByCodeNode::GetReferralInf
 
 void UNexusGetReferralInfoByCodeNode::Activate()
 {	
+
 	FNexusReferralAPI::FOnGetReferralInfoByCodeResponse Callback;
 	Callback.On200Response = FNexusReferralAPI::FOnGetReferralInfoByCode200ResponseCallback::CreateUObject(this, &ThisClass::When200Callback);
 	Callback.On400Response = FNexusReferralAPI::FOnGetReferralInfoByCode400ResponseCallback::CreateUObject(this, &ThisClass::When400Callback);
-	FNexusReferralAPI::GetReferralInfoByCode(RequestParams, Callback);
+	FNexusReferralAPI::GetReferralInfoByCode(RequestParams, Callback, FNexusOnHttpErrorDelegate::CreateUObject(this, &ThisClass::WhenError));
 }
 
 

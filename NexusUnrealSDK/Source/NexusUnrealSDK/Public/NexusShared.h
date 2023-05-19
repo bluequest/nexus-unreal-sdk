@@ -3,10 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EngineMinimal.h"
 
 /**
  * Shared stuff between all Nexus interfaces.
  */
+
+DECLARE_DELEGATE_OneParam(FNexusOnHttpErrorDelegate, int32);
+
 
 namespace NexusSDK
 {
