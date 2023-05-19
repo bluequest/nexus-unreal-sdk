@@ -47,7 +47,17 @@
 
 		UPROPERTY()
 		FString slug;
-	};
+
+		FNexusBountyBountySku()
+		: id()
+		, name()
+		, slug()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -70,7 +80,19 @@
 
 		UPROPERTY()
 		FString rewardReferenceId;
-	};
+
+		FNexusBountyBountyProgressReward()
+		: id()
+		, name()
+		, externalId()
+		, rewardCompleted()
+		, rewardReferenceId()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -90,7 +112,18 @@
 
 		UPROPERTY()
 		TArray<FString> slugs;
-	};
+
+		FNexusBountyCreator()
+		: id()
+		, playerId()
+		, name()
+		, slugs()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -107,7 +140,17 @@
 
 		UPROPERTY()
 		FString referralCode;
-	};
+
+		FNexusBountyCreatorGroupEvent()
+		: eventCode()
+		, playerId()
+		, referralCode()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -121,7 +164,16 @@
 
 		UPROPERTY()
 		FString message;
-	};
+
+		FNexusBountyBountyError()
+		: code()
+		, message()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -138,7 +190,17 @@
 
 		UPROPERTY()
 		FString slug;
-	};
+
+		FNexusBountycategory_Struct()
+		: id()
+		, name()
+		, slug()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -152,7 +214,16 @@
 
 		UPROPERTY()
 		FString name;
-	};
+
+		FNexusBountypublisher_Struct()
+		: id()
+		, name()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -166,7 +237,16 @@
 
 		UPROPERTY()
 		FString name;
-	};
+
+		FNexusBountydependants_Struct_Element()
+		: id()
+		, name()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -180,7 +260,16 @@
 
 		UPROPERTY()
 		FString name;
-	};
+
+		FNexusBountyprerequisites_Struct_Element()
+		: id()
+		, name()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -200,7 +289,18 @@
 
 		UPROPERTY()
 		FString condition;
-	};
+
+		FNexusBountyobjective_Struct()
+		: id()
+		, name()
+		, count()
+		, condition()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -220,7 +320,18 @@
 
 		UPROPERTY()
 		FNexusBountyobjective_Struct objective;
-	};
+
+		FNexusBountyBountyObjectiveProgress()
+		: id()
+		, completed()
+		, count()
+		, objective()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -249,7 +360,21 @@
 
 		UPROPERTY()
 		FString externalId;
-	};
+
+		FNexusBountyBountyReward()
+		: id()
+		, name()
+		, type()
+		, sku()
+		, amount()
+		, currency()
+		, externalId()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -290,7 +415,25 @@
 
 		UPROPERTY()
 		FNexusBountypublisher_Struct publisher;
-	};
+
+		FNexusBountyBountyObjective()
+		: id()
+		, name()
+		, type()
+		, condition()
+		, count()
+		, eventType()
+		, eventCode()
+		, nexusPurchaseObjectiveType()
+		, skus()
+		, category()
+		, publisher()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -307,7 +450,17 @@
 
 		UPROPERTY()
 		TArray<FNexusBountyBountyReward> rewards;
-	};
+
+		FNexusBountycompletedObjectives_Struct_Element()
+		: objectiveGroupId()
+		, objectives()
+		, rewards()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -354,7 +507,27 @@
 
 		UPROPERTY()
 		TArray<FNexusBountyprerequisites_Struct_Element> prerequisites;
-	};
+
+		FNexusBountyBounty()
+		: id()
+		, name()
+		, description()
+		, imageSrc()
+		, rewardDescription()
+		, limit()
+		, startsAt()
+		, endsAt()
+		, lastProgressCheck()
+		, objectives()
+		, rewards()
+		, dependants()
+		, prerequisites()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -383,7 +556,21 @@
 
 		UPROPERTY()
 		TArray<FNexusBountycompletedObjectives_Struct_Element> completedObjectives;
-	};
+
+		FNexusBountyBountyProgress()
+		: id()
+		, completed()
+		, completionCount()
+		, lastProgressCheck()
+		, currentObjectiveGroupId()
+		, currentObjectives()
+		, completedObjectives()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -400,7 +587,17 @@
 
 		UPROPERTY()
 		int32 pageSize;
-	};
+
+		FNexusBountyGetBountiesRequestParams()
+		: groupId()
+		, page()
+		, pageSize()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -423,7 +620,19 @@
 
 		UPROPERTY()
 		FString bountyId;
-	};
+
+		FNexusBountyGetBountyRequestParams()
+		: groupId()
+		, includeProgress()
+		, page()
+		, pageSize()
+		, bountyId()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -443,7 +652,18 @@
 
 		UPROPERTY()
 		FString creatorId;
-	};
+
+		FNexusBountyGetCreatorBountiesByIDRequestParams()
+		: groupId()
+		, page()
+		, pageSize()
+		, creatorId()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -469,7 +689,20 @@
 
 		UPROPERTY()
 		TArray<FNexusBountyBounty> bounties;
-	};
+
+		FNexusBountyGetBounties200Response()
+		: groupId()
+		, groupName()
+		, currentPage()
+		, currentPageSize()
+		, totalCount()
+		, bounties()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -501,7 +734,22 @@
 
 		UPROPERTY()
 		FNexusBountyCreator creator;
-	};
+
+		FNexusBountydata_Struct_Element()
+		: id()
+		, completed()
+		, completionCount()
+		, lastProgressCheck()
+		, currentObjectiveGroupId()
+		, currentObjectives()
+		, completedObjectives()
+		, creator()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -521,7 +769,18 @@
 
 		UPROPERTY()
 		TArray<FNexusBountydata_Struct_Element> data;
-	};
+
+		FNexusBountyprogress_Struct()
+		: currentPage()
+		, currentPageSize()
+		, totalCount()
+		, data()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -541,7 +800,18 @@
 
 		UPROPERTY()
 		FNexusBountyprogress_Struct progress;
-	};
+
+		FNexusBountyGetBounty200Response()
+		: groupId()
+		, groupName()
+		, bounty()
+		, progress()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -573,7 +843,22 @@
 
 		UPROPERTY()
 		FNexusBountyprogress_Struct progress;
-	};
+
+		FNexusBountyGetCreatorBountiesByID200Response()
+		: groupId()
+		, groupName()
+		, currentPage()
+		, currentPageSize()
+		, totalCount()
+		, creatorId()
+		, playerId()
+		, progress()
+		{
+
+		}
+
+	
+};
 
 
 	/*---------------------------------------------------------------------------------------------

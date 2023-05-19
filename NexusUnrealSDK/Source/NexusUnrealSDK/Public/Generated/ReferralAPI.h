@@ -53,7 +53,19 @@
 
 		UPROPERTY()
 		FDateTime referralDate;
-	};
+
+		FNexusReferralReferral()
+		: id()
+		, code()
+		, playerId()
+		, playerName()
+		, referralDate()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -67,7 +79,16 @@
 
 		UPROPERTY()
 		FString message;
-	};
+
+		FNexusReferralReferralError()
+		: code()
+		, message()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -87,7 +108,18 @@
 
 		UPROPERTY()
 		bool isManaged;
-	};
+
+		FNexusReferralReferralCodeResponse()
+		: code()
+		, isPrimary()
+		, isGenerated()
+		, isManaged()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -110,7 +142,19 @@
 
 		UPROPERTY()
 		bool excludeReferralList;
-	};
+
+		FNexusReferralGetReferralInfoByPlayerIdRequestParams()
+		: playerId()
+		, groupId()
+		, page()
+		, pageSize()
+		, excludeReferralList()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -124,7 +168,16 @@
 
 		UPROPERTY()
 		FString groupId;
-	};
+
+		FNexusReferralGetPlayerCurrentReferralRequestParams()
+		: playerId()
+		, groupId()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -147,7 +200,19 @@
 
 		UPROPERTY()
 		bool excludeReferralList;
-	};
+
+		FNexusReferralGetReferralInfoByCodeRequestParams()
+		: code()
+		, groupId()
+		, page()
+		, pageSize()
+		, excludeReferralList()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -179,7 +244,22 @@
 
 		UPROPERTY()
 		TArray<FNexusReferralReferral> referrals;
-	};
+
+		FNexusReferralGetReferralInfoByPlayerId200Response()
+		: groupId()
+		, groupName()
+		, referralCodes()
+		, playerId()
+		, currentPage()
+		, currentPageSize()
+		, totalCount()
+		, referrals()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -190,7 +270,15 @@
 	
 		UPROPERTY()
 		FString code;
-	};
+
+		FNexusReferralGetPlayerCurrentReferral404Response()
+		: code()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -222,7 +310,22 @@
 
 		UPROPERTY()
 		TArray<FNexusReferralReferral> referrals;
-	};
+
+		FNexusReferralGetReferralInfoByCode200Response()
+		: groupId()
+		, groupName()
+		, referralCodes()
+		, playerId()
+		, currentPage()
+		, currentPageSize()
+		, totalCount()
+		, referrals()
+		{
+
+		}
+
+	
+};
 
 
 	/*---------------------------------------------------------------------------------------------

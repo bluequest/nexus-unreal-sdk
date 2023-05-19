@@ -71,7 +71,25 @@
 
 		UPROPERTY()
 		FString playerName;
-	};
+
+		FNexusAttributionTransaction()
+		: creatorId()
+		, currency()
+		, description()
+		, status()
+		, subtotal()
+		, transactionId()
+		, transactionDate()
+		, playerId()
+		, playerLastPurchase()
+		, playerJoinDate()
+		, playerName()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -94,7 +112,19 @@
 
 		UPROPERTY()
 		FString profileImage;
-	};
+
+		FNexusAttributionCreator()
+		: id()
+		, name()
+		, logoImage()
+		, nexusUrl()
+		, profileImage()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -111,7 +141,17 @@
 
 		UPROPERTY()
 		FString status;
-	};
+
+		FNexusAttributionCreatorGroup()
+		: name()
+		, id()
+		, status()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -128,7 +168,17 @@
 
 		UPROPERTY()
 		FString groupId;
-	};
+
+		FNexusAttributionGetCreatorsRequestParams()
+		: page()
+		, pageSize()
+		, groupId()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -139,7 +189,15 @@
 	
 		UPROPERTY()
 		FString creatorSlugOrId;
-	};
+
+		FNexusAttributionGetCreatorByUuidRequestParams()
+		: creatorSlugOrId()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -156,7 +214,17 @@
 
 		UPROPERTY()
 		TArray<FNexusAttributionCreator> creators;
-	};
+
+		FNexusAttributionGetCreators200Response()
+		: currentPage()
+		, currentPageSize()
+		, creators()
+		{
+
+		}
+
+	
+};
 
 	
 	USTRUCT(BlueprintType)
@@ -182,7 +250,20 @@
 
 		UPROPERTY()
 		FString profileImage;
-	};
+
+		FNexusAttributionGetCreatorByUuid200Response()
+		: groups()
+		, id()
+		, name()
+		, logoImage()
+		, nexusUrl()
+		, profileImage()
+		{
+
+		}
+
+	
+};
 
 
 	/*---------------------------------------------------------------------------------------------
