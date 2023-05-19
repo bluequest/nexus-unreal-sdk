@@ -1,0 +1,713 @@
+/**
+ * NOTE NOTE NOTE
+ * GENERATED CODE
+ * ANY CHANGES TO THIS FILE WILL BE OVERWRITTEN
+ * PLEASE MAKE ANY CHANGES TO THE SDK TEMPLATES IN THE SDK GENERATOR
+ */
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Kismet/BlueprintAsyncActionBase.h"
+#include "BountyAPI.generated.h"
+
+/**
+ * Hullo there, this is the Nexus Unreal SDK, and this is my cool temp comment.
+ * TODO: Here's the old descriptions from the two structs and delegate:
+ *
+ * Request:
+ * A struct containing input values accepted by <NAME>
+ *
+ * Response:
+ * A struct containing output values returned by <NAME>.
+ * Always check bSuccess, if it is false, all other data is empty / defaulted.
+ *
+ * Delegate:
+ * Declares a delegate that is executed when <NAME> has recieved
+ * and decoded an HTTP response (even on failure).
+ * Keep in mind that this is executed on the HTTP thread.
+ *
+ * @param Response Struct filled with data returned by the API.
+ *
+ */
+
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountyBountySku
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString id;
+
+		UPROPERTY()
+		FString name;
+
+		UPROPERTY()
+		FString slug;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountyBountyProgressReward
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString id;
+
+		UPROPERTY()
+		FString name;
+
+		UPROPERTY()
+		FString externalId;
+
+		UPROPERTY()
+		bool rewardCompleted;
+
+		UPROPERTY()
+		FString rewardReferenceId;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountyCreator
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString id;
+
+		UPROPERTY()
+		FString playerId;
+
+		UPROPERTY()
+		FString name;
+
+		UPROPERTY()
+		TArray<FString> slugs;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountyCreatorGroupEvent
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString eventCode;
+
+		UPROPERTY()
+		FString playerId;
+
+		UPROPERTY()
+		FString referralCode;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountyBountyError
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString code;
+
+		UPROPERTY()
+		FString message;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountycategory_Struct
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString id;
+
+		UPROPERTY()
+		FString name;
+
+		UPROPERTY()
+		FString slug;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountypublisher_Struct
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString id;
+
+		UPROPERTY()
+		FString name;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountydependants_Struct_Element
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString id;
+
+		UPROPERTY()
+		FString name;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountyprerequisites_Struct_Element
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString id;
+
+		UPROPERTY()
+		FString name;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountyobjective_Struct
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString id;
+
+		UPROPERTY()
+		FString name;
+
+		UPROPERTY()
+		double count;
+
+		UPROPERTY()
+		FString condition;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountyBountyObjectiveProgress
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString id;
+
+		UPROPERTY()
+		bool completed;
+
+		UPROPERTY()
+		double count;
+
+		UPROPERTY()
+		FNexusBountyobjective_Struct objective;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountyBountyReward
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString id;
+
+		UPROPERTY()
+		FString name;
+
+		UPROPERTY()
+		FString type;
+
+		UPROPERTY()
+		FNexusBountyBountySku sku;
+
+		UPROPERTY()
+		double amount;
+
+		UPROPERTY()
+		FString currency;
+
+		UPROPERTY()
+		FString externalId;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountyBountyObjective
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString id;
+
+		UPROPERTY()
+		FString name;
+
+		UPROPERTY()
+		FString type;
+
+		UPROPERTY()
+		FString condition;
+
+		UPROPERTY()
+		double count;
+
+		UPROPERTY()
+		FString eventType;
+
+		UPROPERTY()
+		FString eventCode;
+
+		UPROPERTY()
+		FString nexusPurchaseObjectiveType;
+
+		UPROPERTY()
+		TArray<FNexusBountyBountySku> skus;
+
+		UPROPERTY()
+		FNexusBountycategory_Struct category;
+
+		UPROPERTY()
+		FNexusBountypublisher_Struct publisher;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountycompletedObjectives_Struct_Element
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString objectiveGroupId;
+
+		UPROPERTY()
+		TArray<FNexusBountyBountyObjective> objectives;
+
+		UPROPERTY()
+		TArray<FNexusBountyBountyReward> rewards;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountyBounty
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString id;
+
+		UPROPERTY()
+		FString name;
+
+		UPROPERTY()
+		FString description;
+
+		UPROPERTY()
+		FString imageSrc;
+
+		UPROPERTY()
+		FString rewardDescription;
+
+		UPROPERTY()
+		double limit;
+
+		UPROPERTY()
+		FDateTime startsAt;
+
+		UPROPERTY()
+		FDateTime endsAt;
+
+		UPROPERTY()
+		FDateTime lastProgressCheck;
+
+		UPROPERTY()
+		TArray<FNexusBountyBountyObjective> objectives;
+
+		UPROPERTY()
+		TArray<FNexusBountyBountyReward> rewards;
+
+		UPROPERTY()
+		TArray<FNexusBountydependants_Struct_Element> dependants;
+
+		UPROPERTY()
+		TArray<FNexusBountyprerequisites_Struct_Element> prerequisites;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountyBountyProgress
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString id;
+
+		UPROPERTY()
+		bool completed;
+
+		UPROPERTY()
+		double completionCount;
+
+		UPROPERTY()
+		FDateTime lastProgressCheck;
+
+		UPROPERTY()
+		FString currentObjectiveGroupId;
+
+		UPROPERTY()
+		TArray<FNexusBountyBountyObjectiveProgress> currentObjectives;
+
+		UPROPERTY()
+		TArray<FNexusBountycompletedObjectives_Struct_Element> completedObjectives;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountyGetBountiesRequestParams
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString groupId;
+
+		UPROPERTY()
+		int32 page;
+
+		UPROPERTY()
+		int32 pageSize;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountyGetBountyRequestParams
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString groupId;
+
+		UPROPERTY()
+		bool includeProgress;
+
+		UPROPERTY()
+		int32 page;
+
+		UPROPERTY()
+		int32 pageSize;
+
+		UPROPERTY()
+		FString bountyId;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountyGetCreatorBountiesByIDRequestParams
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString groupId;
+
+		UPROPERTY()
+		int32 page;
+
+		UPROPERTY()
+		int32 pageSize;
+
+		UPROPERTY()
+		FString creatorId;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountyGetBounties200Response
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString groupId;
+
+		UPROPERTY()
+		FString groupName;
+
+		UPROPERTY()
+		int32 currentPage;
+
+		UPROPERTY()
+		int32 currentPageSize;
+
+		UPROPERTY()
+		int32 totalCount;
+
+		UPROPERTY()
+		TArray<FNexusBountyBounty> bounties;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountydata_Struct_Element
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString id;
+
+		UPROPERTY()
+		bool completed;
+
+		UPROPERTY()
+		double completionCount;
+
+		UPROPERTY()
+		FDateTime lastProgressCheck;
+
+		UPROPERTY()
+		FString currentObjectiveGroupId;
+
+		UPROPERTY()
+		TArray<FNexusBountyBountyObjectiveProgress> currentObjectives;
+
+		UPROPERTY()
+		TArray<FNexusBountycompletedObjectives_Struct_Element> completedObjectives;
+
+		UPROPERTY()
+		FNexusBountyCreator creator;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountyprogress_Struct
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		int32 currentPage;
+
+		UPROPERTY()
+		int32 currentPageSize;
+
+		UPROPERTY()
+		int32 totalCount;
+
+		UPROPERTY()
+		TArray<FNexusBountydata_Struct_Element> data;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountyGetBounty200Response
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString groupId;
+
+		UPROPERTY()
+		FString groupName;
+
+		UPROPERTY()
+		FNexusBountyBounty bounty;
+
+		UPROPERTY()
+		FNexusBountyprogress_Struct progress;
+	};
+
+	
+	USTRUCT(BlueprintType)
+	struct FNexusBountyGetCreatorBountiesByID200Response
+	{
+		GENERATED_BODY()
+	
+	
+		UPROPERTY()
+		FString groupId;
+
+		UPROPERTY()
+		FString groupName;
+
+		UPROPERTY()
+		int32 currentPage;
+
+		UPROPERTY()
+		int32 currentPageSize;
+
+		UPROPERTY()
+		int32 totalCount;
+
+		UPROPERTY()
+		FString creatorId;
+
+		UPROPERTY()
+		FString playerId;
+
+		UPROPERTY()
+		FNexusBountyprogress_Struct progress;
+	};
+
+
+	/*---------------------------------------------------------------------------------------------
+			API Functions
+	---------------------------------------------------------------------------------------------*/
+NEXUSUNREALSDK_API class FNexusBountyAPI
+{
+public:
+	DECLARE_DELEGATE_OneParam(FOnGetBounties200ResponseCallback, FNexusBountyGetBounties200Response);
+	DECLARE_DELEGATE_OneParam(FOnGetBounties400ResponseCallback, FNexusBountyBountyError);
+
+	struct FOnGetBountiesResponse
+	{
+			FOnGetBounties200ResponseCallback On200Response;
+			FOnGetBounties400ResponseCallback On400Response;
+	};
+	static void GetBounties(const FNexusBountyGetBountiesRequestParams& RequestParams, FOnGetBountiesResponse Response);
+
+	DECLARE_DELEGATE_OneParam(FOnGetBounty200ResponseCallback, FNexusBountyGetBounty200Response);
+	DECLARE_DELEGATE_OneParam(FOnGetBounty400ResponseCallback, FNexusBountyBountyError);
+
+	struct FOnGetBountyResponse
+	{
+			FOnGetBounty200ResponseCallback On200Response;
+			FOnGetBounty400ResponseCallback On400Response;
+	};
+	static void GetBounty(const FNexusBountyGetBountyRequestParams& RequestParams, FOnGetBountyResponse Response);
+
+	DECLARE_DELEGATE_OneParam(FOnGetCreatorBountiesByID200ResponseCallback, FNexusBountyGetCreatorBountiesByID200Response);
+	DECLARE_DELEGATE_OneParam(FOnGetCreatorBountiesByID400ResponseCallback, FNexusBountyBountyError);
+
+	struct FOnGetCreatorBountiesByIDResponse
+	{
+			FOnGetCreatorBountiesByID200ResponseCallback On200Response;
+			FOnGetCreatorBountiesByID400ResponseCallback On400Response;
+	};
+	static void GetCreatorBountiesByID(const FNexusBountyGetCreatorBountiesByIDRequestParams& RequestParams, FOnGetCreatorBountiesByIDResponse Response);
+
+};
+
+//Blueprint Function Nodes
+
+
+UCLASS()
+class NEXUSUNREALSDK_API UNexusGetBountiesNode : public UBlueprintAsyncActionBase
+{
+	GENERATED_BODY()
+public:
+	UNexusGetBountiesNode();
+
+	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", Category = "Nexus|Bounty", WorldContext = "WorldContextObject"))
+					static UNexusGetBountiesNode* GetBounties(UObject* WorldContextObject, const FNexusBountyGetBountiesRequestParams& InRequestParams);
+
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetBounties200Response, FNexusBountyGetBounties200Response, Param0);
+
+	UPROPERTY(BlueprintAssignable)
+	FGetBounties200Response On200Response;
+
+	void When200Callback(FNexusBountyGetBounties200Response Param0);
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetBounties400Response, FNexusBountyBountyError, Param0);
+
+	UPROPERTY(BlueprintAssignable)
+	FGetBounties400Response On400Response;
+
+	void When400Callback(FNexusBountyBountyError Param0);
+
+	virtual void Activate() override;
+
+private:
+
+	FNexusBountyGetBountiesRequestParams RequestParams;
+};
+
+UCLASS()
+class NEXUSUNREALSDK_API UNexusGetBountyNode : public UBlueprintAsyncActionBase
+{
+	GENERATED_BODY()
+public:
+	UNexusGetBountyNode();
+
+	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", Category = "Nexus|Bounty", WorldContext = "WorldContextObject"))
+					static UNexusGetBountyNode* GetBounty(UObject* WorldContextObject, const FNexusBountyGetBountyRequestParams& InRequestParams);
+
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetBounty200Response, FNexusBountyGetBounty200Response, Param0);
+
+	UPROPERTY(BlueprintAssignable)
+	FGetBounty200Response On200Response;
+
+	void When200Callback(FNexusBountyGetBounty200Response Param0);
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetBounty400Response, FNexusBountyBountyError, Param0);
+
+	UPROPERTY(BlueprintAssignable)
+	FGetBounty400Response On400Response;
+
+	void When400Callback(FNexusBountyBountyError Param0);
+
+	virtual void Activate() override;
+
+private:
+
+	FNexusBountyGetBountyRequestParams RequestParams;
+};
+
+UCLASS()
+class NEXUSUNREALSDK_API UNexusGetCreatorBountiesByIDNode : public UBlueprintAsyncActionBase
+{
+	GENERATED_BODY()
+public:
+	UNexusGetCreatorBountiesByIDNode();
+
+	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", Category = "Nexus|Bounty", WorldContext = "WorldContextObject"))
+					static UNexusGetCreatorBountiesByIDNode* GetCreatorBountiesByID(UObject* WorldContextObject, const FNexusBountyGetCreatorBountiesByIDRequestParams& InRequestParams);
+
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetCreatorBountiesByID200Response, FNexusBountyGetCreatorBountiesByID200Response, Param0);
+
+	UPROPERTY(BlueprintAssignable)
+	FGetCreatorBountiesByID200Response On200Response;
+
+	void When200Callback(FNexusBountyGetCreatorBountiesByID200Response Param0);
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetCreatorBountiesByID400Response, FNexusBountyBountyError, Param0);
+
+	UPROPERTY(BlueprintAssignable)
+	FGetCreatorBountiesByID400Response On400Response;
+
+	void When400Callback(FNexusBountyBountyError Param0);
+
+	virtual void Activate() override;
+
+private:
+
+	FNexusBountyGetCreatorBountiesByIDRequestParams RequestParams;
+};
