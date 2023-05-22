@@ -864,7 +864,7 @@
 	/*---------------------------------------------------------------------------------------------
 			API Functions
 	---------------------------------------------------------------------------------------------*/
-NEXUSUNREALSDK_API class FNexusBountyAPI
+class NEXUSUNREALSDK_API FNexusBountyAPI
 {
 public:
 	DECLARE_DELEGATE_OneParam(FOnGetBounties200ResponseCallback, FNexusBountyGetBounties200Response);

@@ -331,7 +331,7 @@
 	/*---------------------------------------------------------------------------------------------
 			API Functions
 	---------------------------------------------------------------------------------------------*/
-NEXUSUNREALSDK_API class FNexusReferralAPI
+class NEXUSUNREALSDK_API FNexusReferralAPI
 {
 public:
 	DECLARE_DELEGATE_OneParam(FOnGetReferralInfoByPlayerId200ResponseCallback, FNexusReferralGetReferralInfoByPlayerId200Response);

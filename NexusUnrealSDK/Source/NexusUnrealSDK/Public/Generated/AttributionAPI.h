@@ -269,7 +269,7 @@
 	/*---------------------------------------------------------------------------------------------
 			API Functions
 	---------------------------------------------------------------------------------------------*/
-NEXUSUNREALSDK_API class FNexusAttributionAPI
+class NEXUSUNREALSDK_API FNexusAttributionAPI
 {
 public:
 	DECLARE_DELEGATE_OneParam(FOnGetCreators200ResponseCallback, FNexusAttributionGetCreators200Response);
