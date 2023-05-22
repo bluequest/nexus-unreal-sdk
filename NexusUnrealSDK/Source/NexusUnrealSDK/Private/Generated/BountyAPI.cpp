@@ -133,11 +133,10 @@ void FNexusBountyAPI::GetBounties(const FNexusBountyGetBountiesRequestParams& Re
 
 	{
 		// Initialise some bits and pieces ahead of time
-		//TODO: @Josh: Most of the request properties are serialized as json and sent in the body of the http request.
-		//		Only Parameter names indicated in the Path with {variable} are put in the url
-		//		This will need to be fixed
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/bounties/?groupId=%s&page=%d&pageSize=%d"), *RequestParams.groupId, RequestParams.page, RequestParams.pageSize);
 		TUniquePtr<FGetBountiesHelpers::FOnGetBountiesRequestContext> RequestContext = MakeUnique<FGetBountiesHelpers::FOnGetBountiesRequestContext>(Response, ErrorDelegate);
+
+		// TODO(JoshD): YO! Public key goes here
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
@@ -269,11 +268,10 @@ void FNexusBountyAPI::GetBounty(const FNexusBountyGetBountyRequestParams& Reques
 
 	{
 		// Initialise some bits and pieces ahead of time
-		//TODO: @Josh: Most of the request properties are serialized as json and sent in the body of the http request.
-		//		Only Parameter names indicated in the Path with {variable} are put in the url
-		//		This will need to be fixed
-		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/bounties/{bountyId}?groupId=%s&includeProgress=%c&page=%d&pageSize=%d&bountyId=%s"), *RequestParams.groupId, RequestParams.includeProgress, RequestParams.page, RequestParams.pageSize, *RequestParams.bountyId);
+		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/bounties/%s?groupId=%s&includeProgress=%c&page=%d&pageSize=%d"), *RequestParams.bountyId, *RequestParams.groupId, RequestParams.includeProgress, RequestParams.page, RequestParams.pageSize);
 		TUniquePtr<FGetBountyHelpers::FOnGetBountyRequestContext> RequestContext = MakeUnique<FGetBountyHelpers::FOnGetBountyRequestContext>(Response, ErrorDelegate);
+
+		// TODO(JoshD): YO! Public key goes here
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
@@ -405,11 +403,10 @@ void FNexusBountyAPI::GetCreatorBountiesByID(const FNexusBountyGetCreatorBountie
 
 	{
 		// Initialise some bits and pieces ahead of time
-		//TODO: @Josh: Most of the request properties are serialized as json and sent in the body of the http request.
-		//		Only Parameter names indicated in the Path with {variable} are put in the url
-		//		This will need to be fixed
-		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/bounties/creator/id/{creatorId}?groupId=%s&page=%d&pageSize=%d&creatorId=%s"), *RequestParams.groupId, RequestParams.page, RequestParams.pageSize, *RequestParams.creatorId);
+		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/bounties/creator/id/%s?groupId=%s&page=%d&pageSize=%d"), *RequestParams.creatorId, *RequestParams.groupId, RequestParams.page, RequestParams.pageSize);
 		TUniquePtr<FGetCreatorBountiesByIDHelpers::FOnGetCreatorBountiesByIDRequestContext> RequestContext = MakeUnique<FGetCreatorBountiesByIDHelpers::FOnGetCreatorBountiesByIDRequestContext>(Response, ErrorDelegate);
+
+		// TODO(JoshD): YO! Public key goes here
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));

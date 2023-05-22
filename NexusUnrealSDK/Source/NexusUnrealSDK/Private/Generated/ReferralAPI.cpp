@@ -133,11 +133,10 @@ void FNexusReferralAPI::GetReferralInfoByPlayerId(const FNexusReferralGetReferra
 
 	{
 		// Initialise some bits and pieces ahead of time
-		//TODO: @Josh: Most of the request properties are serialized as json and sent in the body of the http request.
-		//		Only Parameter names indicated in the Path with {variable} are put in the url
-		//		This will need to be fixed
-		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/referrals/player/{playerId}?playerId=%s&groupId=%s&page=%d&pageSize=%d&excludeReferralList=%c"), *RequestParams.playerId, *RequestParams.groupId, RequestParams.page, RequestParams.pageSize, RequestParams.excludeReferralList);
+		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/referrals/player/%s?groupId=%s&page=%d&pageSize=%d&excludeReferralList=%c"), *RequestParams.playerId, *RequestParams.groupId, RequestParams.page, RequestParams.pageSize, RequestParams.excludeReferralList);
 		TUniquePtr<FGetReferralInfoByPlayerIdHelpers::FOnGetReferralInfoByPlayerIdRequestContext> RequestContext = MakeUnique<FGetReferralInfoByPlayerIdHelpers::FOnGetReferralInfoByPlayerIdRequestContext>(Response, ErrorDelegate);
+
+		// TODO(JoshD): YO! Public key goes here
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
@@ -249,11 +248,10 @@ void FNexusReferralAPI::GetPlayerCurrentReferral(const FNexusReferralGetPlayerCu
 
 	{
 		// Initialise some bits and pieces ahead of time
-		//TODO: @Josh: Most of the request properties are serialized as json and sent in the body of the http request.
-		//		Only Parameter names indicated in the Path with {variable} are put in the url
-		//		This will need to be fixed
-		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/referrals/player/{playerId}/code?playerId=%s&groupId=%s"), *RequestParams.playerId, *RequestParams.groupId);
+		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/referrals/player/%s/code?groupId=%s"), *RequestParams.playerId, *RequestParams.groupId);
 		TUniquePtr<FGetPlayerCurrentReferralHelpers::FOnGetPlayerCurrentReferralRequestContext> RequestContext = MakeUnique<FGetPlayerCurrentReferralHelpers::FOnGetPlayerCurrentReferralRequestContext>(Response, ErrorDelegate);
+
+		// TODO(JoshD): YO! Public key goes here
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
@@ -385,11 +383,10 @@ void FNexusReferralAPI::GetReferralInfoByCode(const FNexusReferralGetReferralInf
 
 	{
 		// Initialise some bits and pieces ahead of time
-		//TODO: @Josh: Most of the request properties are serialized as json and sent in the body of the http request.
-		//		Only Parameter names indicated in the Path with {variable} are put in the url
-		//		This will need to be fixed
-		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/referrals/code/{code}?code=%s&groupId=%s&page=%d&pageSize=%d&excludeReferralList=%c"), *RequestParams.code, *RequestParams.groupId, RequestParams.page, RequestParams.pageSize, RequestParams.excludeReferralList);
+		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/referrals/code/%s?groupId=%s&page=%d&pageSize=%d&excludeReferralList=%c"), *RequestParams.code, *RequestParams.groupId, RequestParams.page, RequestParams.pageSize, RequestParams.excludeReferralList);
 		TUniquePtr<FGetReferralInfoByCodeHelpers::FOnGetReferralInfoByCodeRequestContext> RequestContext = MakeUnique<FGetReferralInfoByCodeHelpers::FOnGetReferralInfoByCodeRequestContext>(Response, ErrorDelegate);
+
+		// TODO(JoshD): YO! Public key goes here
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));

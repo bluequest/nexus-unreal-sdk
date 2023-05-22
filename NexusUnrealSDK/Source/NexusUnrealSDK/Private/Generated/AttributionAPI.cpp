@@ -108,11 +108,10 @@ void FNexusAttributionAPI::GetCreators(const FNexusAttributionGetCreatorsRequest
 
 	{
 		// Initialise some bits and pieces ahead of time
-		//TODO: @Josh: Most of the request properties are serialized as json and sent in the body of the http request.
-		//		Only Parameter names indicated in the Path with {variable} are put in the url
-		//		This will need to be fixed
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/attributions/creators?page=%d&pageSize=%d&groupId=%s"), RequestParams.page, RequestParams.pageSize, *RequestParams.groupId);
 		TUniquePtr<FGetCreatorsHelpers::FOnGetCreatorsRequestContext> RequestContext = MakeUnique<FGetCreatorsHelpers::FOnGetCreatorsRequestContext>(Response, ErrorDelegate);
+
+		// TODO(JoshD): YO! Public key goes here
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
@@ -199,11 +198,10 @@ void FNexusAttributionAPI::GetCreatorByUuid(const FNexusAttributionGetCreatorByU
 
 	{
 		// Initialise some bits and pieces ahead of time
-		//TODO: @Josh: Most of the request properties are serialized as json and sent in the body of the http request.
-		//		Only Parameter names indicated in the Path with {variable} are put in the url
-		//		This will need to be fixed
-		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/attributions/creators/{creatorSlugOrId}?creatorSlugOrId=%s"), *RequestParams.creatorSlugOrId);
+		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/attributions/creators/%s"), *RequestParams.creatorSlugOrId);
 		TUniquePtr<FGetCreatorByUuidHelpers::FOnGetCreatorByUuidRequestContext> RequestContext = MakeUnique<FGetCreatorByUuidHelpers::FOnGetCreatorByUuidRequestContext>(Response, ErrorDelegate);
+
+		// TODO(JoshD): YO! Public key goes here
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
