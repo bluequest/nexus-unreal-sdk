@@ -24,5 +24,5 @@ public:
 	UPROPERTY(Config, EditAnywhere, Category = "General", meta = (
 		DisplayName = "Public API Key",
 		ToolTip = "This is your public facing Nexus API key."))
-	FString PublicKey;
+	FName PublicKey;
 };
