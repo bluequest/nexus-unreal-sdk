@@ -9,7 +9,10 @@
 #include "Interfaces/IHttpRequest.h"
 #include "Interfaces/IHttpResponse.h"
 #include "HttpModule.h"
+#include "DOM/JsonObject.h"
+#include "JsonObjectConverter.h"
 #include "NexusShared.h"
+#include "NexusSettings.h"
 #include "NexusUnrealSDK.h"
 
 /**
@@ -56,7 +59,17 @@ namespace FGetCreatorsHelpers
 			}
 
 			// Parse the response!
-			// TODO(JoshD): Parse it!
+			FText FailureReason;
+			bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+			if ( !bResult )
+			{
+				// Oh no! This shouldn't happen! If it does start happening, we should rethink this error handling.
+				// Perhaps this should not be fatal.
+				// TODO(JoshD): Log the failure reason at the very least?
+				UE_DEBUG_BREAK();
+				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+				return;
+			}
 
 			// Run the callback successfully!
 				Callback.ExecuteIfBound(OutputResponse);
@@ -96,7 +109,7 @@ namespace FGetCreatorsHelpers
 	}	
 }
 
-void FNexusAttributionAPI::GetCreators(const FNexusAttributionGetCreatorsRequestParams& RequestParams, FOnGetCreators200ResponseCallback Response, FNexusOnHttpErrorDelegate ErrorDelegate)
+void FNexusAttributionAPI::GetCreators(const FNexusAttributionGetCreatorsRequestParams& RequestParams, const FOnGetCreators200ResponseCallback& Response, FNexusOnHttpErrorDelegate ErrorDelegate)
 {
 
 	if(!FGetCreatorsHelpers::GetCreators_IsValid(RequestParams))
@@ -109,13 +122,14 @@ void FNexusAttributionAPI::GetCreators(const FNexusAttributionGetCreatorsRequest
 	{
 		// Initialise some bits and pieces ahead of time
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/attributions/creators?page=%d&pageSize=%d&groupId=%s"), RequestParams.page, RequestParams.pageSize, *RequestParams.groupId);
+		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
 		TUniquePtr<FGetCreatorsHelpers::FOnGetCreatorsRequestContext> RequestContext = MakeUnique<FGetCreatorsHelpers::FOnGetCreatorsRequestContext>(Response, ErrorDelegate);
-
-		// TODO(JoshD): YO! Public key goes here
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
 		HttpRequest->SetURL(URLString);
+		HttpRequest->SetHeader(TEXT("accept"), TEXT("application/json"));
+		HttpRequest->SetHeader(TEXT("x-shared-secret"), PublicKey);
 		HttpRequest->OnProcessRequestComplete().BindRaw(RequestContext.Get(), &FGetCreatorsHelpers::FOnGetCreatorsRequestContext::ProcessRequestComplete);
 
 		// Hand ownership of the request over to the module
@@ -166,7 +180,17 @@ namespace FGetCreatorByUuidHelpers
 			}
 
 			// Parse the response!
-			// TODO(JoshD): Parse it!
+			FText FailureReason;
+			bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+			if ( !bResult )
+			{
+				// Oh no! This shouldn't happen! If it does start happening, we should rethink this error handling.
+				// Perhaps this should not be fatal.
+				// TODO(JoshD): Log the failure reason at the very least?
+				UE_DEBUG_BREAK();
+				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+				return;
+			}
 
 			// Run the callback successfully!
 				Callback.ExecuteIfBound(OutputResponse);
@@ -192,20 +216,21 @@ namespace FGetCreatorByUuidHelpers
 
 }
 
-void FNexusAttributionAPI::GetCreatorByUuid(const FNexusAttributionGetCreatorByUuidRequestParams& RequestParams, FOnGetCreatorByUuid200ResponseCallback Response, FNexusOnHttpErrorDelegate ErrorDelegate)
+void FNexusAttributionAPI::GetCreatorByUuid(const FNexusAttributionGetCreatorByUuidRequestParams& RequestParams, const FOnGetCreatorByUuid200ResponseCallback& Response, FNexusOnHttpErrorDelegate ErrorDelegate)
 {
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
 
 	{
 		// Initialise some bits and pieces ahead of time
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/attributions/creators/%s"), *RequestParams.creatorSlugOrId);
+		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
 		TUniquePtr<FGetCreatorByUuidHelpers::FOnGetCreatorByUuidRequestContext> RequestContext = MakeUnique<FGetCreatorByUuidHelpers::FOnGetCreatorByUuidRequestContext>(Response, ErrorDelegate);
-
-		// TODO(JoshD): YO! Public key goes here
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
 		HttpRequest->SetURL(URLString);
+		HttpRequest->SetHeader(TEXT("accept"), TEXT("application/json"));
+		HttpRequest->SetHeader(TEXT("x-shared-secret"), PublicKey);
 		HttpRequest->OnProcessRequestComplete().BindRaw(RequestContext.Get(), &FGetCreatorByUuidHelpers::FOnGetCreatorByUuidRequestContext::ProcessRequestComplete);
 
 		// Hand ownership of the request over to the module
@@ -249,7 +274,7 @@ void UNexusGetCreatorsNode::Activate()
 }
 
 
-void UNexusGetCreatorsNode::When200Callback(FNexusAttributionGetCreators200Response Param0)
+void UNexusGetCreatorsNode::When200Callback(const FNexusAttributionGetCreators200Response& Param0)
 {
 	On200Response.Broadcast(Param0);
 	SetReadyToDestroy();
@@ -286,7 +311,7 @@ void UNexusGetCreatorByUuidNode::Activate()
 }
 
 
-void UNexusGetCreatorByUuidNode::When200Callback(FNexusAttributionGetCreatorByUuid200Response Param0)
+void UNexusGetCreatorByUuidNode::When200Callback(const FNexusAttributionGetCreatorByUuid200Response& Param0)
 {
 	On200Response.Broadcast(Param0);
 	SetReadyToDestroy();

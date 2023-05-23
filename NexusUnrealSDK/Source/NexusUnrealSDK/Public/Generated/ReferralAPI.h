@@ -334,35 +334,35 @@
 class NEXUSUNREALSDK_API FNexusReferralAPI
 {
 public:
-	DECLARE_DELEGATE_OneParam(FOnGetReferralInfoByPlayerId200ResponseCallback, FNexusReferralGetReferralInfoByPlayerId200Response);
-	DECLARE_DELEGATE_OneParam(FOnGetReferralInfoByPlayerId400ResponseCallback, FNexusReferralReferralError);
+	DECLARE_DELEGATE_OneParam(FOnGetReferralInfoByPlayerId200ResponseCallback, const FNexusReferralGetReferralInfoByPlayerId200Response& /*Response*/);
+	DECLARE_DELEGATE_OneParam(FOnGetReferralInfoByPlayerId400ResponseCallback, const FNexusReferralReferralError& /*Response*/);
 
 	struct FOnGetReferralInfoByPlayerIdResponse
 	{
 			FOnGetReferralInfoByPlayerId200ResponseCallback On200Response;
 			FOnGetReferralInfoByPlayerId400ResponseCallback On400Response;
 	};
-	static void GetReferralInfoByPlayerId(const FNexusReferralGetReferralInfoByPlayerIdRequestParams& RequestParams, FOnGetReferralInfoByPlayerIdResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
+	static void GetReferralInfoByPlayerId(const FNexusReferralGetReferralInfoByPlayerIdRequestParams& RequestParams, const FOnGetReferralInfoByPlayerIdResponse& Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
 
-	DECLARE_DELEGATE_OneParam(FOnGetPlayerCurrentReferral200ResponseCallback, FString);
-	DECLARE_DELEGATE_OneParam(FOnGetPlayerCurrentReferral404ResponseCallback, FNexusReferralGetPlayerCurrentReferral404Response);
+	DECLARE_DELEGATE_OneParam(FOnGetPlayerCurrentReferral200ResponseCallback, const FString& /*Response*/);
+	DECLARE_DELEGATE_OneParam(FOnGetPlayerCurrentReferral404ResponseCallback, const FNexusReferralGetPlayerCurrentReferral404Response& /*Response*/);
 
 	struct FOnGetPlayerCurrentReferralResponse
 	{
 			FOnGetPlayerCurrentReferral200ResponseCallback On200Response;
 			FOnGetPlayerCurrentReferral404ResponseCallback On404Response;
 	};
-	static void GetPlayerCurrentReferral(const FNexusReferralGetPlayerCurrentReferralRequestParams& RequestParams, FOnGetPlayerCurrentReferralResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
+	static void GetPlayerCurrentReferral(const FNexusReferralGetPlayerCurrentReferralRequestParams& RequestParams, const FOnGetPlayerCurrentReferralResponse& Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
 
-	DECLARE_DELEGATE_OneParam(FOnGetReferralInfoByCode200ResponseCallback, FNexusReferralGetReferralInfoByCode200Response);
-	DECLARE_DELEGATE_OneParam(FOnGetReferralInfoByCode400ResponseCallback, FNexusReferralReferralError);
+	DECLARE_DELEGATE_OneParam(FOnGetReferralInfoByCode200ResponseCallback, const FNexusReferralGetReferralInfoByCode200Response& /*Response*/);
+	DECLARE_DELEGATE_OneParam(FOnGetReferralInfoByCode400ResponseCallback, const FNexusReferralReferralError& /*Response*/);
 
 	struct FOnGetReferralInfoByCodeResponse
 	{
 			FOnGetReferralInfoByCode200ResponseCallback On200Response;
 			FOnGetReferralInfoByCode400ResponseCallback On400Response;
 	};
-	static void GetReferralInfoByCode(const FNexusReferralGetReferralInfoByCodeRequestParams& RequestParams, FOnGetReferralInfoByCodeResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
+	static void GetReferralInfoByCode(const FNexusReferralGetReferralInfoByCodeRequestParams& RequestParams, const FOnGetReferralInfoByCodeResponse& Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
 
 };
 
@@ -380,19 +380,19 @@ public:
 					static UNexusGetReferralInfoByPlayerIdNode* GetReferralInfoByPlayerId(UObject* WorldContextObject, const FNexusReferralGetReferralInfoByPlayerIdRequestParams& InRequestParams);
 
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetReferralInfoByPlayerId200Response, FNexusReferralGetReferralInfoByPlayerId200Response, Param0);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetReferralInfoByPlayerId200Response, const FNexusReferralGetReferralInfoByPlayerId200Response& /*Response*/, Param0);
 
 	UPROPERTY(BlueprintAssignable)
 	FGetReferralInfoByPlayerId200Response On200Response;
 
-	void When200Callback(FNexusReferralGetReferralInfoByPlayerId200Response Param0);
+	void When200Callback(const FNexusReferralGetReferralInfoByPlayerId200Response& Param0);
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetReferralInfoByPlayerId400Response, FNexusReferralReferralError, Param0);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetReferralInfoByPlayerId400Response, const FNexusReferralReferralError& /*Response*/, Param0);
 
 	UPROPERTY(BlueprintAssignable)
 	FGetReferralInfoByPlayerId400Response On400Response;
 
-	void When400Callback(FNexusReferralReferralError Param0);
+	void When400Callback(const FNexusReferralReferralError& Param0);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNexusGetReferralInfoByPlayerIdError, int32, ErrorCode);
 
@@ -420,19 +420,19 @@ public:
 					static UNexusGetPlayerCurrentReferralNode* GetPlayerCurrentReferral(UObject* WorldContextObject, const FNexusReferralGetPlayerCurrentReferralRequestParams& InRequestParams);
 
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetPlayerCurrentReferral200Response, FString, Param0);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetPlayerCurrentReferral200Response, const FString& /*Response*/, Param0);
 
 	UPROPERTY(BlueprintAssignable)
 	FGetPlayerCurrentReferral200Response On200Response;
 
-	void When200Callback(FString Param0);
+	void When200Callback(const FString& Param0);
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetPlayerCurrentReferral404Response, FNexusReferralGetPlayerCurrentReferral404Response, Param0);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetPlayerCurrentReferral404Response, const FNexusReferralGetPlayerCurrentReferral404Response& /*Response*/, Param0);
 
 	UPROPERTY(BlueprintAssignable)
 	FGetPlayerCurrentReferral404Response On404Response;
 
-	void When404Callback(FNexusReferralGetPlayerCurrentReferral404Response Param0);
+	void When404Callback(const FNexusReferralGetPlayerCurrentReferral404Response& Param0);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNexusGetPlayerCurrentReferralError, int32, ErrorCode);
 
@@ -460,19 +460,19 @@ public:
 					static UNexusGetReferralInfoByCodeNode* GetReferralInfoByCode(UObject* WorldContextObject, const FNexusReferralGetReferralInfoByCodeRequestParams& InRequestParams);
 
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetReferralInfoByCode200Response, FNexusReferralGetReferralInfoByCode200Response, Param0);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetReferralInfoByCode200Response, const FNexusReferralGetReferralInfoByCode200Response& /*Response*/, Param0);
 
 	UPROPERTY(BlueprintAssignable)
 	FGetReferralInfoByCode200Response On200Response;
 
-	void When200Callback(FNexusReferralGetReferralInfoByCode200Response Param0);
+	void When200Callback(const FNexusReferralGetReferralInfoByCode200Response& Param0);
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetReferralInfoByCode400Response, FNexusReferralReferralError, Param0);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetReferralInfoByCode400Response, const FNexusReferralReferralError& /*Response*/, Param0);
 
 	UPROPERTY(BlueprintAssignable)
 	FGetReferralInfoByCode400Response On400Response;
 
-	void When400Callback(FNexusReferralReferralError Param0);
+	void When400Callback(const FNexusReferralReferralError& Param0);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNexusGetReferralInfoByCodeError, int32, ErrorCode);
 

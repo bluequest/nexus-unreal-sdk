@@ -9,7 +9,10 @@
 #include "Interfaces/IHttpRequest.h"
 #include "Interfaces/IHttpResponse.h"
 #include "HttpModule.h"
+#include "DOM/JsonObject.h"
+#include "JsonObjectConverter.h"
 #include "NexusShared.h"
+#include "NexusSettings.h"
 #include "NexusUnrealSDK.h"
 
 /**
@@ -56,7 +59,17 @@ namespace FGetReferralInfoByPlayerIdHelpers
 			}
 
 			// Parse the response!
-			// TODO(JoshD): Parse it!
+			FText FailureReason;
+			bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+			if ( !bResult )
+			{
+				// Oh no! This shouldn't happen! If it does start happening, we should rethink this error handling.
+				// Perhaps this should not be fatal.
+				// TODO(JoshD): Log the failure reason at the very least?
+				UE_DEBUG_BREAK();
+				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+				return;
+			}
 
 			// Run the callback successfully!
 				Callback.On200Response.ExecuteIfBound(OutputResponse);	
@@ -81,7 +94,17 @@ namespace FGetReferralInfoByPlayerIdHelpers
 			}
 
 			// Parse the response!
-			// TODO(JoshD): Parse it!
+			FText FailureReason;
+			bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+			if ( !bResult )
+			{
+				// Oh no! This shouldn't happen! If it does start happening, we should rethink this error handling.
+				// Perhaps this should not be fatal.
+				// TODO(JoshD): Log the failure reason at the very least?
+				UE_DEBUG_BREAK();
+				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+				return;
+			}
 
 			// Run the callback successfully!
 				Callback.On400Response.ExecuteIfBound(OutputResponse);	
@@ -121,7 +144,7 @@ namespace FGetReferralInfoByPlayerIdHelpers
 	}	
 }
 
-void FNexusReferralAPI::GetReferralInfoByPlayerId(const FNexusReferralGetReferralInfoByPlayerIdRequestParams& RequestParams, FOnGetReferralInfoByPlayerIdResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate)
+void FNexusReferralAPI::GetReferralInfoByPlayerId(const FNexusReferralGetReferralInfoByPlayerIdRequestParams& RequestParams, const FOnGetReferralInfoByPlayerIdResponse& Response, FNexusOnHttpErrorDelegate ErrorDelegate)
 {
 
 	if(!FGetReferralInfoByPlayerIdHelpers::GetReferralInfoByPlayerId_IsValid(RequestParams))
@@ -134,13 +157,14 @@ void FNexusReferralAPI::GetReferralInfoByPlayerId(const FNexusReferralGetReferra
 	{
 		// Initialise some bits and pieces ahead of time
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/referrals/player/%s?groupId=%s&page=%d&pageSize=%d&excludeReferralList=%c"), *RequestParams.playerId, *RequestParams.groupId, RequestParams.page, RequestParams.pageSize, RequestParams.excludeReferralList);
+		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
 		TUniquePtr<FGetReferralInfoByPlayerIdHelpers::FOnGetReferralInfoByPlayerIdRequestContext> RequestContext = MakeUnique<FGetReferralInfoByPlayerIdHelpers::FOnGetReferralInfoByPlayerIdRequestContext>(Response, ErrorDelegate);
-
-		// TODO(JoshD): YO! Public key goes here
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
 		HttpRequest->SetURL(URLString);
+		HttpRequest->SetHeader(TEXT("accept"), TEXT("application/json"));
+		HttpRequest->SetHeader(TEXT("x-shared-secret"), PublicKey);
 		HttpRequest->OnProcessRequestComplete().BindRaw(RequestContext.Get(), &FGetReferralInfoByPlayerIdHelpers::FOnGetReferralInfoByPlayerIdRequestContext::ProcessRequestComplete);
 
 		// Hand ownership of the request over to the module
@@ -190,8 +214,7 @@ namespace FGetPlayerCurrentReferralHelpers
 				return;
 			}
 
-			// Parse the response!
-			// TODO(JoshD): Parse it!
+			OutputResponse = "Big Beefy Burger.";
 
 			// Run the callback successfully!
 				Callback.On200Response.ExecuteIfBound(OutputResponse);	
@@ -216,7 +239,17 @@ namespace FGetPlayerCurrentReferralHelpers
 			}
 
 			// Parse the response!
-			// TODO(JoshD): Parse it!
+			FText FailureReason;
+			bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+			if ( !bResult )
+			{
+				// Oh no! This shouldn't happen! If it does start happening, we should rethink this error handling.
+				// Perhaps this should not be fatal.
+				// TODO(JoshD): Log the failure reason at the very least?
+				UE_DEBUG_BREAK();
+				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+				return;
+			}
 
 			// Run the callback successfully!
 				Callback.On404Response.ExecuteIfBound(OutputResponse);	
@@ -242,20 +275,21 @@ namespace FGetPlayerCurrentReferralHelpers
 
 }
 
-void FNexusReferralAPI::GetPlayerCurrentReferral(const FNexusReferralGetPlayerCurrentReferralRequestParams& RequestParams, FOnGetPlayerCurrentReferralResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate)
+void FNexusReferralAPI::GetPlayerCurrentReferral(const FNexusReferralGetPlayerCurrentReferralRequestParams& RequestParams, const FOnGetPlayerCurrentReferralResponse& Response, FNexusOnHttpErrorDelegate ErrorDelegate)
 {
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
 
 	{
 		// Initialise some bits and pieces ahead of time
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/referrals/player/%s/code?groupId=%s"), *RequestParams.playerId, *RequestParams.groupId);
+		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
 		TUniquePtr<FGetPlayerCurrentReferralHelpers::FOnGetPlayerCurrentReferralRequestContext> RequestContext = MakeUnique<FGetPlayerCurrentReferralHelpers::FOnGetPlayerCurrentReferralRequestContext>(Response, ErrorDelegate);
-
-		// TODO(JoshD): YO! Public key goes here
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
 		HttpRequest->SetURL(URLString);
+		HttpRequest->SetHeader(TEXT("accept"), TEXT("application/json"));
+		HttpRequest->SetHeader(TEXT("x-shared-secret"), PublicKey);
 		HttpRequest->OnProcessRequestComplete().BindRaw(RequestContext.Get(), &FGetPlayerCurrentReferralHelpers::FOnGetPlayerCurrentReferralRequestContext::ProcessRequestComplete);
 
 		// Hand ownership of the request over to the module
@@ -306,7 +340,17 @@ namespace FGetReferralInfoByCodeHelpers
 			}
 
 			// Parse the response!
-			// TODO(JoshD): Parse it!
+			FText FailureReason;
+			bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+			if ( !bResult )
+			{
+				// Oh no! This shouldn't happen! If it does start happening, we should rethink this error handling.
+				// Perhaps this should not be fatal.
+				// TODO(JoshD): Log the failure reason at the very least?
+				UE_DEBUG_BREAK();
+				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+				return;
+			}
 
 			// Run the callback successfully!
 				Callback.On200Response.ExecuteIfBound(OutputResponse);	
@@ -331,7 +375,17 @@ namespace FGetReferralInfoByCodeHelpers
 			}
 
 			// Parse the response!
-			// TODO(JoshD): Parse it!
+			FText FailureReason;
+			bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+			if ( !bResult )
+			{
+				// Oh no! This shouldn't happen! If it does start happening, we should rethink this error handling.
+				// Perhaps this should not be fatal.
+				// TODO(JoshD): Log the failure reason at the very least?
+				UE_DEBUG_BREAK();
+				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+				return;
+			}
 
 			// Run the callback successfully!
 				Callback.On400Response.ExecuteIfBound(OutputResponse);	
@@ -371,7 +425,7 @@ namespace FGetReferralInfoByCodeHelpers
 	}	
 }
 
-void FNexusReferralAPI::GetReferralInfoByCode(const FNexusReferralGetReferralInfoByCodeRequestParams& RequestParams, FOnGetReferralInfoByCodeResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate)
+void FNexusReferralAPI::GetReferralInfoByCode(const FNexusReferralGetReferralInfoByCodeRequestParams& RequestParams, const FOnGetReferralInfoByCodeResponse& Response, FNexusOnHttpErrorDelegate ErrorDelegate)
 {
 
 	if(!FGetReferralInfoByCodeHelpers::GetReferralInfoByCode_IsValid(RequestParams))
@@ -384,13 +438,14 @@ void FNexusReferralAPI::GetReferralInfoByCode(const FNexusReferralGetReferralInf
 	{
 		// Initialise some bits and pieces ahead of time
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/referrals/code/%s?groupId=%s&page=%d&pageSize=%d&excludeReferralList=%c"), *RequestParams.code, *RequestParams.groupId, RequestParams.page, RequestParams.pageSize, RequestParams.excludeReferralList);
+		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
 		TUniquePtr<FGetReferralInfoByCodeHelpers::FOnGetReferralInfoByCodeRequestContext> RequestContext = MakeUnique<FGetReferralInfoByCodeHelpers::FOnGetReferralInfoByCodeRequestContext>(Response, ErrorDelegate);
-
-		// TODO(JoshD): YO! Public key goes here
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
 		HttpRequest->SetURL(URLString);
+		HttpRequest->SetHeader(TEXT("accept"), TEXT("application/json"));
+		HttpRequest->SetHeader(TEXT("x-shared-secret"), PublicKey);
 		HttpRequest->OnProcessRequestComplete().BindRaw(RequestContext.Get(), &FGetReferralInfoByCodeHelpers::FOnGetReferralInfoByCodeRequestContext::ProcessRequestComplete);
 
 		// Hand ownership of the request over to the module
@@ -435,13 +490,13 @@ void UNexusGetReferralInfoByPlayerIdNode::Activate()
 }
 
 
-void UNexusGetReferralInfoByPlayerIdNode::When200Callback(FNexusReferralGetReferralInfoByPlayerId200Response Param0)
+void UNexusGetReferralInfoByPlayerIdNode::When200Callback(const FNexusReferralGetReferralInfoByPlayerId200Response& Param0)
 {
 	On200Response.Broadcast(Param0);
 	SetReadyToDestroy();
 }
 
-void UNexusGetReferralInfoByPlayerIdNode::When400Callback(FNexusReferralReferralError Param0)
+void UNexusGetReferralInfoByPlayerIdNode::When400Callback(const FNexusReferralReferralError& Param0)
 {
 	On400Response.Broadcast(Param0);
 	SetReadyToDestroy();
@@ -479,13 +534,13 @@ void UNexusGetPlayerCurrentReferralNode::Activate()
 }
 
 
-void UNexusGetPlayerCurrentReferralNode::When200Callback(FString Param0)
+void UNexusGetPlayerCurrentReferralNode::When200Callback(const FString& Param0)
 {
 	On200Response.Broadcast(Param0);
 	SetReadyToDestroy();
 }
 
-void UNexusGetPlayerCurrentReferralNode::When404Callback(FNexusReferralGetPlayerCurrentReferral404Response Param0)
+void UNexusGetPlayerCurrentReferralNode::When404Callback(const FNexusReferralGetPlayerCurrentReferral404Response& Param0)
 {
 	On404Response.Broadcast(Param0);
 	SetReadyToDestroy();
@@ -523,13 +578,13 @@ void UNexusGetReferralInfoByCodeNode::Activate()
 }
 
 
-void UNexusGetReferralInfoByCodeNode::When200Callback(FNexusReferralGetReferralInfoByCode200Response Param0)
+void UNexusGetReferralInfoByCodeNode::When200Callback(const FNexusReferralGetReferralInfoByCode200Response& Param0)
 {
 	On200Response.Broadcast(Param0);
 	SetReadyToDestroy();
 }
 
-void UNexusGetReferralInfoByCodeNode::When400Callback(FNexusReferralReferralError Param0)
+void UNexusGetReferralInfoByCodeNode::When400Callback(const FNexusReferralReferralError& Param0)
 {
 	On400Response.Broadcast(Param0);
 	SetReadyToDestroy();

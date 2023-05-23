@@ -867,35 +867,35 @@
 class NEXUSUNREALSDK_API FNexusBountyAPI
 {
 public:
-	DECLARE_DELEGATE_OneParam(FOnGetBounties200ResponseCallback, FNexusBountyGetBounties200Response);
-	DECLARE_DELEGATE_OneParam(FOnGetBounties400ResponseCallback, FNexusBountyBountyError);
+	DECLARE_DELEGATE_OneParam(FOnGetBounties200ResponseCallback, const FNexusBountyGetBounties200Response& /*Response*/);
+	DECLARE_DELEGATE_OneParam(FOnGetBounties400ResponseCallback, const FNexusBountyBountyError& /*Response*/);
 
 	struct FOnGetBountiesResponse
 	{
 			FOnGetBounties200ResponseCallback On200Response;
 			FOnGetBounties400ResponseCallback On400Response;
 	};
-	static void GetBounties(const FNexusBountyGetBountiesRequestParams& RequestParams, FOnGetBountiesResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
+	static void GetBounties(const FNexusBountyGetBountiesRequestParams& RequestParams, const FOnGetBountiesResponse& Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
 
-	DECLARE_DELEGATE_OneParam(FOnGetBounty200ResponseCallback, FNexusBountyGetBounty200Response);
-	DECLARE_DELEGATE_OneParam(FOnGetBounty400ResponseCallback, FNexusBountyBountyError);
+	DECLARE_DELEGATE_OneParam(FOnGetBounty200ResponseCallback, const FNexusBountyGetBounty200Response& /*Response*/);
+	DECLARE_DELEGATE_OneParam(FOnGetBounty400ResponseCallback, const FNexusBountyBountyError& /*Response*/);
 
 	struct FOnGetBountyResponse
 	{
 			FOnGetBounty200ResponseCallback On200Response;
 			FOnGetBounty400ResponseCallback On400Response;
 	};
-	static void GetBounty(const FNexusBountyGetBountyRequestParams& RequestParams, FOnGetBountyResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
+	static void GetBounty(const FNexusBountyGetBountyRequestParams& RequestParams, const FOnGetBountyResponse& Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
 
-	DECLARE_DELEGATE_OneParam(FOnGetCreatorBountiesByID200ResponseCallback, FNexusBountyGetCreatorBountiesByID200Response);
-	DECLARE_DELEGATE_OneParam(FOnGetCreatorBountiesByID400ResponseCallback, FNexusBountyBountyError);
+	DECLARE_DELEGATE_OneParam(FOnGetCreatorBountiesByID200ResponseCallback, const FNexusBountyGetCreatorBountiesByID200Response& /*Response*/);
+	DECLARE_DELEGATE_OneParam(FOnGetCreatorBountiesByID400ResponseCallback, const FNexusBountyBountyError& /*Response*/);
 
 	struct FOnGetCreatorBountiesByIDResponse
 	{
 			FOnGetCreatorBountiesByID200ResponseCallback On200Response;
 			FOnGetCreatorBountiesByID400ResponseCallback On400Response;
 	};
-	static void GetCreatorBountiesByID(const FNexusBountyGetCreatorBountiesByIDRequestParams& RequestParams, FOnGetCreatorBountiesByIDResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
+	static void GetCreatorBountiesByID(const FNexusBountyGetCreatorBountiesByIDRequestParams& RequestParams, const FOnGetCreatorBountiesByIDResponse& Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
 
 };
 
@@ -913,19 +913,19 @@ public:
 					static UNexusGetBountiesNode* GetBounties(UObject* WorldContextObject, const FNexusBountyGetBountiesRequestParams& InRequestParams);
 
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetBounties200Response, FNexusBountyGetBounties200Response, Param0);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetBounties200Response, const FNexusBountyGetBounties200Response& /*Response*/, Param0);
 
 	UPROPERTY(BlueprintAssignable)
 	FGetBounties200Response On200Response;
 
-	void When200Callback(FNexusBountyGetBounties200Response Param0);
+	void When200Callback(const FNexusBountyGetBounties200Response& Param0);
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetBounties400Response, FNexusBountyBountyError, Param0);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetBounties400Response, const FNexusBountyBountyError& /*Response*/, Param0);
 
 	UPROPERTY(BlueprintAssignable)
 	FGetBounties400Response On400Response;
 
-	void When400Callback(FNexusBountyBountyError Param0);
+	void When400Callback(const FNexusBountyBountyError& Param0);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNexusGetBountiesError, int32, ErrorCode);
 
@@ -953,19 +953,19 @@ public:
 					static UNexusGetBountyNode* GetBounty(UObject* WorldContextObject, const FNexusBountyGetBountyRequestParams& InRequestParams);
 
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetBounty200Response, FNexusBountyGetBounty200Response, Param0);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetBounty200Response, const FNexusBountyGetBounty200Response& /*Response*/, Param0);
 
 	UPROPERTY(BlueprintAssignable)
 	FGetBounty200Response On200Response;
 
-	void When200Callback(FNexusBountyGetBounty200Response Param0);
+	void When200Callback(const FNexusBountyGetBounty200Response& Param0);
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetBounty400Response, FNexusBountyBountyError, Param0);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetBounty400Response, const FNexusBountyBountyError& /*Response*/, Param0);
 
 	UPROPERTY(BlueprintAssignable)
 	FGetBounty400Response On400Response;
 
-	void When400Callback(FNexusBountyBountyError Param0);
+	void When400Callback(const FNexusBountyBountyError& Param0);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNexusGetBountyError, int32, ErrorCode);
 
@@ -993,19 +993,19 @@ public:
 					static UNexusGetCreatorBountiesByIDNode* GetCreatorBountiesByID(UObject* WorldContextObject, const FNexusBountyGetCreatorBountiesByIDRequestParams& InRequestParams);
 
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetCreatorBountiesByID200Response, FNexusBountyGetCreatorBountiesByID200Response, Param0);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetCreatorBountiesByID200Response, const FNexusBountyGetCreatorBountiesByID200Response& /*Response*/, Param0);
 
 	UPROPERTY(BlueprintAssignable)
 	FGetCreatorBountiesByID200Response On200Response;
 
-	void When200Callback(FNexusBountyGetCreatorBountiesByID200Response Param0);
+	void When200Callback(const FNexusBountyGetCreatorBountiesByID200Response& Param0);
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetCreatorBountiesByID400Response, FNexusBountyBountyError, Param0);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetCreatorBountiesByID400Response, const FNexusBountyBountyError& /*Response*/, Param0);
 
 	UPROPERTY(BlueprintAssignable)
 	FGetCreatorBountiesByID400Response On400Response;
 
-	void When400Callback(FNexusBountyBountyError Param0);
+	void When400Callback(const FNexusBountyBountyError& Param0);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNexusGetCreatorBountiesByIDError, int32, ErrorCode);
 

@@ -272,11 +272,11 @@
 class NEXUSUNREALSDK_API FNexusAttributionAPI
 {
 public:
-	DECLARE_DELEGATE_OneParam(FOnGetCreators200ResponseCallback, FNexusAttributionGetCreators200Response);
-	static void GetCreators(const FNexusAttributionGetCreatorsRequestParams& RequestParams, FOnGetCreators200ResponseCallback Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
+	DECLARE_DELEGATE_OneParam(FOnGetCreators200ResponseCallback, const FNexusAttributionGetCreators200Response& /*Response*/);
+	static void GetCreators(const FNexusAttributionGetCreatorsRequestParams& RequestParams, const FOnGetCreators200ResponseCallback& Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
 
-	DECLARE_DELEGATE_OneParam(FOnGetCreatorByUuid200ResponseCallback, FNexusAttributionGetCreatorByUuid200Response);
-	static void GetCreatorByUuid(const FNexusAttributionGetCreatorByUuidRequestParams& RequestParams, FOnGetCreatorByUuid200ResponseCallback Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
+	DECLARE_DELEGATE_OneParam(FOnGetCreatorByUuid200ResponseCallback, const FNexusAttributionGetCreatorByUuid200Response& /*Response*/);
+	static void GetCreatorByUuid(const FNexusAttributionGetCreatorByUuidRequestParams& RequestParams, const FOnGetCreatorByUuid200ResponseCallback& Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
 
 };
 
@@ -294,12 +294,12 @@ public:
 					static UNexusGetCreatorsNode* GetCreators(UObject* WorldContextObject, const FNexusAttributionGetCreatorsRequestParams& InRequestParams);
 
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetCreators200Response, FNexusAttributionGetCreators200Response, Param0);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetCreators200Response, const FNexusAttributionGetCreators200Response& /*Response*/, Param0);
 
 	UPROPERTY(BlueprintAssignable)
 	FGetCreators200Response On200Response;
 
-	void When200Callback(FNexusAttributionGetCreators200Response Param0);
+	void When200Callback(const FNexusAttributionGetCreators200Response& Param0);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNexusGetCreatorsError, int32, ErrorCode);
 
@@ -327,12 +327,12 @@ public:
 					static UNexusGetCreatorByUuidNode* GetCreatorByUuid(UObject* WorldContextObject, const FNexusAttributionGetCreatorByUuidRequestParams& InRequestParams);
 
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetCreatorByUuid200Response, FNexusAttributionGetCreatorByUuid200Response, Param0);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetCreatorByUuid200Response, const FNexusAttributionGetCreatorByUuid200Response& /*Response*/, Param0);
 
 	UPROPERTY(BlueprintAssignable)
 	FGetCreatorByUuid200Response On200Response;
 
-	void When200Callback(FNexusAttributionGetCreatorByUuid200Response Param0);
+	void When200Callback(const FNexusAttributionGetCreatorByUuid200Response& Param0);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNexusGetCreatorByUuidError, int32, ErrorCode);
 

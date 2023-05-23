@@ -9,7 +9,10 @@
 #include "Interfaces/IHttpRequest.h"
 #include "Interfaces/IHttpResponse.h"
 #include "HttpModule.h"
+#include "DOM/JsonObject.h"
+#include "JsonObjectConverter.h"
 #include "NexusShared.h"
+#include "NexusSettings.h"
 #include "NexusUnrealSDK.h"
 
 /**
@@ -56,7 +59,17 @@ namespace FGetBountiesHelpers
 			}
 
 			// Parse the response!
-			// TODO(JoshD): Parse it!
+			FText FailureReason;
+			bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+			if ( !bResult )
+			{
+				// Oh no! This shouldn't happen! If it does start happening, we should rethink this error handling.
+				// Perhaps this should not be fatal.
+				// TODO(JoshD): Log the failure reason at the very least?
+				UE_DEBUG_BREAK();
+				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+				return;
+			}
 
 			// Run the callback successfully!
 				Callback.On200Response.ExecuteIfBound(OutputResponse);	
@@ -81,7 +94,17 @@ namespace FGetBountiesHelpers
 			}
 
 			// Parse the response!
-			// TODO(JoshD): Parse it!
+			FText FailureReason;
+			bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+			if ( !bResult )
+			{
+				// Oh no! This shouldn't happen! If it does start happening, we should rethink this error handling.
+				// Perhaps this should not be fatal.
+				// TODO(JoshD): Log the failure reason at the very least?
+				UE_DEBUG_BREAK();
+				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+				return;
+			}
 
 			// Run the callback successfully!
 				Callback.On400Response.ExecuteIfBound(OutputResponse);	
@@ -121,7 +144,7 @@ namespace FGetBountiesHelpers
 	}	
 }
 
-void FNexusBountyAPI::GetBounties(const FNexusBountyGetBountiesRequestParams& RequestParams, FOnGetBountiesResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate)
+void FNexusBountyAPI::GetBounties(const FNexusBountyGetBountiesRequestParams& RequestParams, const FOnGetBountiesResponse& Response, FNexusOnHttpErrorDelegate ErrorDelegate)
 {
 
 	if(!FGetBountiesHelpers::GetBounties_IsValid(RequestParams))
@@ -134,13 +157,14 @@ void FNexusBountyAPI::GetBounties(const FNexusBountyGetBountiesRequestParams& Re
 	{
 		// Initialise some bits and pieces ahead of time
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/bounties/?groupId=%s&page=%d&pageSize=%d"), *RequestParams.groupId, RequestParams.page, RequestParams.pageSize);
+		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
 		TUniquePtr<FGetBountiesHelpers::FOnGetBountiesRequestContext> RequestContext = MakeUnique<FGetBountiesHelpers::FOnGetBountiesRequestContext>(Response, ErrorDelegate);
-
-		// TODO(JoshD): YO! Public key goes here
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
 		HttpRequest->SetURL(URLString);
+		HttpRequest->SetHeader(TEXT("accept"), TEXT("application/json"));
+		HttpRequest->SetHeader(TEXT("x-shared-secret"), PublicKey);
 		HttpRequest->OnProcessRequestComplete().BindRaw(RequestContext.Get(), &FGetBountiesHelpers::FOnGetBountiesRequestContext::ProcessRequestComplete);
 
 		// Hand ownership of the request over to the module
@@ -191,7 +215,17 @@ namespace FGetBountyHelpers
 			}
 
 			// Parse the response!
-			// TODO(JoshD): Parse it!
+			FText FailureReason;
+			bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+			if ( !bResult )
+			{
+				// Oh no! This shouldn't happen! If it does start happening, we should rethink this error handling.
+				// Perhaps this should not be fatal.
+				// TODO(JoshD): Log the failure reason at the very least?
+				UE_DEBUG_BREAK();
+				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+				return;
+			}
 
 			// Run the callback successfully!
 				Callback.On200Response.ExecuteIfBound(OutputResponse);	
@@ -216,7 +250,17 @@ namespace FGetBountyHelpers
 			}
 
 			// Parse the response!
-			// TODO(JoshD): Parse it!
+			FText FailureReason;
+			bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+			if ( !bResult )
+			{
+				// Oh no! This shouldn't happen! If it does start happening, we should rethink this error handling.
+				// Perhaps this should not be fatal.
+				// TODO(JoshD): Log the failure reason at the very least?
+				UE_DEBUG_BREAK();
+				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+				return;
+			}
 
 			// Run the callback successfully!
 				Callback.On400Response.ExecuteIfBound(OutputResponse);	
@@ -256,7 +300,7 @@ namespace FGetBountyHelpers
 	}	
 }
 
-void FNexusBountyAPI::GetBounty(const FNexusBountyGetBountyRequestParams& RequestParams, FOnGetBountyResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate)
+void FNexusBountyAPI::GetBounty(const FNexusBountyGetBountyRequestParams& RequestParams, const FOnGetBountyResponse& Response, FNexusOnHttpErrorDelegate ErrorDelegate)
 {
 
 	if(!FGetBountyHelpers::GetBounty_IsValid(RequestParams))
@@ -269,13 +313,14 @@ void FNexusBountyAPI::GetBounty(const FNexusBountyGetBountyRequestParams& Reques
 	{
 		// Initialise some bits and pieces ahead of time
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/bounties/%s?groupId=%s&includeProgress=%c&page=%d&pageSize=%d"), *RequestParams.bountyId, *RequestParams.groupId, RequestParams.includeProgress, RequestParams.page, RequestParams.pageSize);
+		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
 		TUniquePtr<FGetBountyHelpers::FOnGetBountyRequestContext> RequestContext = MakeUnique<FGetBountyHelpers::FOnGetBountyRequestContext>(Response, ErrorDelegate);
-
-		// TODO(JoshD): YO! Public key goes here
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
 		HttpRequest->SetURL(URLString);
+		HttpRequest->SetHeader(TEXT("accept"), TEXT("application/json"));
+		HttpRequest->SetHeader(TEXT("x-shared-secret"), PublicKey);
 		HttpRequest->OnProcessRequestComplete().BindRaw(RequestContext.Get(), &FGetBountyHelpers::FOnGetBountyRequestContext::ProcessRequestComplete);
 
 		// Hand ownership of the request over to the module
@@ -326,7 +371,17 @@ namespace FGetCreatorBountiesByIDHelpers
 			}
 
 			// Parse the response!
-			// TODO(JoshD): Parse it!
+			FText FailureReason;
+			bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+			if ( !bResult )
+			{
+				// Oh no! This shouldn't happen! If it does start happening, we should rethink this error handling.
+				// Perhaps this should not be fatal.
+				// TODO(JoshD): Log the failure reason at the very least?
+				UE_DEBUG_BREAK();
+				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+				return;
+			}
 
 			// Run the callback successfully!
 				Callback.On200Response.ExecuteIfBound(OutputResponse);	
@@ -351,7 +406,17 @@ namespace FGetCreatorBountiesByIDHelpers
 			}
 
 			// Parse the response!
-			// TODO(JoshD): Parse it!
+			FText FailureReason;
+			bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+			if ( !bResult )
+			{
+				// Oh no! This shouldn't happen! If it does start happening, we should rethink this error handling.
+				// Perhaps this should not be fatal.
+				// TODO(JoshD): Log the failure reason at the very least?
+				UE_DEBUG_BREAK();
+				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+				return;
+			}
 
 			// Run the callback successfully!
 				Callback.On400Response.ExecuteIfBound(OutputResponse);	
@@ -391,7 +456,7 @@ namespace FGetCreatorBountiesByIDHelpers
 	}	
 }
 
-void FNexusBountyAPI::GetCreatorBountiesByID(const FNexusBountyGetCreatorBountiesByIDRequestParams& RequestParams, FOnGetCreatorBountiesByIDResponse Response, FNexusOnHttpErrorDelegate ErrorDelegate)
+void FNexusBountyAPI::GetCreatorBountiesByID(const FNexusBountyGetCreatorBountiesByIDRequestParams& RequestParams, const FOnGetCreatorBountiesByIDResponse& Response, FNexusOnHttpErrorDelegate ErrorDelegate)
 {
 
 	if(!FGetCreatorBountiesByIDHelpers::GetCreatorBountiesByID_IsValid(RequestParams))
@@ -404,13 +469,14 @@ void FNexusBountyAPI::GetCreatorBountiesByID(const FNexusBountyGetCreatorBountie
 	{
 		// Initialise some bits and pieces ahead of time
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/bounties/creator/id/%s?groupId=%s&page=%d&pageSize=%d"), *RequestParams.creatorId, *RequestParams.groupId, RequestParams.page, RequestParams.pageSize);
+		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
 		TUniquePtr<FGetCreatorBountiesByIDHelpers::FOnGetCreatorBountiesByIDRequestContext> RequestContext = MakeUnique<FGetCreatorBountiesByIDHelpers::FOnGetCreatorBountiesByIDRequestContext>(Response, ErrorDelegate);
-
-		// TODO(JoshD): YO! Public key goes here
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
 		HttpRequest->SetURL(URLString);
+		HttpRequest->SetHeader(TEXT("accept"), TEXT("application/json"));
+		HttpRequest->SetHeader(TEXT("x-shared-secret"), PublicKey);
 		HttpRequest->OnProcessRequestComplete().BindRaw(RequestContext.Get(), &FGetCreatorBountiesByIDHelpers::FOnGetCreatorBountiesByIDRequestContext::ProcessRequestComplete);
 
 		// Hand ownership of the request over to the module
@@ -455,13 +521,13 @@ void UNexusGetBountiesNode::Activate()
 }
 
 
-void UNexusGetBountiesNode::When200Callback(FNexusBountyGetBounties200Response Param0)
+void UNexusGetBountiesNode::When200Callback(const FNexusBountyGetBounties200Response& Param0)
 {
 	On200Response.Broadcast(Param0);
 	SetReadyToDestroy();
 }
 
-void UNexusGetBountiesNode::When400Callback(FNexusBountyBountyError Param0)
+void UNexusGetBountiesNode::When400Callback(const FNexusBountyBountyError& Param0)
 {
 	On400Response.Broadcast(Param0);
 	SetReadyToDestroy();
@@ -499,13 +565,13 @@ void UNexusGetBountyNode::Activate()
 }
 
 
-void UNexusGetBountyNode::When200Callback(FNexusBountyGetBounty200Response Param0)
+void UNexusGetBountyNode::When200Callback(const FNexusBountyGetBounty200Response& Param0)
 {
 	On200Response.Broadcast(Param0);
 	SetReadyToDestroy();
 }
 
-void UNexusGetBountyNode::When400Callback(FNexusBountyBountyError Param0)
+void UNexusGetBountyNode::When400Callback(const FNexusBountyBountyError& Param0)
 {
 	On400Response.Broadcast(Param0);
 	SetReadyToDestroy();
@@ -543,13 +609,13 @@ void UNexusGetCreatorBountiesByIDNode::Activate()
 }
 
 
-void UNexusGetCreatorBountiesByIDNode::When200Callback(FNexusBountyGetCreatorBountiesByID200Response Param0)
+void UNexusGetCreatorBountiesByIDNode::When200Callback(const FNexusBountyGetCreatorBountiesByID200Response& Param0)
 {
 	On200Response.Broadcast(Param0);
 	SetReadyToDestroy();
 }
 
-void UNexusGetCreatorBountiesByIDNode::When400Callback(FNexusBountyBountyError Param0)
+void UNexusGetCreatorBountiesByIDNode::When400Callback(const FNexusBountyBountyError& Param0)
 {
 	On400Response.Broadcast(Param0);
 	SetReadyToDestroy();
