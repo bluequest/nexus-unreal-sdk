@@ -31,222 +31,199 @@
  *
  */
 
+/*---------------------------------------------------------------------------------------------
+		Request and Response Types
+---------------------------------------------------------------------------------------------*/
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusReferralReferral
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString id;
+USTRUCT(BlueprintType)
+struct FNexusReferralReferral
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString code;
+	UPROPERTY()
+	FString id;
 
-		UPROPERTY()
-		FString playerId;
+	UPROPERTY()
+	FString code;
 
-		UPROPERTY()
-		FString playerName;
+	UPROPERTY()
+	FString playerId;
 
-		UPROPERTY()
-		FDateTime referralDate;
+	UPROPERTY()
+	FString playerName;
 
-		FNexusReferralReferral()
-		: id()
+	UPROPERTY()
+	FDateTime referralDate;
+
+	FNexusReferralReferral()
+	: id()
 		, code()
 		, playerId()
 		, playerName()
 		, referralDate()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusReferralReferralError
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString code;
+USTRUCT(BlueprintType)
+struct FNexusReferralReferralError
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString message;
+	UPROPERTY()
+	FString code;
 
-		FNexusReferralReferralError()
-		: code()
+	UPROPERTY()
+	FString message;
+
+	FNexusReferralReferralError()
+	: code()
 		, message()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusReferralReferralCodeResponse
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString code;
+USTRUCT(BlueprintType)
+struct FNexusReferralReferralCodeResponse
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		bool isPrimary;
+	UPROPERTY()
+	FString code;
 
-		UPROPERTY()
-		bool isGenerated;
+	UPROPERTY()
+	bool isPrimary;
 
-		UPROPERTY()
-		bool isManaged;
+	UPROPERTY()
+	bool isGenerated;
 
-		FNexusReferralReferralCodeResponse()
-		: code()
+	UPROPERTY()
+	bool isManaged;
+
+	FNexusReferralReferralCodeResponse()
+	: code()
 		, isPrimary()
 		, isGenerated()
 		, isManaged()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusReferralGetReferralInfoByPlayerIdRequestParams
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString playerId;
+USTRUCT(BlueprintType)
+struct FNexusReferralGetReferralInfoByPlayerIdRequestParams
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString groupId;
+	UPROPERTY()
+	FString playerId;
 
-		UPROPERTY()
-		int32 page;
+	UPROPERTY()
+	FString groupId;
 
-		UPROPERTY()
-		int32 pageSize;
+	UPROPERTY()
+	int32 page;
 
-		UPROPERTY()
-		bool excludeReferralList;
+	UPROPERTY()
+	int32 pageSize;
 
-		FNexusReferralGetReferralInfoByPlayerIdRequestParams()
-		: playerId()
+	UPROPERTY()
+	bool excludeReferralList;
+
+	FNexusReferralGetReferralInfoByPlayerIdRequestParams()
+	: playerId()
 		, groupId()
 		, page()
 		, pageSize()
 		, excludeReferralList()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusReferralGetPlayerCurrentReferralRequestParams
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString playerId;
+USTRUCT(BlueprintType)
+struct FNexusReferralGetPlayerCurrentReferralRequestParams
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString groupId;
+	UPROPERTY()
+	FString playerId;
 
-		FNexusReferralGetPlayerCurrentReferralRequestParams()
-		: playerId()
+	UPROPERTY()
+	FString groupId;
+
+	FNexusReferralGetPlayerCurrentReferralRequestParams()
+	: playerId()
 		, groupId()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusReferralGetReferralInfoByCodeRequestParams
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString code;
+USTRUCT(BlueprintType)
+struct FNexusReferralGetReferralInfoByCodeRequestParams
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString groupId;
+	UPROPERTY()
+	FString code;
 
-		UPROPERTY()
-		int32 page;
+	UPROPERTY()
+	FString groupId;
 
-		UPROPERTY()
-		int32 pageSize;
+	UPROPERTY()
+	int32 page;
 
-		UPROPERTY()
-		bool excludeReferralList;
+	UPROPERTY()
+	int32 pageSize;
 
-		FNexusReferralGetReferralInfoByCodeRequestParams()
-		: code()
+	UPROPERTY()
+	bool excludeReferralList;
+
+	FNexusReferralGetReferralInfoByCodeRequestParams()
+	: code()
 		, groupId()
 		, page()
 		, pageSize()
 		, excludeReferralList()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusReferralGetReferralInfoByPlayerId200Response
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString groupId;
+USTRUCT(BlueprintType)
+struct FNexusReferralGetReferralInfoByPlayerId200Response
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString groupName;
+	UPROPERTY()
+	FString groupId;
 
-		UPROPERTY()
-		TArray<FNexusReferralReferralCodeResponse> referralCodes;
+	UPROPERTY()
+	FString groupName;
 
-		UPROPERTY()
-		FString playerId;
+	UPROPERTY()
+	TArray<FNexusReferralReferralCodeResponse> referralCodes;
 
-		UPROPERTY()
-		int32 currentPage;
+	UPROPERTY()
+	FString playerId;
 
-		UPROPERTY()
-		int32 currentPageSize;
+	UPROPERTY()
+	int32 currentPage;
 
-		UPROPERTY()
-		int32 totalCount;
+	UPROPERTY()
+	int32 currentPageSize;
 
-		UPROPERTY()
-		TArray<FNexusReferralReferral> referrals;
+	UPROPERTY()
+	int32 totalCount;
 
-		FNexusReferralGetReferralInfoByPlayerId200Response()
-		: groupId()
+	UPROPERTY()
+	TArray<FNexusReferralReferral> referrals;
+
+	FNexusReferralGetReferralInfoByPlayerId200Response()
+	: groupId()
 		, groupName()
 		, referralCodes()
 		, playerId()
@@ -254,65 +231,57 @@
 		, currentPageSize()
 		, totalCount()
 		, referrals()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusReferralGetPlayerCurrentReferral404Response
+USTRUCT(BlueprintType)
+struct FNexusReferralGetPlayerCurrentReferral404Response
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FString code;
+
+	FNexusReferralGetPlayerCurrentReferral404Response()
+	: code()
 	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString code;
+	}
 
-		FNexusReferralGetPlayerCurrentReferral404Response()
-		: code()
-		{
-
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusReferralGetReferralInfoByCode200Response
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString groupId;
+USTRUCT(BlueprintType)
+struct FNexusReferralGetReferralInfoByCode200Response
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString groupName;
+	UPROPERTY()
+	FString groupId;
 
-		UPROPERTY()
-		TArray<FNexusReferralReferralCodeResponse> referralCodes;
+	UPROPERTY()
+	FString groupName;
 
-		UPROPERTY()
-		FString playerId;
+	UPROPERTY()
+	TArray<FNexusReferralReferralCodeResponse> referralCodes;
 
-		UPROPERTY()
-		int32 currentPage;
+	UPROPERTY()
+	FString playerId;
 
-		UPROPERTY()
-		int32 currentPageSize;
+	UPROPERTY()
+	int32 currentPage;
 
-		UPROPERTY()
-		int32 totalCount;
+	UPROPERTY()
+	int32 currentPageSize;
 
-		UPROPERTY()
-		TArray<FNexusReferralReferral> referrals;
+	UPROPERTY()
+	int32 totalCount;
 
-		FNexusReferralGetReferralInfoByCode200Response()
-		: groupId()
+	UPROPERTY()
+	TArray<FNexusReferralReferral> referrals;
+
+	FNexusReferralGetReferralInfoByCode200Response()
+	: groupId()
 		, groupName()
 		, referralCodes()
 		, playerId()
@@ -320,17 +289,15 @@
 		, currentPageSize()
 		, totalCount()
 		, referrals()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
+/*---------------------------------------------------------------------------------------------
+		API Functions
+---------------------------------------------------------------------------------------------*/
 
-	/*---------------------------------------------------------------------------------------------
-			API Functions
-	---------------------------------------------------------------------------------------------*/
 class NEXUSUNREALSDK_API FNexusReferralAPI
 {
 public:
@@ -342,7 +309,7 @@ public:
 			FOnGetReferralInfoByPlayerId200ResponseCallback On200Response;
 			FOnGetReferralInfoByPlayerId400ResponseCallback On400Response;
 	};
-	static void GetReferralInfoByPlayerId(const FNexusReferralGetReferralInfoByPlayerIdRequestParams& RequestParams, const FOnGetReferralInfoByPlayerIdResponse& Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
+	static void GetReferralInfoByPlayerId(const FNexusReferralGetReferralInfoByPlayerIdRequestParams& RequestParams, const FOnGetReferralInfoByPlayerIdResponse& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate = {});
 
 	DECLARE_DELEGATE_OneParam(FOnGetPlayerCurrentReferral200ResponseCallback, const FString& /*Response*/);
 	DECLARE_DELEGATE_OneParam(FOnGetPlayerCurrentReferral404ResponseCallback, const FNexusReferralGetPlayerCurrentReferral404Response& /*Response*/);
@@ -352,7 +319,7 @@ public:
 			FOnGetPlayerCurrentReferral200ResponseCallback On200Response;
 			FOnGetPlayerCurrentReferral404ResponseCallback On404Response;
 	};
-	static void GetPlayerCurrentReferral(const FNexusReferralGetPlayerCurrentReferralRequestParams& RequestParams, const FOnGetPlayerCurrentReferralResponse& Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
+	static void GetPlayerCurrentReferral(const FNexusReferralGetPlayerCurrentReferralRequestParams& RequestParams, const FOnGetPlayerCurrentReferralResponse& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate = {});
 
 	DECLARE_DELEGATE_OneParam(FOnGetReferralInfoByCode200ResponseCallback, const FNexusReferralGetReferralInfoByCode200Response& /*Response*/);
 	DECLARE_DELEGATE_OneParam(FOnGetReferralInfoByCode400ResponseCallback, const FNexusReferralReferralError& /*Response*/);
@@ -362,23 +329,24 @@ public:
 			FOnGetReferralInfoByCode200ResponseCallback On200Response;
 			FOnGetReferralInfoByCode400ResponseCallback On400Response;
 	};
-	static void GetReferralInfoByCode(const FNexusReferralGetReferralInfoByCodeRequestParams& RequestParams, const FOnGetReferralInfoByCodeResponse& Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
+	static void GetReferralInfoByCode(const FNexusReferralGetReferralInfoByCodeRequestParams& RequestParams, const FOnGetReferralInfoByCodeResponse& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate = {});
 
 };
 
-//Blueprint Function Nodes
-
+/*---------------------------------------------------------------------------------------------
+		Blueprint Function Nodes
+---------------------------------------------------------------------------------------------*/
 
 UCLASS()
 class NEXUSUNREALSDK_API UNexusGetReferralInfoByPlayerIdNode : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
+
 public:
 	UNexusGetReferralInfoByPlayerIdNode();
 
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", Category = "Nexus|Referral", WorldContext = "WorldContextObject"))
-					static UNexusGetReferralInfoByPlayerIdNode* GetReferralInfoByPlayerId(UObject* WorldContextObject, const FNexusReferralGetReferralInfoByPlayerIdRequestParams& InRequestParams);
-
+	static UNexusGetReferralInfoByPlayerIdNode* GetReferralInfoByPlayerId(UObject* WorldContextObject, const FNexusReferralGetReferralInfoByPlayerIdRequestParams& InRequestParams);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetReferralInfoByPlayerId200Response, const FNexusReferralGetReferralInfoByPlayerId200Response& /*Response*/, Param0);
 
@@ -401,24 +369,24 @@ public:
 
 	void WhenError(int32 ErrorCode);
 
-
+	// See UBlueprintAsyncActionBase::Activate()
 	virtual void Activate() override;
 
 private:
-
 	FNexusReferralGetReferralInfoByPlayerIdRequestParams RequestParams;
+
 };
 
 UCLASS()
 class NEXUSUNREALSDK_API UNexusGetPlayerCurrentReferralNode : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
+
 public:
 	UNexusGetPlayerCurrentReferralNode();
 
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", Category = "Nexus|Referral", WorldContext = "WorldContextObject"))
-					static UNexusGetPlayerCurrentReferralNode* GetPlayerCurrentReferral(UObject* WorldContextObject, const FNexusReferralGetPlayerCurrentReferralRequestParams& InRequestParams);
-
+	static UNexusGetPlayerCurrentReferralNode* GetPlayerCurrentReferral(UObject* WorldContextObject, const FNexusReferralGetPlayerCurrentReferralRequestParams& InRequestParams);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetPlayerCurrentReferral200Response, const FString& /*Response*/, Param0);
 
@@ -441,24 +409,24 @@ public:
 
 	void WhenError(int32 ErrorCode);
 
-
+	// See UBlueprintAsyncActionBase::Activate()
 	virtual void Activate() override;
 
 private:
-
 	FNexusReferralGetPlayerCurrentReferralRequestParams RequestParams;
+
 };
 
 UCLASS()
 class NEXUSUNREALSDK_API UNexusGetReferralInfoByCodeNode : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
+
 public:
 	UNexusGetReferralInfoByCodeNode();
 
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", Category = "Nexus|Referral", WorldContext = "WorldContextObject"))
-					static UNexusGetReferralInfoByCodeNode* GetReferralInfoByCode(UObject* WorldContextObject, const FNexusReferralGetReferralInfoByCodeRequestParams& InRequestParams);
-
+	static UNexusGetReferralInfoByCodeNode* GetReferralInfoByCode(UObject* WorldContextObject, const FNexusReferralGetReferralInfoByCodeRequestParams& InRequestParams);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetReferralInfoByCode200Response, const FNexusReferralGetReferralInfoByCode200Response& /*Response*/, Param0);
 
@@ -481,10 +449,10 @@ public:
 
 	void WhenError(int32 ErrorCode);
 
-
+	// See UBlueprintAsyncActionBase::Activate()
 	virtual void Activate() override;
 
 private:
-
 	FNexusReferralGetReferralInfoByCodeRequestParams RequestParams;
+
 };

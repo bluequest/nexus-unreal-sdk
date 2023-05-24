@@ -19,80 +19,82 @@
  * Unreal SDK, descriptive comment goes here, notes about implementation, whatever we want really.
  */
 
+/*---------------------------------------------------------------------------------------------
+		API Functions
+---------------------------------------------------------------------------------------------*/
+
 namespace FGetCreatorsHelpers
 {
-
 	class FOnGetCreatorsRequestContext final : public NexusSDK::FRequestContext
 	{
 	public:
-	FOnGetCreatorsRequestContext() = delete;
-		FOnGetCreatorsRequestContext(FNexusAttributionAPI::FOnGetCreators200ResponseCallback InCallback, FNexusOnHttpErrorDelegate InErrorDelegate) 
-		: Callback(InCallback)
-		, ErrorDelegate(InErrorDelegate)
-	{}
+		FOnGetCreatorsRequestContext() = delete;
+		FOnGetCreatorsRequestContext(const FNexusAttributionAPI::FOnGetCreators200ResponseCallback& InCallback, const FNexusOnHttpErrorDelegate& InErrorDelegate) 
+			: Callback(InCallback)
+			, ErrorDelegate(InErrorDelegate)
+		{}
 
-	void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
-	{
-		//TODO
-		if (!bConnectedSuccessfully || !Response.IsValid())
+		void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
 		{
-		// Didn't connect, or the response is null, bail
-		//TODO: HANDLE THIS GRACEFULLY
-		return;
-		}
-	
-
-		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(200))
-		{
-			FNexusAttributionGetCreators200Response OutputResponse;
-
-			// Create a Json object and parser
-			const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
-			TSharedPtr<FJsonObject> RootObject;
-
-			// Parse it!
-			if (!FJsonSerializer::Deserialize(Reader, RootObject))
+			if (!bConnectedSuccessfully || !Response.IsValid())
 			{
-				// Parse error
-				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
-				return;
-			}
-
-			// Parse the response!
-			FText FailureReason;
-			bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
-			if ( !bResult )
-			{
-				// Oh no! This shouldn't happen! If it does start happening, we should rethink this error handling.
-				// Perhaps this should not be fatal.
-				// TODO(JoshD): Log the failure reason at the very least?
-				UE_DEBUG_BREAK();
+				// Didn't connect, or the response is null, bail
+				// TODO: Going to call the error delegate with an unknown response code as an answer to this for now
 				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+				FNexusUnrealSDKModule::Get().RemoveRequest(this);
 				return;
 			}
 
-			// Run the callback successfully!
+			if (Response->GetResponseCode() == 200)
+			{
+				FNexusAttributionGetCreators200Response OutputResponse;
+
+				// Create a json object and reader
+				const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
+				TSharedPtr<FJsonObject> RootObject;
+
+				// Deserialize it!
+				if (!FJsonSerializer::Deserialize(Reader, RootObject))
+				{
+					// Parse error
+					ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+					FNexusUnrealSDKModule::Get().RemoveRequest(this);
+					return;
+				}
+
+				// Parse the response!
+				FText FailureReason;
+				bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+				if ( !bResult )
+				{
+					// TODO: Hmm, this probably shouldn't be fatal, false doesn't indicate complete failure, just that some part of the json
+					// wasn't recognised using reflection... Either way, this shouldn't ever happen. So alert a programmer running in the debugger.
+					// TODO: Implement this commented out code!
+					//UE_LOG( LogNexusSDK, FailureReason );
+					UE_DEBUG_BREAK();
+					ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+					FNexusUnrealSDKModule::Get().RemoveRequest(this);
+					return;
+				}
+
+				// Run the main callback!
 				Callback.ExecuteIfBound(OutputResponse);
+			}
 
+			if (Response->GetResponseCode() != 200)
+			{
+				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+			}
 			
-		}	
-
-		if(Response->GetResponseCode() != 200)
-		{
-			ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+			// Now remove and delete ourselves from the module cache
+			FNexusUnrealSDKModule::Get().RemoveRequest(this);
 		}
-			
-		// Now remove and delete ourselves from the module cache
-		FNexusUnrealSDKModule::Get().RemoveRequest(this);
-	}
 
 	private:
 		FNexusAttributionAPI::FOnGetCreators200ResponseCallback Callback;
 		FNexusOnHttpErrorDelegate ErrorDelegate;
 
 	};
-
-
 
 	bool GetCreators_IsValid(const FNexusAttributionGetCreatorsRequestParams& Request)
 	{
@@ -106,24 +108,25 @@ namespace FGetCreatorsHelpers
 			return false;
 
 		return true;
-	}	
-}
+	}
 
-void FNexusAttributionAPI::GetCreators(const FNexusAttributionGetCreatorsRequestParams& RequestParams, const FOnGetCreators200ResponseCallback& Response, FNexusOnHttpErrorDelegate ErrorDelegate)
+} // namespace FGetCreatorsHelpers
+
+void FNexusAttributionAPI::GetCreators(const FNexusAttributionGetCreatorsRequestParams& RequestParams, const FOnGetCreators200ResponseCallback& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate)
 {
-
-	if(!FGetCreatorsHelpers::GetCreators_IsValid(RequestParams))
+	if (!FGetCreatorsHelpers::GetCreators_IsValid(RequestParams))
 	{
-		ErrorDelegate.ExecuteIfBound(0);
+		ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 		return;
 	}
+
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
 
 	{
 		// Initialise some bits and pieces ahead of time
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/attributions/creators?page=%d&pageSize=%d&groupId=%s"), RequestParams.page, RequestParams.pageSize, *RequestParams.groupId);
 		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
-		TUniquePtr<FGetCreatorsHelpers::FOnGetCreatorsRequestContext> RequestContext = MakeUnique<FGetCreatorsHelpers::FOnGetCreatorsRequestContext>(Response, ErrorDelegate);
+		TUniquePtr<FGetCreatorsHelpers::FOnGetCreatorsRequestContext> RequestContext = MakeUnique<FGetCreatorsHelpers::FOnGetCreatorsRequestContext>(ResponseDelegate, ErrorDelegate);
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
@@ -132,80 +135,80 @@ void FNexusAttributionAPI::GetCreators(const FNexusAttributionGetCreatorsRequest
 		HttpRequest->SetHeader(TEXT("x-shared-secret"), PublicKey);
 		HttpRequest->OnProcessRequestComplete().BindRaw(RequestContext.Get(), &FGetCreatorsHelpers::FOnGetCreatorsRequestContext::ProcessRequestComplete);
 
-		// Hand ownership of the request over to the module
+		// Hand ownership of the request context over to the module
 		FNexusUnrealSDKModule::Get().AddRequest(MoveTemp(RequestContext));
 	}
 
 	// Send it!
 	HttpRequest->ProcessRequest();
-
 }
+
 namespace FGetCreatorByUuidHelpers
 {
-
 	class FOnGetCreatorByUuidRequestContext final : public NexusSDK::FRequestContext
 	{
 	public:
-	FOnGetCreatorByUuidRequestContext() = delete;
-		FOnGetCreatorByUuidRequestContext(FNexusAttributionAPI::FOnGetCreatorByUuid200ResponseCallback InCallback, FNexusOnHttpErrorDelegate InErrorDelegate) 
-		: Callback(InCallback)
-		, ErrorDelegate(InErrorDelegate)
-	{}
+		FOnGetCreatorByUuidRequestContext() = delete;
+		FOnGetCreatorByUuidRequestContext(const FNexusAttributionAPI::FOnGetCreatorByUuid200ResponseCallback& InCallback, const FNexusOnHttpErrorDelegate& InErrorDelegate) 
+			: Callback(InCallback)
+			, ErrorDelegate(InErrorDelegate)
+		{}
 
-	void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
-	{
-		//TODO
-		if (!bConnectedSuccessfully || !Response.IsValid())
+		void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
 		{
-		// Didn't connect, or the response is null, bail
-		//TODO: HANDLE THIS GRACEFULLY
-		return;
-		}
-	
-
-		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(200))
-		{
-			FNexusAttributionGetCreatorByUuid200Response OutputResponse;
-
-			// Create a Json object and parser
-			const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
-			TSharedPtr<FJsonObject> RootObject;
-
-			// Parse it!
-			if (!FJsonSerializer::Deserialize(Reader, RootObject))
+			if (!bConnectedSuccessfully || !Response.IsValid())
 			{
-				// Parse error
-				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
-				return;
-			}
-
-			// Parse the response!
-			FText FailureReason;
-			bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
-			if ( !bResult )
-			{
-				// Oh no! This shouldn't happen! If it does start happening, we should rethink this error handling.
-				// Perhaps this should not be fatal.
-				// TODO(JoshD): Log the failure reason at the very least?
-				UE_DEBUG_BREAK();
+				// Didn't connect, or the response is null, bail
+				// TODO: Going to call the error delegate with an unknown response code as an answer to this for now
 				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+				FNexusUnrealSDKModule::Get().RemoveRequest(this);
 				return;
 			}
 
-			// Run the callback successfully!
+			if (Response->GetResponseCode() == 200)
+			{
+				FNexusAttributionGetCreatorByUuid200Response OutputResponse;
+
+				// Create a json object and reader
+				const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
+				TSharedPtr<FJsonObject> RootObject;
+
+				// Deserialize it!
+				if (!FJsonSerializer::Deserialize(Reader, RootObject))
+				{
+					// Parse error
+					ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+					FNexusUnrealSDKModule::Get().RemoveRequest(this);
+					return;
+				}
+
+				// Parse the response!
+				FText FailureReason;
+				bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+				if ( !bResult )
+				{
+					// TODO: Hmm, this probably shouldn't be fatal, false doesn't indicate complete failure, just that some part of the json
+					// wasn't recognised using reflection... Either way, this shouldn't ever happen. So alert a programmer running in the debugger.
+					// TODO: Implement this commented out code!
+					//UE_LOG( LogNexusSDK, FailureReason );
+					UE_DEBUG_BREAK();
+					ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+					FNexusUnrealSDKModule::Get().RemoveRequest(this);
+					return;
+				}
+
+				// Run the main callback!
 				Callback.ExecuteIfBound(OutputResponse);
+			}
 
+			if (Response->GetResponseCode() != 200)
+			{
+				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+			}
 			
-		}	
-
-		if(Response->GetResponseCode() != 200)
-		{
-			ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+			// Now remove and delete ourselves from the module cache
+			FNexusUnrealSDKModule::Get().RemoveRequest(this);
 		}
-			
-		// Now remove and delete ourselves from the module cache
-		FNexusUnrealSDKModule::Get().RemoveRequest(this);
-	}
 
 	private:
 		FNexusAttributionAPI::FOnGetCreatorByUuid200ResponseCallback Callback;
@@ -214,9 +217,9 @@ namespace FGetCreatorByUuidHelpers
 	};
 
 
-}
+} // namespace FGetCreatorByUuidHelpers
 
-void FNexusAttributionAPI::GetCreatorByUuid(const FNexusAttributionGetCreatorByUuidRequestParams& RequestParams, const FOnGetCreatorByUuid200ResponseCallback& Response, FNexusOnHttpErrorDelegate ErrorDelegate)
+void FNexusAttributionAPI::GetCreatorByUuid(const FNexusAttributionGetCreatorByUuidRequestParams& RequestParams, const FOnGetCreatorByUuid200ResponseCallback& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate)
 {
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
 
@@ -224,7 +227,7 @@ void FNexusAttributionAPI::GetCreatorByUuid(const FNexusAttributionGetCreatorByU
 		// Initialise some bits and pieces ahead of time
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/attributions/creators/%s"), *RequestParams.creatorSlugOrId);
 		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
-		TUniquePtr<FGetCreatorByUuidHelpers::FOnGetCreatorByUuidRequestContext> RequestContext = MakeUnique<FGetCreatorByUuidHelpers::FOnGetCreatorByUuidRequestContext>(Response, ErrorDelegate);
+		TUniquePtr<FGetCreatorByUuidHelpers::FOnGetCreatorByUuidRequestContext> RequestContext = MakeUnique<FGetCreatorByUuidHelpers::FOnGetCreatorByUuidRequestContext>(ResponseDelegate, ErrorDelegate);
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
@@ -233,20 +236,21 @@ void FNexusAttributionAPI::GetCreatorByUuid(const FNexusAttributionGetCreatorByU
 		HttpRequest->SetHeader(TEXT("x-shared-secret"), PublicKey);
 		HttpRequest->OnProcessRequestComplete().BindRaw(RequestContext.Get(), &FGetCreatorByUuidHelpers::FOnGetCreatorByUuidRequestContext::ProcessRequestComplete);
 
-		// Hand ownership of the request over to the module
+		// Hand ownership of the request context over to the module
 		FNexusUnrealSDKModule::Get().AddRequest(MoveTemp(RequestContext));
 	}
 
 	// Send it!
 	HttpRequest->ProcessRequest();
-
 }
 
+/*---------------------------------------------------------------------------------------------
+		Blueprint Function Nodes
+---------------------------------------------------------------------------------------------*/
 
 UNexusGetCreatorsNode::UNexusGetCreatorsNode()
 	: Super()
 {
-
 }
 
 void UNexusGetCreatorsNode::WhenError(int32 ErrorCode)
@@ -283,7 +287,6 @@ void UNexusGetCreatorsNode::When200Callback(const FNexusAttributionGetCreators20
 UNexusGetCreatorByUuidNode::UNexusGetCreatorByUuidNode()
 	: Super()
 {
-
 }
 
 void UNexusGetCreatorByUuidNode::WhenError(int32 ErrorCode)

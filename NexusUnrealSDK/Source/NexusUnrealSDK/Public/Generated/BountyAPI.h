@@ -31,393 +31,346 @@
  *
  */
 
+/*---------------------------------------------------------------------------------------------
+		Request and Response Types
+---------------------------------------------------------------------------------------------*/
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountyBountySku
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString id;
+USTRUCT(BlueprintType)
+struct FNexusBountyBountySku
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString name;
+	UPROPERTY()
+	FString id;
 
-		UPROPERTY()
-		FString slug;
+	UPROPERTY()
+	FString name;
 
-		FNexusBountyBountySku()
-		: id()
+	UPROPERTY()
+	FString slug;
+
+	FNexusBountyBountySku()
+	: id()
 		, name()
 		, slug()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountyBountyProgressReward
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString id;
+USTRUCT(BlueprintType)
+struct FNexusBountyBountyProgressReward
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString name;
+	UPROPERTY()
+	FString id;
 
-		UPROPERTY()
-		FString externalId;
+	UPROPERTY()
+	FString name;
 
-		UPROPERTY()
-		bool rewardCompleted;
+	UPROPERTY()
+	FString externalId;
 
-		UPROPERTY()
-		FString rewardReferenceId;
+	UPROPERTY()
+	bool rewardCompleted;
 
-		FNexusBountyBountyProgressReward()
-		: id()
+	UPROPERTY()
+	FString rewardReferenceId;
+
+	FNexusBountyBountyProgressReward()
+	: id()
 		, name()
 		, externalId()
 		, rewardCompleted()
 		, rewardReferenceId()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountyCreator
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString id;
+USTRUCT(BlueprintType)
+struct FNexusBountyCreator
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString playerId;
+	UPROPERTY()
+	FString id;
 
-		UPROPERTY()
-		FString name;
+	UPROPERTY()
+	FString playerId;
 
-		UPROPERTY()
-		TArray<FString> slugs;
+	UPROPERTY()
+	FString name;
 
-		FNexusBountyCreator()
-		: id()
+	UPROPERTY()
+	TArray<FString> slugs;
+
+	FNexusBountyCreator()
+	: id()
 		, playerId()
 		, name()
 		, slugs()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountyCreatorGroupEvent
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString eventCode;
+USTRUCT(BlueprintType)
+struct FNexusBountyCreatorGroupEvent
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString playerId;
+	UPROPERTY()
+	FString eventCode;
 
-		UPROPERTY()
-		FString referralCode;
+	UPROPERTY()
+	FString playerId;
 
-		FNexusBountyCreatorGroupEvent()
-		: eventCode()
+	UPROPERTY()
+	FString referralCode;
+
+	FNexusBountyCreatorGroupEvent()
+	: eventCode()
 		, playerId()
 		, referralCode()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountyBountyError
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString code;
+USTRUCT(BlueprintType)
+struct FNexusBountyBountyError
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString message;
+	UPROPERTY()
+	FString code;
 
-		FNexusBountyBountyError()
-		: code()
+	UPROPERTY()
+	FString message;
+
+	FNexusBountyBountyError()
+	: code()
 		, message()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountycategory_Struct
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString id;
+USTRUCT(BlueprintType)
+struct FNexusBountycategory_Struct
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString name;
+	UPROPERTY()
+	FString id;
 
-		UPROPERTY()
-		FString slug;
+	UPROPERTY()
+	FString name;
 
-		FNexusBountycategory_Struct()
-		: id()
+	UPROPERTY()
+	FString slug;
+
+	FNexusBountycategory_Struct()
+	: id()
 		, name()
 		, slug()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountypublisher_Struct
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString id;
+USTRUCT(BlueprintType)
+struct FNexusBountypublisher_Struct
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString name;
+	UPROPERTY()
+	FString id;
 
-		FNexusBountypublisher_Struct()
-		: id()
+	UPROPERTY()
+	FString name;
+
+	FNexusBountypublisher_Struct()
+	: id()
 		, name()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountydependants_Struct_Element
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString id;
+USTRUCT(BlueprintType)
+struct FNexusBountydependants_Struct_Element
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString name;
+	UPROPERTY()
+	FString id;
 
-		FNexusBountydependants_Struct_Element()
-		: id()
+	UPROPERTY()
+	FString name;
+
+	FNexusBountydependants_Struct_Element()
+	: id()
 		, name()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountyprerequisites_Struct_Element
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString id;
+USTRUCT(BlueprintType)
+struct FNexusBountyprerequisites_Struct_Element
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString name;
+	UPROPERTY()
+	FString id;
 
-		FNexusBountyprerequisites_Struct_Element()
-		: id()
+	UPROPERTY()
+	FString name;
+
+	FNexusBountyprerequisites_Struct_Element()
+	: id()
 		, name()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountyobjective_Struct
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString id;
+USTRUCT(BlueprintType)
+struct FNexusBountyobjective_Struct
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString name;
+	UPROPERTY()
+	FString id;
 
-		UPROPERTY()
-		double count;
+	UPROPERTY()
+	FString name;
 
-		UPROPERTY()
-		FString condition;
+	UPROPERTY()
+	double count;
 
-		FNexusBountyobjective_Struct()
-		: id()
+	UPROPERTY()
+	FString condition;
+
+	FNexusBountyobjective_Struct()
+	: id()
 		, name()
 		, count()
 		, condition()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountyBountyObjectiveProgress
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString id;
+USTRUCT(BlueprintType)
+struct FNexusBountyBountyObjectiveProgress
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		bool completed;
+	UPROPERTY()
+	FString id;
 
-		UPROPERTY()
-		double count;
+	UPROPERTY()
+	bool completed;
 
-		UPROPERTY()
-		FNexusBountyobjective_Struct objective;
+	UPROPERTY()
+	double count;
 
-		FNexusBountyBountyObjectiveProgress()
-		: id()
+	UPROPERTY()
+	FNexusBountyobjective_Struct objective;
+
+	FNexusBountyBountyObjectiveProgress()
+	: id()
 		, completed()
 		, count()
 		, objective()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountyBountyReward
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString id;
+USTRUCT(BlueprintType)
+struct FNexusBountyBountyReward
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString name;
+	UPROPERTY()
+	FString id;
 
-		UPROPERTY()
-		FString type;
+	UPROPERTY()
+	FString name;
 
-		UPROPERTY()
-		FNexusBountyBountySku sku;
+	UPROPERTY()
+	FString type;
 
-		UPROPERTY()
-		double amount;
+	UPROPERTY()
+	FNexusBountyBountySku sku;
 
-		UPROPERTY()
-		FString currency;
+	UPROPERTY()
+	double amount;
 
-		UPROPERTY()
-		FString externalId;
+	UPROPERTY()
+	FString currency;
 
-		FNexusBountyBountyReward()
-		: id()
+	UPROPERTY()
+	FString externalId;
+
+	FNexusBountyBountyReward()
+	: id()
 		, name()
 		, type()
 		, sku()
 		, amount()
 		, currency()
 		, externalId()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountyBountyObjective
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString id;
+USTRUCT(BlueprintType)
+struct FNexusBountyBountyObjective
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString name;
+	UPROPERTY()
+	FString id;
 
-		UPROPERTY()
-		FString type;
+	UPROPERTY()
+	FString name;
 
-		UPROPERTY()
-		FString condition;
+	UPROPERTY()
+	FString type;
 
-		UPROPERTY()
-		double count;
+	UPROPERTY()
+	FString condition;
 
-		UPROPERTY()
-		FString eventType;
+	UPROPERTY()
+	double count;
 
-		UPROPERTY()
-		FString eventCode;
+	UPROPERTY()
+	FString eventType;
 
-		UPROPERTY()
-		FString nexusPurchaseObjectiveType;
+	UPROPERTY()
+	FString eventCode;
 
-		UPROPERTY()
-		TArray<FNexusBountyBountySku> skus;
+	UPROPERTY()
+	FString nexusPurchaseObjectiveType;
 
-		UPROPERTY()
-		FNexusBountycategory_Struct category;
+	UPROPERTY()
+	TArray<FNexusBountyBountySku> skus;
 
-		UPROPERTY()
-		FNexusBountypublisher_Struct publisher;
+	UPROPERTY()
+	FNexusBountycategory_Struct category;
 
-		FNexusBountyBountyObjective()
-		: id()
+	UPROPERTY()
+	FNexusBountypublisher_Struct publisher;
+
+	FNexusBountyBountyObjective()
+	: id()
 		, name()
 		, type()
 		, condition()
@@ -428,88 +381,80 @@
 		, skus()
 		, category()
 		, publisher()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountycompletedObjectives_Struct_Element
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString objectiveGroupId;
+USTRUCT(BlueprintType)
+struct FNexusBountycompletedObjectives_Struct_Element
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		TArray<FNexusBountyBountyObjective> objectives;
+	UPROPERTY()
+	FString objectiveGroupId;
 
-		UPROPERTY()
-		TArray<FNexusBountyBountyReward> rewards;
+	UPROPERTY()
+	TArray<FNexusBountyBountyObjective> objectives;
 
-		FNexusBountycompletedObjectives_Struct_Element()
-		: objectiveGroupId()
+	UPROPERTY()
+	TArray<FNexusBountyBountyReward> rewards;
+
+	FNexusBountycompletedObjectives_Struct_Element()
+	: objectiveGroupId()
 		, objectives()
 		, rewards()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountyBounty
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString id;
+USTRUCT(BlueprintType)
+struct FNexusBountyBounty
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString name;
+	UPROPERTY()
+	FString id;
 
-		UPROPERTY()
-		FString description;
+	UPROPERTY()
+	FString name;
 
-		UPROPERTY()
-		FString imageSrc;
+	UPROPERTY()
+	FString description;
 
-		UPROPERTY()
-		FString rewardDescription;
+	UPROPERTY()
+	FString imageSrc;
 
-		UPROPERTY()
-		double limit;
+	UPROPERTY()
+	FString rewardDescription;
 
-		UPROPERTY()
-		FDateTime startsAt;
+	UPROPERTY()
+	double limit;
 
-		UPROPERTY()
-		FDateTime endsAt;
+	UPROPERTY()
+	FDateTime startsAt;
 
-		UPROPERTY()
-		FDateTime lastProgressCheck;
+	UPROPERTY()
+	FDateTime endsAt;
 
-		UPROPERTY()
-		TArray<FNexusBountyBountyObjective> objectives;
+	UPROPERTY()
+	FDateTime lastProgressCheck;
 
-		UPROPERTY()
-		TArray<FNexusBountyBountyReward> rewards;
+	UPROPERTY()
+	TArray<FNexusBountyBountyObjective> objectives;
 
-		UPROPERTY()
-		TArray<FNexusBountydependants_Struct_Element> dependants;
+	UPROPERTY()
+	TArray<FNexusBountyBountyReward> rewards;
 
-		UPROPERTY()
-		TArray<FNexusBountyprerequisites_Struct_Element> prerequisites;
+	UPROPERTY()
+	TArray<FNexusBountydependants_Struct_Element> dependants;
 
-		FNexusBountyBounty()
-		: id()
+	UPROPERTY()
+	TArray<FNexusBountyprerequisites_Struct_Element> prerequisites;
+
+	FNexusBountyBounty()
+	: id()
 		, name()
 		, description()
 		, imageSrc()
@@ -522,221 +467,197 @@
 		, rewards()
 		, dependants()
 		, prerequisites()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountyBountyProgress
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString id;
+USTRUCT(BlueprintType)
+struct FNexusBountyBountyProgress
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		bool completed;
+	UPROPERTY()
+	FString id;
 
-		UPROPERTY()
-		double completionCount;
+	UPROPERTY()
+	bool completed;
 
-		UPROPERTY()
-		FDateTime lastProgressCheck;
+	UPROPERTY()
+	double completionCount;
 
-		UPROPERTY()
-		FString currentObjectiveGroupId;
+	UPROPERTY()
+	FDateTime lastProgressCheck;
 
-		UPROPERTY()
-		TArray<FNexusBountyBountyObjectiveProgress> currentObjectives;
+	UPROPERTY()
+	FString currentObjectiveGroupId;
 
-		UPROPERTY()
-		TArray<FNexusBountycompletedObjectives_Struct_Element> completedObjectives;
+	UPROPERTY()
+	TArray<FNexusBountyBountyObjectiveProgress> currentObjectives;
 
-		FNexusBountyBountyProgress()
-		: id()
+	UPROPERTY()
+	TArray<FNexusBountycompletedObjectives_Struct_Element> completedObjectives;
+
+	FNexusBountyBountyProgress()
+	: id()
 		, completed()
 		, completionCount()
 		, lastProgressCheck()
 		, currentObjectiveGroupId()
 		, currentObjectives()
 		, completedObjectives()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountyGetBountiesRequestParams
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString groupId;
+USTRUCT(BlueprintType)
+struct FNexusBountyGetBountiesRequestParams
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		int32 page;
+	UPROPERTY()
+	FString groupId;
 
-		UPROPERTY()
-		int32 pageSize;
+	UPROPERTY()
+	int32 page;
 
-		FNexusBountyGetBountiesRequestParams()
-		: groupId()
+	UPROPERTY()
+	int32 pageSize;
+
+	FNexusBountyGetBountiesRequestParams()
+	: groupId()
 		, page()
 		, pageSize()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountyGetBountyRequestParams
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString groupId;
+USTRUCT(BlueprintType)
+struct FNexusBountyGetBountyRequestParams
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		bool includeProgress;
+	UPROPERTY()
+	FString groupId;
 
-		UPROPERTY()
-		int32 page;
+	UPROPERTY()
+	bool includeProgress;
 
-		UPROPERTY()
-		int32 pageSize;
+	UPROPERTY()
+	int32 page;
 
-		UPROPERTY()
-		FString bountyId;
+	UPROPERTY()
+	int32 pageSize;
 
-		FNexusBountyGetBountyRequestParams()
-		: groupId()
+	UPROPERTY()
+	FString bountyId;
+
+	FNexusBountyGetBountyRequestParams()
+	: groupId()
 		, includeProgress()
 		, page()
 		, pageSize()
 		, bountyId()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountyGetCreatorBountiesByIDRequestParams
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString groupId;
+USTRUCT(BlueprintType)
+struct FNexusBountyGetCreatorBountiesByIDRequestParams
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		int32 page;
+	UPROPERTY()
+	FString groupId;
 
-		UPROPERTY()
-		int32 pageSize;
+	UPROPERTY()
+	int32 page;
 
-		UPROPERTY()
-		FString creatorId;
+	UPROPERTY()
+	int32 pageSize;
 
-		FNexusBountyGetCreatorBountiesByIDRequestParams()
-		: groupId()
+	UPROPERTY()
+	FString creatorId;
+
+	FNexusBountyGetCreatorBountiesByIDRequestParams()
+	: groupId()
 		, page()
 		, pageSize()
 		, creatorId()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountyGetBounties200Response
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString groupId;
+USTRUCT(BlueprintType)
+struct FNexusBountyGetBounties200Response
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString groupName;
+	UPROPERTY()
+	FString groupId;
 
-		UPROPERTY()
-		int32 currentPage;
+	UPROPERTY()
+	FString groupName;
 
-		UPROPERTY()
-		int32 currentPageSize;
+	UPROPERTY()
+	int32 currentPage;
 
-		UPROPERTY()
-		int32 totalCount;
+	UPROPERTY()
+	int32 currentPageSize;
 
-		UPROPERTY()
-		TArray<FNexusBountyBounty> bounties;
+	UPROPERTY()
+	int32 totalCount;
 
-		FNexusBountyGetBounties200Response()
-		: groupId()
+	UPROPERTY()
+	TArray<FNexusBountyBounty> bounties;
+
+	FNexusBountyGetBounties200Response()
+	: groupId()
 		, groupName()
 		, currentPage()
 		, currentPageSize()
 		, totalCount()
 		, bounties()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountydata_Struct_Element
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString id;
+USTRUCT(BlueprintType)
+struct FNexusBountydata_Struct_Element
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		bool completed;
+	UPROPERTY()
+	FString id;
 
-		UPROPERTY()
-		double completionCount;
+	UPROPERTY()
+	bool completed;
 
-		UPROPERTY()
-		FDateTime lastProgressCheck;
+	UPROPERTY()
+	double completionCount;
 
-		UPROPERTY()
-		FString currentObjectiveGroupId;
+	UPROPERTY()
+	FDateTime lastProgressCheck;
 
-		UPROPERTY()
-		TArray<FNexusBountyBountyObjectiveProgress> currentObjectives;
+	UPROPERTY()
+	FString currentObjectiveGroupId;
 
-		UPROPERTY()
-		TArray<FNexusBountycompletedObjectives_Struct_Element> completedObjectives;
+	UPROPERTY()
+	TArray<FNexusBountyBountyObjectiveProgress> currentObjectives;
 
-		UPROPERTY()
-		FNexusBountyCreator creator;
+	UPROPERTY()
+	TArray<FNexusBountycompletedObjectives_Struct_Element> completedObjectives;
 
-		FNexusBountydata_Struct_Element()
-		: id()
+	UPROPERTY()
+	FNexusBountyCreator creator;
+
+	FNexusBountydata_Struct_Element()
+	: id()
 		, completed()
 		, completionCount()
 		, lastProgressCheck()
@@ -744,108 +665,96 @@
 		, currentObjectives()
 		, completedObjectives()
 		, creator()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountyprogress_Struct
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		int32 currentPage;
+USTRUCT(BlueprintType)
+struct FNexusBountyprogress_Struct
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		int32 currentPageSize;
+	UPROPERTY()
+	int32 currentPage;
 
-		UPROPERTY()
-		int32 totalCount;
+	UPROPERTY()
+	int32 currentPageSize;
 
-		UPROPERTY()
-		TArray<FNexusBountydata_Struct_Element> data;
+	UPROPERTY()
+	int32 totalCount;
 
-		FNexusBountyprogress_Struct()
-		: currentPage()
+	UPROPERTY()
+	TArray<FNexusBountydata_Struct_Element> data;
+
+	FNexusBountyprogress_Struct()
+	: currentPage()
 		, currentPageSize()
 		, totalCount()
 		, data()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountyGetBounty200Response
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString groupId;
+USTRUCT(BlueprintType)
+struct FNexusBountyGetBounty200Response
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString groupName;
+	UPROPERTY()
+	FString groupId;
 
-		UPROPERTY()
-		FNexusBountyBounty bounty;
+	UPROPERTY()
+	FString groupName;
 
-		UPROPERTY()
-		FNexusBountyprogress_Struct progress;
+	UPROPERTY()
+	FNexusBountyBounty bounty;
 
-		FNexusBountyGetBounty200Response()
-		: groupId()
+	UPROPERTY()
+	FNexusBountyprogress_Struct progress;
+
+	FNexusBountyGetBounty200Response()
+	: groupId()
 		, groupName()
 		, bounty()
 		, progress()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusBountyGetCreatorBountiesByID200Response
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString groupId;
+USTRUCT(BlueprintType)
+struct FNexusBountyGetCreatorBountiesByID200Response
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString groupName;
+	UPROPERTY()
+	FString groupId;
 
-		UPROPERTY()
-		int32 currentPage;
+	UPROPERTY()
+	FString groupName;
 
-		UPROPERTY()
-		int32 currentPageSize;
+	UPROPERTY()
+	int32 currentPage;
 
-		UPROPERTY()
-		int32 totalCount;
+	UPROPERTY()
+	int32 currentPageSize;
 
-		UPROPERTY()
-		FString creatorId;
+	UPROPERTY()
+	int32 totalCount;
 
-		UPROPERTY()
-		FString playerId;
+	UPROPERTY()
+	FString creatorId;
 
-		UPROPERTY()
-		FNexusBountyprogress_Struct progress;
+	UPROPERTY()
+	FString playerId;
 
-		FNexusBountyGetCreatorBountiesByID200Response()
-		: groupId()
+	UPROPERTY()
+	FNexusBountyprogress_Struct progress;
+
+	FNexusBountyGetCreatorBountiesByID200Response()
+	: groupId()
 		, groupName()
 		, currentPage()
 		, currentPageSize()
@@ -853,17 +762,15 @@
 		, creatorId()
 		, playerId()
 		, progress()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
+/*---------------------------------------------------------------------------------------------
+		API Functions
+---------------------------------------------------------------------------------------------*/
 
-	/*---------------------------------------------------------------------------------------------
-			API Functions
-	---------------------------------------------------------------------------------------------*/
 class NEXUSUNREALSDK_API FNexusBountyAPI
 {
 public:
@@ -875,7 +782,7 @@ public:
 			FOnGetBounties200ResponseCallback On200Response;
 			FOnGetBounties400ResponseCallback On400Response;
 	};
-	static void GetBounties(const FNexusBountyGetBountiesRequestParams& RequestParams, const FOnGetBountiesResponse& Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
+	static void GetBounties(const FNexusBountyGetBountiesRequestParams& RequestParams, const FOnGetBountiesResponse& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate = {});
 
 	DECLARE_DELEGATE_OneParam(FOnGetBounty200ResponseCallback, const FNexusBountyGetBounty200Response& /*Response*/);
 	DECLARE_DELEGATE_OneParam(FOnGetBounty400ResponseCallback, const FNexusBountyBountyError& /*Response*/);
@@ -885,7 +792,7 @@ public:
 			FOnGetBounty200ResponseCallback On200Response;
 			FOnGetBounty400ResponseCallback On400Response;
 	};
-	static void GetBounty(const FNexusBountyGetBountyRequestParams& RequestParams, const FOnGetBountyResponse& Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
+	static void GetBounty(const FNexusBountyGetBountyRequestParams& RequestParams, const FOnGetBountyResponse& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate = {});
 
 	DECLARE_DELEGATE_OneParam(FOnGetCreatorBountiesByID200ResponseCallback, const FNexusBountyGetCreatorBountiesByID200Response& /*Response*/);
 	DECLARE_DELEGATE_OneParam(FOnGetCreatorBountiesByID400ResponseCallback, const FNexusBountyBountyError& /*Response*/);
@@ -895,23 +802,24 @@ public:
 			FOnGetCreatorBountiesByID200ResponseCallback On200Response;
 			FOnGetCreatorBountiesByID400ResponseCallback On400Response;
 	};
-	static void GetCreatorBountiesByID(const FNexusBountyGetCreatorBountiesByIDRequestParams& RequestParams, const FOnGetCreatorBountiesByIDResponse& Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
+	static void GetCreatorBountiesByID(const FNexusBountyGetCreatorBountiesByIDRequestParams& RequestParams, const FOnGetCreatorBountiesByIDResponse& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate = {});
 
 };
 
-//Blueprint Function Nodes
-
+/*---------------------------------------------------------------------------------------------
+		Blueprint Function Nodes
+---------------------------------------------------------------------------------------------*/
 
 UCLASS()
 class NEXUSUNREALSDK_API UNexusGetBountiesNode : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
+
 public:
 	UNexusGetBountiesNode();
 
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", Category = "Nexus|Bounty", WorldContext = "WorldContextObject"))
-					static UNexusGetBountiesNode* GetBounties(UObject* WorldContextObject, const FNexusBountyGetBountiesRequestParams& InRequestParams);
-
+	static UNexusGetBountiesNode* GetBounties(UObject* WorldContextObject, const FNexusBountyGetBountiesRequestParams& InRequestParams);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetBounties200Response, const FNexusBountyGetBounties200Response& /*Response*/, Param0);
 
@@ -934,24 +842,24 @@ public:
 
 	void WhenError(int32 ErrorCode);
 
-
+	// See UBlueprintAsyncActionBase::Activate()
 	virtual void Activate() override;
 
 private:
-
 	FNexusBountyGetBountiesRequestParams RequestParams;
+
 };
 
 UCLASS()
 class NEXUSUNREALSDK_API UNexusGetBountyNode : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
+
 public:
 	UNexusGetBountyNode();
 
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", Category = "Nexus|Bounty", WorldContext = "WorldContextObject"))
-					static UNexusGetBountyNode* GetBounty(UObject* WorldContextObject, const FNexusBountyGetBountyRequestParams& InRequestParams);
-
+	static UNexusGetBountyNode* GetBounty(UObject* WorldContextObject, const FNexusBountyGetBountyRequestParams& InRequestParams);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetBounty200Response, const FNexusBountyGetBounty200Response& /*Response*/, Param0);
 
@@ -974,24 +882,24 @@ public:
 
 	void WhenError(int32 ErrorCode);
 
-
+	// See UBlueprintAsyncActionBase::Activate()
 	virtual void Activate() override;
 
 private:
-
 	FNexusBountyGetBountyRequestParams RequestParams;
+
 };
 
 UCLASS()
 class NEXUSUNREALSDK_API UNexusGetCreatorBountiesByIDNode : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
+
 public:
 	UNexusGetCreatorBountiesByIDNode();
 
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", Category = "Nexus|Bounty", WorldContext = "WorldContextObject"))
-					static UNexusGetCreatorBountiesByIDNode* GetCreatorBountiesByID(UObject* WorldContextObject, const FNexusBountyGetCreatorBountiesByIDRequestParams& InRequestParams);
-
+	static UNexusGetCreatorBountiesByIDNode* GetCreatorBountiesByID(UObject* WorldContextObject, const FNexusBountyGetCreatorBountiesByIDRequestParams& InRequestParams);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetCreatorBountiesByID200Response, const FNexusBountyGetCreatorBountiesByID200Response& /*Response*/, Param0);
 
@@ -1014,10 +922,10 @@ public:
 
 	void WhenError(int32 ErrorCode);
 
-
+	// See UBlueprintAsyncActionBase::Activate()
 	virtual void Activate() override;
 
 private:
-
 	FNexusBountyGetCreatorBountiesByIDRequestParams RequestParams;
+
 };

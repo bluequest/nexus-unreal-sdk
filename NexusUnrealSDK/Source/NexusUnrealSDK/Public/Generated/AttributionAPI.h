@@ -31,49 +31,50 @@
  *
  */
 
+/*---------------------------------------------------------------------------------------------
+		Request and Response Types
+---------------------------------------------------------------------------------------------*/
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusAttributionTransaction
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString creatorId;
+USTRUCT(BlueprintType)
+struct FNexusAttributionTransaction
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString currency;
+	UPROPERTY()
+	FString creatorId;
 
-		UPROPERTY()
-		FString description;
+	UPROPERTY()
+	FString currency;
 
-		UPROPERTY()
-		FString status;
+	UPROPERTY()
+	FString description;
 
-		UPROPERTY()
-		double subtotal;
+	UPROPERTY()
+	FString status;
 
-		UPROPERTY()
-		FString transactionId;
+	UPROPERTY()
+	double subtotal;
 
-		UPROPERTY()
-		FDateTime transactionDate;
+	UPROPERTY()
+	FString transactionId;
 
-		UPROPERTY()
-		FString playerId;
+	UPROPERTY()
+	FDateTime transactionDate;
 
-		UPROPERTY()
-		FDateTime playerLastPurchase;
+	UPROPERTY()
+	FString playerId;
 
-		UPROPERTY()
-		FDateTime playerJoinDate;
+	UPROPERTY()
+	FDateTime playerLastPurchase;
 
-		UPROPERTY()
-		FString playerName;
+	UPROPERTY()
+	FDateTime playerJoinDate;
 
-		FNexusAttributionTransaction()
-		: creatorId()
+	UPROPERTY()
+	FString playerName;
+
+	FNexusAttributionTransaction()
+	: creatorId()
 		, currency()
 		, description()
 		, status()
@@ -84,215 +85,190 @@
 		, playerLastPurchase()
 		, playerJoinDate()
 		, playerName()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusAttributionCreator
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString id;
+USTRUCT(BlueprintType)
+struct FNexusAttributionCreator
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString name;
+	UPROPERTY()
+	FString id;
 
-		UPROPERTY()
-		FString logoImage;
+	UPROPERTY()
+	FString name;
 
-		UPROPERTY()
-		FString nexusUrl;
+	UPROPERTY()
+	FString logoImage;
 
-		UPROPERTY()
-		FString profileImage;
+	UPROPERTY()
+	FString nexusUrl;
 
-		FNexusAttributionCreator()
-		: id()
+	UPROPERTY()
+	FString profileImage;
+
+	FNexusAttributionCreator()
+	: id()
 		, name()
 		, logoImage()
 		, nexusUrl()
 		, profileImage()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusAttributionCreatorGroup
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString name;
+USTRUCT(BlueprintType)
+struct FNexusAttributionCreatorGroup
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString id;
+	UPROPERTY()
+	FString name;
 
-		UPROPERTY()
-		FString status;
+	UPROPERTY()
+	FString id;
 
-		FNexusAttributionCreatorGroup()
-		: name()
+	UPROPERTY()
+	FString status;
+
+	FNexusAttributionCreatorGroup()
+	: name()
 		, id()
 		, status()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusAttributionGetCreatorsRequestParams
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		int32 page;
+USTRUCT(BlueprintType)
+struct FNexusAttributionGetCreatorsRequestParams
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		int32 pageSize;
+	UPROPERTY()
+	int32 page;
 
-		UPROPERTY()
-		FString groupId;
+	UPROPERTY()
+	int32 pageSize;
 
-		FNexusAttributionGetCreatorsRequestParams()
-		: page()
+	UPROPERTY()
+	FString groupId;
+
+	FNexusAttributionGetCreatorsRequestParams()
+	: page()
 		, pageSize()
 		, groupId()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusAttributionGetCreatorByUuidRequestParams
+USTRUCT(BlueprintType)
+struct FNexusAttributionGetCreatorByUuidRequestParams
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FString creatorSlugOrId;
+
+	FNexusAttributionGetCreatorByUuidRequestParams()
+	: creatorSlugOrId()
 	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		FString creatorSlugOrId;
+	}
 
-		FNexusAttributionGetCreatorByUuidRequestParams()
-		: creatorSlugOrId()
-		{
-
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusAttributionGetCreators200Response
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		int32 currentPage;
+USTRUCT(BlueprintType)
+struct FNexusAttributionGetCreators200Response
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		int32 currentPageSize;
+	UPROPERTY()
+	int32 currentPage;
 
-		UPROPERTY()
-		TArray<FNexusAttributionCreator> creators;
+	UPROPERTY()
+	int32 currentPageSize;
 
-		FNexusAttributionGetCreators200Response()
-		: currentPage()
+	UPROPERTY()
+	TArray<FNexusAttributionCreator> creators;
+
+	FNexusAttributionGetCreators200Response()
+	: currentPage()
 		, currentPageSize()
 		, creators()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
-	
-	USTRUCT(BlueprintType)
-	struct FNexusAttributionGetCreatorByUuid200Response
-	{
-		GENERATED_BODY()
-	
-	
-		UPROPERTY()
-		TArray<FNexusAttributionCreatorGroup> groups;
+USTRUCT(BlueprintType)
+struct FNexusAttributionGetCreatorByUuid200Response
+{
+	GENERATED_BODY()
 
-		UPROPERTY()
-		FString id;
+	UPROPERTY()
+	TArray<FNexusAttributionCreatorGroup> groups;
 
-		UPROPERTY()
-		FString name;
+	UPROPERTY()
+	FString id;
 
-		UPROPERTY()
-		FString logoImage;
+	UPROPERTY()
+	FString name;
 
-		UPROPERTY()
-		FString nexusUrl;
+	UPROPERTY()
+	FString logoImage;
 
-		UPROPERTY()
-		FString profileImage;
+	UPROPERTY()
+	FString nexusUrl;
 
-		FNexusAttributionGetCreatorByUuid200Response()
-		: groups()
+	UPROPERTY()
+	FString profileImage;
+
+	FNexusAttributionGetCreatorByUuid200Response()
+	: groups()
 		, id()
 		, name()
 		, logoImage()
 		, nexusUrl()
 		, profileImage()
-		{
+	{
+	}
 
-		}
-
-	
 };
 
+/*---------------------------------------------------------------------------------------------
+		API Functions
+---------------------------------------------------------------------------------------------*/
 
-	/*---------------------------------------------------------------------------------------------
-			API Functions
-	---------------------------------------------------------------------------------------------*/
 class NEXUSUNREALSDK_API FNexusAttributionAPI
 {
 public:
 	DECLARE_DELEGATE_OneParam(FOnGetCreators200ResponseCallback, const FNexusAttributionGetCreators200Response& /*Response*/);
-	static void GetCreators(const FNexusAttributionGetCreatorsRequestParams& RequestParams, const FOnGetCreators200ResponseCallback& Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
+	static void GetCreators(const FNexusAttributionGetCreatorsRequestParams& RequestParams, const FOnGetCreators200ResponseCallback& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate = {});
 
 	DECLARE_DELEGATE_OneParam(FOnGetCreatorByUuid200ResponseCallback, const FNexusAttributionGetCreatorByUuid200Response& /*Response*/);
-	static void GetCreatorByUuid(const FNexusAttributionGetCreatorByUuidRequestParams& RequestParams, const FOnGetCreatorByUuid200ResponseCallback& Response, FNexusOnHttpErrorDelegate ErrorDelegate = {});
+	static void GetCreatorByUuid(const FNexusAttributionGetCreatorByUuidRequestParams& RequestParams, const FOnGetCreatorByUuid200ResponseCallback& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate = {});
 
 };
 
-//Blueprint Function Nodes
-
+/*---------------------------------------------------------------------------------------------
+		Blueprint Function Nodes
+---------------------------------------------------------------------------------------------*/
 
 UCLASS()
 class NEXUSUNREALSDK_API UNexusGetCreatorsNode : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
+
 public:
 	UNexusGetCreatorsNode();
 
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", Category = "Nexus|Attribution", WorldContext = "WorldContextObject"))
-					static UNexusGetCreatorsNode* GetCreators(UObject* WorldContextObject, const FNexusAttributionGetCreatorsRequestParams& InRequestParams);
-
+	static UNexusGetCreatorsNode* GetCreators(UObject* WorldContextObject, const FNexusAttributionGetCreatorsRequestParams& InRequestParams);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetCreators200Response, const FNexusAttributionGetCreators200Response& /*Response*/, Param0);
 
@@ -308,24 +284,24 @@ public:
 
 	void WhenError(int32 ErrorCode);
 
-
+	// See UBlueprintAsyncActionBase::Activate()
 	virtual void Activate() override;
 
 private:
-
 	FNexusAttributionGetCreatorsRequestParams RequestParams;
+
 };
 
 UCLASS()
 class NEXUSUNREALSDK_API UNexusGetCreatorByUuidNode : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
+
 public:
 	UNexusGetCreatorByUuidNode();
 
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", Category = "Nexus|Attribution", WorldContext = "WorldContextObject"))
-					static UNexusGetCreatorByUuidNode* GetCreatorByUuid(UObject* WorldContextObject, const FNexusAttributionGetCreatorByUuidRequestParams& InRequestParams);
-
+	static UNexusGetCreatorByUuidNode* GetCreatorByUuid(UObject* WorldContextObject, const FNexusAttributionGetCreatorByUuidRequestParams& InRequestParams);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetCreatorByUuid200Response, const FNexusAttributionGetCreatorByUuid200Response& /*Response*/, Param0);
 
@@ -341,10 +317,10 @@ public:
 
 	void WhenError(int32 ErrorCode);
 
-
+	// See UBlueprintAsyncActionBase::Activate()
 	virtual void Activate() override;
 
 private:
-
 	FNexusAttributionGetCreatorByUuidRequestParams RequestParams;
+
 };

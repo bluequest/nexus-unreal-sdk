@@ -19,115 +19,117 @@
  * Unreal SDK, descriptive comment goes here, notes about implementation, whatever we want really.
  */
 
+/*---------------------------------------------------------------------------------------------
+		API Functions
+---------------------------------------------------------------------------------------------*/
+
 namespace FGetBountiesHelpers
 {
-
 	class FOnGetBountiesRequestContext final : public NexusSDK::FRequestContext
 	{
 	public:
-	FOnGetBountiesRequestContext() = delete;
-		FOnGetBountiesRequestContext(FNexusBountyAPI::FOnGetBountiesResponse InCallback, FNexusOnHttpErrorDelegate InErrorDelegate) 
-		: Callback(InCallback)
-		, ErrorDelegate(InErrorDelegate)
-	{}
+		FOnGetBountiesRequestContext() = delete;
+		FOnGetBountiesRequestContext(const FNexusBountyAPI::FOnGetBountiesResponse& InCallback, const FNexusOnHttpErrorDelegate& InErrorDelegate) 
+			: Callback(InCallback)
+			, ErrorDelegate(InErrorDelegate)
+		{}
 
-	void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
-	{
-		//TODO
-		if (!bConnectedSuccessfully || !Response.IsValid())
+		void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
 		{
-		// Didn't connect, or the response is null, bail
-		//TODO: HANDLE THIS GRACEFULLY
-		return;
-		}
-	
-
-		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(200))
-		{
-			FNexusBountyGetBounties200Response OutputResponse;
-
-			// Create a Json object and parser
-			const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
-			TSharedPtr<FJsonObject> RootObject;
-
-			// Parse it!
-			if (!FJsonSerializer::Deserialize(Reader, RootObject))
+			if (!bConnectedSuccessfully || !Response.IsValid())
 			{
-				// Parse error
-				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
-				return;
-			}
-
-			// Parse the response!
-			FText FailureReason;
-			bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
-			if ( !bResult )
-			{
-				// Oh no! This shouldn't happen! If it does start happening, we should rethink this error handling.
-				// Perhaps this should not be fatal.
-				// TODO(JoshD): Log the failure reason at the very least?
-				UE_DEBUG_BREAK();
+				// Didn't connect, or the response is null, bail
+				// TODO: Going to call the error delegate with an unknown response code as an answer to this for now
 				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+				FNexusUnrealSDKModule::Get().RemoveRequest(this);
 				return;
 			}
 
-			// Run the callback successfully!
+			if (Response->GetResponseCode() == 200)
+			{
+				FNexusBountyGetBounties200Response OutputResponse;
+
+				// Create a json object and reader
+				const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
+				TSharedPtr<FJsonObject> RootObject;
+
+				// Deserialize it!
+				if (!FJsonSerializer::Deserialize(Reader, RootObject))
+				{
+					// Parse error
+					ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+					FNexusUnrealSDKModule::Get().RemoveRequest(this);
+					return;
+				}
+
+				// Parse the response!
+				FText FailureReason;
+				bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+				if ( !bResult )
+				{
+					// TODO: Hmm, this probably shouldn't be fatal, false doesn't indicate complete failure, just that some part of the json
+					// wasn't recognised using reflection... Either way, this shouldn't ever happen. So alert a programmer running in the debugger.
+					// TODO: Implement this commented out code!
+					//UE_LOG( LogNexusSDK, FailureReason );
+					UE_DEBUG_BREAK();
+					ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+					FNexusUnrealSDKModule::Get().RemoveRequest(this);
+					return;
+				}
+
+				// Run the main callback!
 				Callback.On200Response.ExecuteIfBound(OutputResponse);	
-
-			
-		}	
-
-		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(400))
-		{
-			FNexusBountyBountyError OutputResponse;
-
-			// Create a Json object and parser
-			const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
-			TSharedPtr<FJsonObject> RootObject;
-
-			// Parse it!
-			if (!FJsonSerializer::Deserialize(Reader, RootObject))
-			{
-				// Parse error
-				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
-				return;
 			}
-
-			// Parse the response!
-			FText FailureReason;
-			bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
-			if ( !bResult )
+			if (Response->GetResponseCode() == 400)
 			{
-				// Oh no! This shouldn't happen! If it does start happening, we should rethink this error handling.
-				// Perhaps this should not be fatal.
-				// TODO(JoshD): Log the failure reason at the very least?
-				UE_DEBUG_BREAK();
-				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
-				return;
-			}
+				FNexusBountyBountyError OutputResponse;
 
-			// Run the callback successfully!
+				// Create a json object and reader
+				const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
+				TSharedPtr<FJsonObject> RootObject;
+
+				// Deserialize it!
+				if (!FJsonSerializer::Deserialize(Reader, RootObject))
+				{
+					// Parse error
+					ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+					FNexusUnrealSDKModule::Get().RemoveRequest(this);
+					return;
+				}
+
+				// Parse the response!
+				FText FailureReason;
+				bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+				if ( !bResult )
+				{
+					// TODO: Hmm, this probably shouldn't be fatal, false doesn't indicate complete failure, just that some part of the json
+					// wasn't recognised using reflection... Either way, this shouldn't ever happen. So alert a programmer running in the debugger.
+					// TODO: Implement this commented out code!
+					//UE_LOG( LogNexusSDK, FailureReason );
+					UE_DEBUG_BREAK();
+					ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+					FNexusUnrealSDKModule::Get().RemoveRequest(this);
+					return;
+				}
+
+				// Run the main callback!
 				Callback.On400Response.ExecuteIfBound(OutputResponse);	
+			}
 
+			if (Response->GetResponseCode() != 200 && Response->GetResponseCode() != 400)
+			{
+				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+			}
 			
-		}	
-
-		if(Response->GetResponseCode() != 200 || Response->GetResponseCode() != 400)
-		{
-			ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+			// Now remove and delete ourselves from the module cache
+			FNexusUnrealSDKModule::Get().RemoveRequest(this);
 		}
-			
-		// Now remove and delete ourselves from the module cache
-		FNexusUnrealSDKModule::Get().RemoveRequest(this);
-	}
 
 	private:
 		FNexusBountyAPI::FOnGetBountiesResponse Callback;
 		FNexusOnHttpErrorDelegate ErrorDelegate;
 
 	};
-
-
 
 	bool GetBounties_IsValid(const FNexusBountyGetBountiesRequestParams& Request)
 	{
@@ -141,24 +143,25 @@ namespace FGetBountiesHelpers
 			return false;
 
 		return true;
-	}	
-}
+	}
 
-void FNexusBountyAPI::GetBounties(const FNexusBountyGetBountiesRequestParams& RequestParams, const FOnGetBountiesResponse& Response, FNexusOnHttpErrorDelegate ErrorDelegate)
+} // namespace FGetBountiesHelpers
+
+void FNexusBountyAPI::GetBounties(const FNexusBountyGetBountiesRequestParams& RequestParams, const FOnGetBountiesResponse& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate)
 {
-
-	if(!FGetBountiesHelpers::GetBounties_IsValid(RequestParams))
+	if (!FGetBountiesHelpers::GetBounties_IsValid(RequestParams))
 	{
-		ErrorDelegate.ExecuteIfBound(0);
+		ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 		return;
 	}
+
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
 
 	{
 		// Initialise some bits and pieces ahead of time
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/bounties/?groupId=%s&page=%d&pageSize=%d"), *RequestParams.groupId, RequestParams.page, RequestParams.pageSize);
 		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
-		TUniquePtr<FGetBountiesHelpers::FOnGetBountiesRequestContext> RequestContext = MakeUnique<FGetBountiesHelpers::FOnGetBountiesRequestContext>(Response, ErrorDelegate);
+		TUniquePtr<FGetBountiesHelpers::FOnGetBountiesRequestContext> RequestContext = MakeUnique<FGetBountiesHelpers::FOnGetBountiesRequestContext>(ResponseDelegate, ErrorDelegate);
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
@@ -167,123 +170,121 @@ void FNexusBountyAPI::GetBounties(const FNexusBountyGetBountiesRequestParams& Re
 		HttpRequest->SetHeader(TEXT("x-shared-secret"), PublicKey);
 		HttpRequest->OnProcessRequestComplete().BindRaw(RequestContext.Get(), &FGetBountiesHelpers::FOnGetBountiesRequestContext::ProcessRequestComplete);
 
-		// Hand ownership of the request over to the module
+		// Hand ownership of the request context over to the module
 		FNexusUnrealSDKModule::Get().AddRequest(MoveTemp(RequestContext));
 	}
 
 	// Send it!
 	HttpRequest->ProcessRequest();
-
 }
+
 namespace FGetBountyHelpers
 {
-
 	class FOnGetBountyRequestContext final : public NexusSDK::FRequestContext
 	{
 	public:
-	FOnGetBountyRequestContext() = delete;
-		FOnGetBountyRequestContext(FNexusBountyAPI::FOnGetBountyResponse InCallback, FNexusOnHttpErrorDelegate InErrorDelegate) 
-		: Callback(InCallback)
-		, ErrorDelegate(InErrorDelegate)
-	{}
+		FOnGetBountyRequestContext() = delete;
+		FOnGetBountyRequestContext(const FNexusBountyAPI::FOnGetBountyResponse& InCallback, const FNexusOnHttpErrorDelegate& InErrorDelegate) 
+			: Callback(InCallback)
+			, ErrorDelegate(InErrorDelegate)
+		{}
 
-	void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
-	{
-		//TODO
-		if (!bConnectedSuccessfully || !Response.IsValid())
+		void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
 		{
-		// Didn't connect, or the response is null, bail
-		//TODO: HANDLE THIS GRACEFULLY
-		return;
-		}
-	
-
-		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(200))
-		{
-			FNexusBountyGetBounty200Response OutputResponse;
-
-			// Create a Json object and parser
-			const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
-			TSharedPtr<FJsonObject> RootObject;
-
-			// Parse it!
-			if (!FJsonSerializer::Deserialize(Reader, RootObject))
+			if (!bConnectedSuccessfully || !Response.IsValid())
 			{
-				// Parse error
-				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
-				return;
-			}
-
-			// Parse the response!
-			FText FailureReason;
-			bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
-			if ( !bResult )
-			{
-				// Oh no! This shouldn't happen! If it does start happening, we should rethink this error handling.
-				// Perhaps this should not be fatal.
-				// TODO(JoshD): Log the failure reason at the very least?
-				UE_DEBUG_BREAK();
+				// Didn't connect, or the response is null, bail
+				// TODO: Going to call the error delegate with an unknown response code as an answer to this for now
 				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+				FNexusUnrealSDKModule::Get().RemoveRequest(this);
 				return;
 			}
 
-			// Run the callback successfully!
+			if (Response->GetResponseCode() == 200)
+			{
+				FNexusBountyGetBounty200Response OutputResponse;
+
+				// Create a json object and reader
+				const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
+				TSharedPtr<FJsonObject> RootObject;
+
+				// Deserialize it!
+				if (!FJsonSerializer::Deserialize(Reader, RootObject))
+				{
+					// Parse error
+					ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+					FNexusUnrealSDKModule::Get().RemoveRequest(this);
+					return;
+				}
+
+				// Parse the response!
+				FText FailureReason;
+				bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+				if ( !bResult )
+				{
+					// TODO: Hmm, this probably shouldn't be fatal, false doesn't indicate complete failure, just that some part of the json
+					// wasn't recognised using reflection... Either way, this shouldn't ever happen. So alert a programmer running in the debugger.
+					// TODO: Implement this commented out code!
+					//UE_LOG( LogNexusSDK, FailureReason );
+					UE_DEBUG_BREAK();
+					ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+					FNexusUnrealSDKModule::Get().RemoveRequest(this);
+					return;
+				}
+
+				// Run the main callback!
 				Callback.On200Response.ExecuteIfBound(OutputResponse);	
-
-			
-		}	
-
-		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(400))
-		{
-			FNexusBountyBountyError OutputResponse;
-
-			// Create a Json object and parser
-			const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
-			TSharedPtr<FJsonObject> RootObject;
-
-			// Parse it!
-			if (!FJsonSerializer::Deserialize(Reader, RootObject))
-			{
-				// Parse error
-				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
-				return;
 			}
-
-			// Parse the response!
-			FText FailureReason;
-			bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
-			if ( !bResult )
+			if (Response->GetResponseCode() == 400)
 			{
-				// Oh no! This shouldn't happen! If it does start happening, we should rethink this error handling.
-				// Perhaps this should not be fatal.
-				// TODO(JoshD): Log the failure reason at the very least?
-				UE_DEBUG_BREAK();
-				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
-				return;
-			}
+				FNexusBountyBountyError OutputResponse;
 
-			// Run the callback successfully!
+				// Create a json object and reader
+				const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
+				TSharedPtr<FJsonObject> RootObject;
+
+				// Deserialize it!
+				if (!FJsonSerializer::Deserialize(Reader, RootObject))
+				{
+					// Parse error
+					ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+					FNexusUnrealSDKModule::Get().RemoveRequest(this);
+					return;
+				}
+
+				// Parse the response!
+				FText FailureReason;
+				bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+				if ( !bResult )
+				{
+					// TODO: Hmm, this probably shouldn't be fatal, false doesn't indicate complete failure, just that some part of the json
+					// wasn't recognised using reflection... Either way, this shouldn't ever happen. So alert a programmer running in the debugger.
+					// TODO: Implement this commented out code!
+					//UE_LOG( LogNexusSDK, FailureReason );
+					UE_DEBUG_BREAK();
+					ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+					FNexusUnrealSDKModule::Get().RemoveRequest(this);
+					return;
+				}
+
+				// Run the main callback!
 				Callback.On400Response.ExecuteIfBound(OutputResponse);	
+			}
 
+			if (Response->GetResponseCode() != 200 && Response->GetResponseCode() != 400)
+			{
+				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+			}
 			
-		}	
-
-		if(Response->GetResponseCode() != 200 || Response->GetResponseCode() != 400)
-		{
-			ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+			// Now remove and delete ourselves from the module cache
+			FNexusUnrealSDKModule::Get().RemoveRequest(this);
 		}
-			
-		// Now remove and delete ourselves from the module cache
-		FNexusUnrealSDKModule::Get().RemoveRequest(this);
-	}
 
 	private:
 		FNexusBountyAPI::FOnGetBountyResponse Callback;
 		FNexusOnHttpErrorDelegate ErrorDelegate;
 
 	};
-
-
 
 	bool GetBounty_IsValid(const FNexusBountyGetBountyRequestParams& Request)
 	{
@@ -297,24 +298,25 @@ namespace FGetBountyHelpers
 			return false;
 
 		return true;
-	}	
-}
+	}
 
-void FNexusBountyAPI::GetBounty(const FNexusBountyGetBountyRequestParams& RequestParams, const FOnGetBountyResponse& Response, FNexusOnHttpErrorDelegate ErrorDelegate)
+} // namespace FGetBountyHelpers
+
+void FNexusBountyAPI::GetBounty(const FNexusBountyGetBountyRequestParams& RequestParams, const FOnGetBountyResponse& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate)
 {
-
-	if(!FGetBountyHelpers::GetBounty_IsValid(RequestParams))
+	if (!FGetBountyHelpers::GetBounty_IsValid(RequestParams))
 	{
-		ErrorDelegate.ExecuteIfBound(0);
+		ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 		return;
 	}
+
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
 
 	{
 		// Initialise some bits and pieces ahead of time
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/bounties/%s?groupId=%s&includeProgress=%c&page=%d&pageSize=%d"), *RequestParams.bountyId, *RequestParams.groupId, RequestParams.includeProgress, RequestParams.page, RequestParams.pageSize);
 		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
-		TUniquePtr<FGetBountyHelpers::FOnGetBountyRequestContext> RequestContext = MakeUnique<FGetBountyHelpers::FOnGetBountyRequestContext>(Response, ErrorDelegate);
+		TUniquePtr<FGetBountyHelpers::FOnGetBountyRequestContext> RequestContext = MakeUnique<FGetBountyHelpers::FOnGetBountyRequestContext>(ResponseDelegate, ErrorDelegate);
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
@@ -323,123 +325,121 @@ void FNexusBountyAPI::GetBounty(const FNexusBountyGetBountyRequestParams& Reques
 		HttpRequest->SetHeader(TEXT("x-shared-secret"), PublicKey);
 		HttpRequest->OnProcessRequestComplete().BindRaw(RequestContext.Get(), &FGetBountyHelpers::FOnGetBountyRequestContext::ProcessRequestComplete);
 
-		// Hand ownership of the request over to the module
+		// Hand ownership of the request context over to the module
 		FNexusUnrealSDKModule::Get().AddRequest(MoveTemp(RequestContext));
 	}
 
 	// Send it!
 	HttpRequest->ProcessRequest();
-
 }
+
 namespace FGetCreatorBountiesByIDHelpers
 {
-
 	class FOnGetCreatorBountiesByIDRequestContext final : public NexusSDK::FRequestContext
 	{
 	public:
-	FOnGetCreatorBountiesByIDRequestContext() = delete;
-		FOnGetCreatorBountiesByIDRequestContext(FNexusBountyAPI::FOnGetCreatorBountiesByIDResponse InCallback, FNexusOnHttpErrorDelegate InErrorDelegate) 
-		: Callback(InCallback)
-		, ErrorDelegate(InErrorDelegate)
-	{}
+		FOnGetCreatorBountiesByIDRequestContext() = delete;
+		FOnGetCreatorBountiesByIDRequestContext(const FNexusBountyAPI::FOnGetCreatorBountiesByIDResponse& InCallback, const FNexusOnHttpErrorDelegate& InErrorDelegate) 
+			: Callback(InCallback)
+			, ErrorDelegate(InErrorDelegate)
+		{}
 
-	void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
-	{
-		//TODO
-		if (!bConnectedSuccessfully || !Response.IsValid())
+		void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
 		{
-		// Didn't connect, or the response is null, bail
-		//TODO: HANDLE THIS GRACEFULLY
-		return;
-		}
-	
-
-		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(200))
-		{
-			FNexusBountyGetCreatorBountiesByID200Response OutputResponse;
-
-			// Create a Json object and parser
-			const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
-			TSharedPtr<FJsonObject> RootObject;
-
-			// Parse it!
-			if (!FJsonSerializer::Deserialize(Reader, RootObject))
+			if (!bConnectedSuccessfully || !Response.IsValid())
 			{
-				// Parse error
-				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
-				return;
-			}
-
-			// Parse the response!
-			FText FailureReason;
-			bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
-			if ( !bResult )
-			{
-				// Oh no! This shouldn't happen! If it does start happening, we should rethink this error handling.
-				// Perhaps this should not be fatal.
-				// TODO(JoshD): Log the failure reason at the very least?
-				UE_DEBUG_BREAK();
+				// Didn't connect, or the response is null, bail
+				// TODO: Going to call the error delegate with an unknown response code as an answer to this for now
 				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+				FNexusUnrealSDKModule::Get().RemoveRequest(this);
 				return;
 			}
 
-			// Run the callback successfully!
+			if (Response->GetResponseCode() == 200)
+			{
+				FNexusBountyGetCreatorBountiesByID200Response OutputResponse;
+
+				// Create a json object and reader
+				const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
+				TSharedPtr<FJsonObject> RootObject;
+
+				// Deserialize it!
+				if (!FJsonSerializer::Deserialize(Reader, RootObject))
+				{
+					// Parse error
+					ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+					FNexusUnrealSDKModule::Get().RemoveRequest(this);
+					return;
+				}
+
+				// Parse the response!
+				FText FailureReason;
+				bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+				if ( !bResult )
+				{
+					// TODO: Hmm, this probably shouldn't be fatal, false doesn't indicate complete failure, just that some part of the json
+					// wasn't recognised using reflection... Either way, this shouldn't ever happen. So alert a programmer running in the debugger.
+					// TODO: Implement this commented out code!
+					//UE_LOG( LogNexusSDK, FailureReason );
+					UE_DEBUG_BREAK();
+					ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+					FNexusUnrealSDKModule::Get().RemoveRequest(this);
+					return;
+				}
+
+				// Run the main callback!
 				Callback.On200Response.ExecuteIfBound(OutputResponse);	
-
-			
-		}	
-
-		if(Response->GetResponseCode() == static_cast<EHttpResponseCodes::Type>(400))
-		{
-			FNexusBountyBountyError OutputResponse;
-
-			// Create a Json object and parser
-			const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
-			TSharedPtr<FJsonObject> RootObject;
-
-			// Parse it!
-			if (!FJsonSerializer::Deserialize(Reader, RootObject))
-			{
-				// Parse error
-				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
-				return;
 			}
-
-			// Parse the response!
-			FText FailureReason;
-			bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
-			if ( !bResult )
+			if (Response->GetResponseCode() == 400)
 			{
-				// Oh no! This shouldn't happen! If it does start happening, we should rethink this error handling.
-				// Perhaps this should not be fatal.
-				// TODO(JoshD): Log the failure reason at the very least?
-				UE_DEBUG_BREAK();
-				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
-				return;
-			}
+				FNexusBountyBountyError OutputResponse;
 
-			// Run the callback successfully!
+				// Create a json object and reader
+				const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
+				TSharedPtr<FJsonObject> RootObject;
+
+				// Deserialize it!
+				if (!FJsonSerializer::Deserialize(Reader, RootObject))
+				{
+					// Parse error
+					ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+					FNexusUnrealSDKModule::Get().RemoveRequest(this);
+					return;
+				}
+
+				// Parse the response!
+				FText FailureReason;
+				bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+				if ( !bResult )
+				{
+					// TODO: Hmm, this probably shouldn't be fatal, false doesn't indicate complete failure, just that some part of the json
+					// wasn't recognised using reflection... Either way, this shouldn't ever happen. So alert a programmer running in the debugger.
+					// TODO: Implement this commented out code!
+					//UE_LOG( LogNexusSDK, FailureReason );
+					UE_DEBUG_BREAK();
+					ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+					FNexusUnrealSDKModule::Get().RemoveRequest(this);
+					return;
+				}
+
+				// Run the main callback!
 				Callback.On400Response.ExecuteIfBound(OutputResponse);	
+			}
 
+			if (Response->GetResponseCode() != 200 && Response->GetResponseCode() != 400)
+			{
+				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+			}
 			
-		}	
-
-		if(Response->GetResponseCode() != 200 || Response->GetResponseCode() != 400)
-		{
-			ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+			// Now remove and delete ourselves from the module cache
+			FNexusUnrealSDKModule::Get().RemoveRequest(this);
 		}
-			
-		// Now remove and delete ourselves from the module cache
-		FNexusUnrealSDKModule::Get().RemoveRequest(this);
-	}
 
 	private:
 		FNexusBountyAPI::FOnGetCreatorBountiesByIDResponse Callback;
 		FNexusOnHttpErrorDelegate ErrorDelegate;
 
 	};
-
-
 
 	bool GetCreatorBountiesByID_IsValid(const FNexusBountyGetCreatorBountiesByIDRequestParams& Request)
 	{
@@ -453,24 +453,25 @@ namespace FGetCreatorBountiesByIDHelpers
 			return false;
 
 		return true;
-	}	
-}
+	}
 
-void FNexusBountyAPI::GetCreatorBountiesByID(const FNexusBountyGetCreatorBountiesByIDRequestParams& RequestParams, const FOnGetCreatorBountiesByIDResponse& Response, FNexusOnHttpErrorDelegate ErrorDelegate)
+} // namespace FGetCreatorBountiesByIDHelpers
+
+void FNexusBountyAPI::GetCreatorBountiesByID(const FNexusBountyGetCreatorBountiesByIDRequestParams& RequestParams, const FOnGetCreatorBountiesByIDResponse& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate)
 {
-
-	if(!FGetCreatorBountiesByIDHelpers::GetCreatorBountiesByID_IsValid(RequestParams))
+	if (!FGetCreatorBountiesByIDHelpers::GetCreatorBountiesByID_IsValid(RequestParams))
 	{
-		ErrorDelegate.ExecuteIfBound(0);
+		ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 		return;
 	}
+
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
 
 	{
 		// Initialise some bits and pieces ahead of time
 		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/bounties/creator/id/%s?groupId=%s&page=%d&pageSize=%d"), *RequestParams.creatorId, *RequestParams.groupId, RequestParams.page, RequestParams.pageSize);
 		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
-		TUniquePtr<FGetCreatorBountiesByIDHelpers::FOnGetCreatorBountiesByIDRequestContext> RequestContext = MakeUnique<FGetCreatorBountiesByIDHelpers::FOnGetCreatorBountiesByIDRequestContext>(Response, ErrorDelegate);
+		TUniquePtr<FGetCreatorBountiesByIDHelpers::FOnGetCreatorBountiesByIDRequestContext> RequestContext = MakeUnique<FGetCreatorBountiesByIDHelpers::FOnGetCreatorBountiesByIDRequestContext>(ResponseDelegate, ErrorDelegate);
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
@@ -479,20 +480,21 @@ void FNexusBountyAPI::GetCreatorBountiesByID(const FNexusBountyGetCreatorBountie
 		HttpRequest->SetHeader(TEXT("x-shared-secret"), PublicKey);
 		HttpRequest->OnProcessRequestComplete().BindRaw(RequestContext.Get(), &FGetCreatorBountiesByIDHelpers::FOnGetCreatorBountiesByIDRequestContext::ProcessRequestComplete);
 
-		// Hand ownership of the request over to the module
+		// Hand ownership of the request context over to the module
 		FNexusUnrealSDKModule::Get().AddRequest(MoveTemp(RequestContext));
 	}
 
 	// Send it!
 	HttpRequest->ProcessRequest();
-
 }
 
+/*---------------------------------------------------------------------------------------------
+		Blueprint Function Nodes
+---------------------------------------------------------------------------------------------*/
 
 UNexusGetBountiesNode::UNexusGetBountiesNode()
 	: Super()
 {
-
 }
 
 void UNexusGetBountiesNode::WhenError(int32 ErrorCode)
@@ -536,7 +538,6 @@ void UNexusGetBountiesNode::When400Callback(const FNexusBountyBountyError& Param
 UNexusGetBountyNode::UNexusGetBountyNode()
 	: Super()
 {
-
 }
 
 void UNexusGetBountyNode::WhenError(int32 ErrorCode)
@@ -580,7 +581,6 @@ void UNexusGetBountyNode::When400Callback(const FNexusBountyBountyError& Param0)
 UNexusGetCreatorBountiesByIDNode::UNexusGetCreatorBountiesByIDNode()
 	: Super()
 {
-
 }
 
 void UNexusGetCreatorBountiesByIDNode::WhenError(int32 ErrorCode)
