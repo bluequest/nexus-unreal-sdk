@@ -12,11 +12,14 @@
 #include "DOM/JsonObject.h"
 #include "JsonObjectConverter.h"
 #include "NexusShared.h"
+#include "NexusPrivate.h"
 #include "NexusSettings.h"
 #include "NexusUnrealSDK.h"
 
 /**
- * Unreal SDK, descriptive comment goes here, notes about implementation, whatever we want really.
+ * Auto-generated implementation file for the Nexus Unreal SDK.
+ * Feel free to dig through this code! We've tried to keep things as straight forward and simple as
+ * possible on the header side, but checking this code out might reveal useful implementation details.
  */
 
 /*---------------------------------------------------------------------------------------------
@@ -38,8 +41,9 @@ namespace FGetReferralInfoByPlayerIdHelpers
 		{
 			if (!bConnectedSuccessfully || !Response.IsValid())
 			{
-				// Didn't connect, or the response is null, bail
-				// TODO: Going to call the error delegate with an unknown response code as an answer to this for now
+				// Didn't connect, or the response was null, bail
+				UE_LOG(LogNexusSDK, Error, TEXT("GetReferralInfoByPlayerId: Connection failed, or the response was invalid"));
+
 				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 				FNexusUnrealSDKModule::Get().RemoveRequest(this);
 				return;
@@ -56,7 +60,9 @@ namespace FGetReferralInfoByPlayerIdHelpers
 				// Deserialize it!
 				if (!FJsonSerializer::Deserialize(Reader, RootObject))
 				{
-					// Parse error
+					// Invalid json?
+					UE_LOG(LogNexusSDK, Error, TEXT("GetReferralInfoByPlayerId: Failed to deserialize json"));
+
 					ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 					FNexusUnrealSDKModule::Get().RemoveRequest(this);
 					return;
@@ -67,10 +73,10 @@ namespace FGetReferralInfoByPlayerIdHelpers
 				bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
 				if ( !bResult )
 				{
-					// TODO: Hmm, this probably shouldn't be fatal, false doesn't indicate complete failure, just that some part of the json
-					// wasn't recognised using reflection... Either way, this shouldn't ever happen. So alert a programmer running in the debugger.
-					// TODO: Implement this commented out code!
-					//UE_LOG( LogNexusSDK, FailureReason );
+					UE_LOG(LogNexusSDK, Error, TEXT("GetReferralInfoByPlayerId - JsonObjectToUStruct: %s"), *FailureReason.ToString());
+
+					// Hmm, this probably shouldn't be an error, false doesn't indicate complete failure, just that some part of the json
+					// wasn't recognised using reflection... Either way, this "shouldn't" ever happen. So alert a programmer running in the debugger.
 					UE_DEBUG_BREAK();
 					ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 					FNexusUnrealSDKModule::Get().RemoveRequest(this);
@@ -91,7 +97,9 @@ namespace FGetReferralInfoByPlayerIdHelpers
 				// Deserialize it!
 				if (!FJsonSerializer::Deserialize(Reader, RootObject))
 				{
-					// Parse error
+					// Invalid json?
+					UE_LOG(LogNexusSDK, Error, TEXT("GetReferralInfoByPlayerId: Failed to deserialize json"));
+
 					ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 					FNexusUnrealSDKModule::Get().RemoveRequest(this);
 					return;
@@ -102,10 +110,10 @@ namespace FGetReferralInfoByPlayerIdHelpers
 				bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
 				if ( !bResult )
 				{
-					// TODO: Hmm, this probably shouldn't be fatal, false doesn't indicate complete failure, just that some part of the json
-					// wasn't recognised using reflection... Either way, this shouldn't ever happen. So alert a programmer running in the debugger.
-					// TODO: Implement this commented out code!
-					//UE_LOG( LogNexusSDK, FailureReason );
+					UE_LOG(LogNexusSDK, Error, TEXT("GetReferralInfoByPlayerId - JsonObjectToUStruct: %s"), *FailureReason.ToString());
+
+					// Hmm, this probably shouldn't be an error, false doesn't indicate complete failure, just that some part of the json
+					// wasn't recognised using reflection... Either way, this "shouldn't" ever happen. So alert a programmer running in the debugger.
 					UE_DEBUG_BREAK();
 					ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 					FNexusUnrealSDKModule::Get().RemoveRequest(this);
@@ -118,6 +126,8 @@ namespace FGetReferralInfoByPlayerIdHelpers
 
 			if (Response->GetResponseCode() != 200 && Response->GetResponseCode() != 400)
 			{
+				UE_LOG(LogNexusSDK, Error, TEXT("GetReferralInfoByPlayerId: Recieved response code %d, which is an error!"), Response->GetResponseCode());
+
 				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 			}
 			
@@ -151,6 +161,8 @@ void FNexusReferralAPI::GetReferralInfoByPlayerId(const FNexusReferralGetReferra
 {
 	if (!FGetReferralInfoByPlayerIdHelpers::GetReferralInfoByPlayerId_IsValid(RequestParams))
 	{
+		UE_LOG(LogNexusSDK, Error, TEXT("Invalid parameters passed to GetReferralInfoByPlayerId"));
+
 		ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 		return;
 	}
@@ -193,8 +205,9 @@ namespace FGetPlayerCurrentReferralHelpers
 		{
 			if (!bConnectedSuccessfully || !Response.IsValid())
 			{
-				// Didn't connect, or the response is null, bail
-				// TODO: Going to call the error delegate with an unknown response code as an answer to this for now
+				// Didn't connect, or the response was null, bail
+				UE_LOG(LogNexusSDK, Error, TEXT("GetPlayerCurrentReferral: Connection failed, or the response was invalid"));
+
 				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 				FNexusUnrealSDKModule::Get().RemoveRequest(this);
 				return;
@@ -222,7 +235,9 @@ namespace FGetPlayerCurrentReferralHelpers
 				// Deserialize it!
 				if (!FJsonSerializer::Deserialize(Reader, RootObject))
 				{
-					// Parse error
+					// Invalid json?
+					UE_LOG(LogNexusSDK, Error, TEXT("GetPlayerCurrentReferral: Failed to deserialize json"));
+
 					ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 					FNexusUnrealSDKModule::Get().RemoveRequest(this);
 					return;
@@ -233,10 +248,10 @@ namespace FGetPlayerCurrentReferralHelpers
 				bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
 				if ( !bResult )
 				{
-					// TODO: Hmm, this probably shouldn't be fatal, false doesn't indicate complete failure, just that some part of the json
-					// wasn't recognised using reflection... Either way, this shouldn't ever happen. So alert a programmer running in the debugger.
-					// TODO: Implement this commented out code!
-					//UE_LOG( LogNexusSDK, FailureReason );
+					UE_LOG(LogNexusSDK, Error, TEXT("GetPlayerCurrentReferral - JsonObjectToUStruct: %s"), *FailureReason.ToString());
+
+					// Hmm, this probably shouldn't be an error, false doesn't indicate complete failure, just that some part of the json
+					// wasn't recognised using reflection... Either way, this "shouldn't" ever happen. So alert a programmer running in the debugger.
 					UE_DEBUG_BREAK();
 					ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 					FNexusUnrealSDKModule::Get().RemoveRequest(this);
@@ -249,6 +264,8 @@ namespace FGetPlayerCurrentReferralHelpers
 
 			if (Response->GetResponseCode() != 200 && Response->GetResponseCode() != 404)
 			{
+				UE_LOG(LogNexusSDK, Error, TEXT("GetPlayerCurrentReferral: Recieved response code %d, which is an error!"), Response->GetResponseCode());
+
 				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 			}
 			
@@ -305,8 +322,9 @@ namespace FGetReferralInfoByCodeHelpers
 		{
 			if (!bConnectedSuccessfully || !Response.IsValid())
 			{
-				// Didn't connect, or the response is null, bail
-				// TODO: Going to call the error delegate with an unknown response code as an answer to this for now
+				// Didn't connect, or the response was null, bail
+				UE_LOG(LogNexusSDK, Error, TEXT("GetReferralInfoByCode: Connection failed, or the response was invalid"));
+
 				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 				FNexusUnrealSDKModule::Get().RemoveRequest(this);
 				return;
@@ -323,7 +341,9 @@ namespace FGetReferralInfoByCodeHelpers
 				// Deserialize it!
 				if (!FJsonSerializer::Deserialize(Reader, RootObject))
 				{
-					// Parse error
+					// Invalid json?
+					UE_LOG(LogNexusSDK, Error, TEXT("GetReferralInfoByCode: Failed to deserialize json"));
+
 					ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 					FNexusUnrealSDKModule::Get().RemoveRequest(this);
 					return;
@@ -334,10 +354,10 @@ namespace FGetReferralInfoByCodeHelpers
 				bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
 				if ( !bResult )
 				{
-					// TODO: Hmm, this probably shouldn't be fatal, false doesn't indicate complete failure, just that some part of the json
-					// wasn't recognised using reflection... Either way, this shouldn't ever happen. So alert a programmer running in the debugger.
-					// TODO: Implement this commented out code!
-					//UE_LOG( LogNexusSDK, FailureReason );
+					UE_LOG(LogNexusSDK, Error, TEXT("GetReferralInfoByCode - JsonObjectToUStruct: %s"), *FailureReason.ToString());
+
+					// Hmm, this probably shouldn't be an error, false doesn't indicate complete failure, just that some part of the json
+					// wasn't recognised using reflection... Either way, this "shouldn't" ever happen. So alert a programmer running in the debugger.
 					UE_DEBUG_BREAK();
 					ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 					FNexusUnrealSDKModule::Get().RemoveRequest(this);
@@ -358,7 +378,9 @@ namespace FGetReferralInfoByCodeHelpers
 				// Deserialize it!
 				if (!FJsonSerializer::Deserialize(Reader, RootObject))
 				{
-					// Parse error
+					// Invalid json?
+					UE_LOG(LogNexusSDK, Error, TEXT("GetReferralInfoByCode: Failed to deserialize json"));
+
 					ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 					FNexusUnrealSDKModule::Get().RemoveRequest(this);
 					return;
@@ -369,10 +391,10 @@ namespace FGetReferralInfoByCodeHelpers
 				bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
 				if ( !bResult )
 				{
-					// TODO: Hmm, this probably shouldn't be fatal, false doesn't indicate complete failure, just that some part of the json
-					// wasn't recognised using reflection... Either way, this shouldn't ever happen. So alert a programmer running in the debugger.
-					// TODO: Implement this commented out code!
-					//UE_LOG( LogNexusSDK, FailureReason );
+					UE_LOG(LogNexusSDK, Error, TEXT("GetReferralInfoByCode - JsonObjectToUStruct: %s"), *FailureReason.ToString());
+
+					// Hmm, this probably shouldn't be an error, false doesn't indicate complete failure, just that some part of the json
+					// wasn't recognised using reflection... Either way, this "shouldn't" ever happen. So alert a programmer running in the debugger.
 					UE_DEBUG_BREAK();
 					ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 					FNexusUnrealSDKModule::Get().RemoveRequest(this);
@@ -385,6 +407,8 @@ namespace FGetReferralInfoByCodeHelpers
 
 			if (Response->GetResponseCode() != 200 && Response->GetResponseCode() != 400)
 			{
+				UE_LOG(LogNexusSDK, Error, TEXT("GetReferralInfoByCode: Recieved response code %d, which is an error!"), Response->GetResponseCode());
+
 				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 			}
 			
@@ -418,6 +442,8 @@ void FNexusReferralAPI::GetReferralInfoByCode(const FNexusReferralGetReferralInf
 {
 	if (!FGetReferralInfoByCodeHelpers::GetReferralInfoByCode_IsValid(RequestParams))
 	{
+		UE_LOG(LogNexusSDK, Error, TEXT("Invalid parameters passed to GetReferralInfoByCode"));
+
 		ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 		return;
 	}

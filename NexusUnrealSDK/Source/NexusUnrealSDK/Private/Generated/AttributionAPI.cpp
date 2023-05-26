@@ -12,11 +12,14 @@
 #include "DOM/JsonObject.h"
 #include "JsonObjectConverter.h"
 #include "NexusShared.h"
+#include "NexusPrivate.h"
 #include "NexusSettings.h"
 #include "NexusUnrealSDK.h"
 
 /**
- * Unreal SDK, descriptive comment goes here, notes about implementation, whatever we want really.
+ * Auto-generated implementation file for the Nexus Unreal SDK.
+ * Feel free to dig through this code! We've tried to keep things as straight forward and simple as
+ * possible on the header side, but checking this code out might reveal useful implementation details.
  */
 
 /*---------------------------------------------------------------------------------------------
@@ -38,8 +41,9 @@ namespace FGetCreatorsHelpers
 		{
 			if (!bConnectedSuccessfully || !Response.IsValid())
 			{
-				// Didn't connect, or the response is null, bail
-				// TODO: Going to call the error delegate with an unknown response code as an answer to this for now
+				// Didn't connect, or the response was null, bail
+				UE_LOG(LogNexusSDK, Error, TEXT("GetCreators: Connection failed, or the response was invalid"));
+
 				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 				FNexusUnrealSDKModule::Get().RemoveRequest(this);
 				return;
@@ -56,7 +60,9 @@ namespace FGetCreatorsHelpers
 				// Deserialize it!
 				if (!FJsonSerializer::Deserialize(Reader, RootObject))
 				{
-					// Parse error
+					// Invalid json?
+					UE_LOG(LogNexusSDK, Error, TEXT("GetCreators: Failed to deserialize json"));
+
 					ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 					FNexusUnrealSDKModule::Get().RemoveRequest(this);
 					return;
@@ -67,10 +73,10 @@ namespace FGetCreatorsHelpers
 				bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
 				if ( !bResult )
 				{
-					// TODO: Hmm, this probably shouldn't be fatal, false doesn't indicate complete failure, just that some part of the json
-					// wasn't recognised using reflection... Either way, this shouldn't ever happen. So alert a programmer running in the debugger.
-					// TODO: Implement this commented out code!
-					//UE_LOG( LogNexusSDK, FailureReason );
+					UE_LOG(LogNexusSDK, Error, TEXT("GetCreators - JsonObjectToUStruct: %s"), *FailureReason.ToString());
+
+					// Hmm, this probably shouldn't be an error, false doesn't indicate complete failure, just that some part of the json
+					// wasn't recognised using reflection... Either way, this "shouldn't" ever happen. So alert a programmer running in the debugger.
 					UE_DEBUG_BREAK();
 					ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 					FNexusUnrealSDKModule::Get().RemoveRequest(this);
@@ -83,6 +89,8 @@ namespace FGetCreatorsHelpers
 
 			if (Response->GetResponseCode() != 200)
 			{
+				UE_LOG(LogNexusSDK, Error, TEXT("GetCreators: Recieved response code %d, which is an error!"), Response->GetResponseCode());
+
 				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 			}
 			
@@ -116,6 +124,8 @@ void FNexusAttributionAPI::GetCreators(const FNexusAttributionGetCreatorsRequest
 {
 	if (!FGetCreatorsHelpers::GetCreators_IsValid(RequestParams))
 	{
+		UE_LOG(LogNexusSDK, Error, TEXT("Invalid parameters passed to GetCreators"));
+
 		ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 		return;
 	}
@@ -158,8 +168,9 @@ namespace FGetCreatorByUuidHelpers
 		{
 			if (!bConnectedSuccessfully || !Response.IsValid())
 			{
-				// Didn't connect, or the response is null, bail
-				// TODO: Going to call the error delegate with an unknown response code as an answer to this for now
+				// Didn't connect, or the response was null, bail
+				UE_LOG(LogNexusSDK, Error, TEXT("GetCreatorByUuid: Connection failed, or the response was invalid"));
+
 				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 				FNexusUnrealSDKModule::Get().RemoveRequest(this);
 				return;
@@ -176,7 +187,9 @@ namespace FGetCreatorByUuidHelpers
 				// Deserialize it!
 				if (!FJsonSerializer::Deserialize(Reader, RootObject))
 				{
-					// Parse error
+					// Invalid json?
+					UE_LOG(LogNexusSDK, Error, TEXT("GetCreatorByUuid: Failed to deserialize json"));
+
 					ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 					FNexusUnrealSDKModule::Get().RemoveRequest(this);
 					return;
@@ -187,10 +200,10 @@ namespace FGetCreatorByUuidHelpers
 				bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
 				if ( !bResult )
 				{
-					// TODO: Hmm, this probably shouldn't be fatal, false doesn't indicate complete failure, just that some part of the json
-					// wasn't recognised using reflection... Either way, this shouldn't ever happen. So alert a programmer running in the debugger.
-					// TODO: Implement this commented out code!
-					//UE_LOG( LogNexusSDK, FailureReason );
+					UE_LOG(LogNexusSDK, Error, TEXT("GetCreatorByUuid - JsonObjectToUStruct: %s"), *FailureReason.ToString());
+
+					// Hmm, this probably shouldn't be an error, false doesn't indicate complete failure, just that some part of the json
+					// wasn't recognised using reflection... Either way, this "shouldn't" ever happen. So alert a programmer running in the debugger.
 					UE_DEBUG_BREAK();
 					ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 					FNexusUnrealSDKModule::Get().RemoveRequest(this);
@@ -203,6 +216,8 @@ namespace FGetCreatorByUuidHelpers
 
 			if (Response->GetResponseCode() != 200)
 			{
+				UE_LOG(LogNexusSDK, Error, TEXT("GetCreatorByUuid: Recieved response code %d, which is an error!"), Response->GetResponseCode());
+
 				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 			}
 			

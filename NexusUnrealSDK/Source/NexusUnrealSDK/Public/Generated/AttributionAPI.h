@@ -12,23 +12,21 @@
 #include "AttributionAPI.generated.h"
 
 /**
- * Hullo there, this is the Nexus Unreal SDK, and this is my cool temp comment.
- * TODO: Here's the old descriptions from the two structs and delegate:
+ * Auto-generated header file for the Nexus Unreal SDK.
+ * Sections:
+ *  - Request and Response Types	- Types for this header
+ *  - API Functions					- Static class containing functions
+ *  - Blueprint Function Nodes		- Blueprint support
  *
- * Request:
- * A struct containing input values accepted by <NAME>
+ * Detailed documentation for the Unreal SDK is available at https://docs.nexus.gg
  *
- * Response:
- * A struct containing output values returned by <NAME>.
- * Always check bSuccess, if it is false, all other data is empty / defaulted.
- *
- * Delegate:
- * Declares a delegate that is executed when <NAME> has recieved
- * and decoded an HTTP response (even on failure).
- * Keep in mind that this is executed on the HTTP thread.
- *
- * @param Response Struct filled with data returned by the API.
- *
+ * Quick start:
+ * Pick a function from the API functions section and check out the parameters it takes.
+ * Fill out a request parameters structure for the function.
+ * Set up a few delegate callbacks depending on how many the function takes,
+ * some take just a success and error delegate, though they may take more passed in via a struct.
+ * Call the function! You will recieve a success or error callback later depending on parameters
+ * passed in and server availability.
  */
 
 /*---------------------------------------------------------------------------------------------
@@ -36,78 +34,26 @@
 ---------------------------------------------------------------------------------------------*/
 
 USTRUCT(BlueprintType)
-struct FNexusAttributionTransaction
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	FString creatorId;
-
-	UPROPERTY()
-	FString currency;
-
-	UPROPERTY()
-	FString description;
-
-	UPROPERTY()
-	FString status;
-
-	UPROPERTY()
-	double subtotal;
-
-	UPROPERTY()
-	FString transactionId;
-
-	UPROPERTY()
-	FDateTime transactionDate;
-
-	UPROPERTY()
-	FString playerId;
-
-	UPROPERTY()
-	FDateTime playerLastPurchase;
-
-	UPROPERTY()
-	FDateTime playerJoinDate;
-
-	UPROPERTY()
-	FString playerName;
-
-	FNexusAttributionTransaction()
-	: creatorId()
-		, currency()
-		, description()
-		, status()
-		, subtotal()
-		, transactionId()
-		, transactionDate()
-		, playerId()
-		, playerLastPurchase()
-		, playerJoinDate()
-		, playerName()
-	{
-	}
-
-};
-
-USTRUCT(BlueprintType)
 struct FNexusAttributionCreator
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString id;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString name;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString logoImage;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString nexusUrl;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
+	FString code;
+
+	UPROPERTY(BlueprintReadWrite)
 	FString profileImage;
 
 	FNexusAttributionCreator()
@@ -115,6 +61,7 @@ struct FNexusAttributionCreator
 		, name()
 		, logoImage()
 		, nexusUrl()
+		, code()
 		, profileImage()
 	{
 	}
@@ -126,13 +73,13 @@ struct FNexusAttributionCreatorGroup
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString name;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString id;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString status;
 
 	FNexusAttributionCreatorGroup()
@@ -145,17 +92,125 @@ struct FNexusAttributionCreatorGroup
 };
 
 USTRUCT(BlueprintType)
+struct FNexusAttributiontotalSpendToDate_Struct
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite)
+	double total;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString currency;
+
+	FNexusAttributiontotalSpendToDate_Struct()
+	: total()
+		, currency()
+	{
+	}
+
+};
+
+USTRUCT(BlueprintType)
+struct FNexusAttributionconversion_Struct
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite)
+	FDateTime lastPurchaseDate;
+
+	UPROPERTY(BlueprintReadWrite)
+	FNexusAttributiontotalSpendToDate_Struct totalSpendToDate;
+
+	FNexusAttributionconversion_Struct()
+	: lastPurchaseDate()
+		, totalSpendToDate()
+	{
+	}
+
+};
+
+USTRUCT(BlueprintType)
+struct FNexusAttributionMetrics
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite)
+	FDateTime joinDate;
+
+	UPROPERTY(BlueprintReadWrite)
+	FNexusAttributionconversion_Struct conversion;
+
+	FNexusAttributionMetrics()
+	: joinDate()
+		, conversion()
+	{
+	}
+
+};
+
+USTRUCT(BlueprintType)
+struct FNexusAttributionTransaction
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite)
+	FString creatorId;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString currency;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString description;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString status;
+
+	UPROPERTY(BlueprintReadWrite)
+	double subtotal;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString transactionId;
+
+	UPROPERTY(BlueprintReadWrite)
+	FDateTime transactionDate;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString playerId;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString playerName;
+
+	UPROPERTY(BlueprintReadWrite)
+	FNexusAttributionMetrics metrics;
+
+	FNexusAttributionTransaction()
+	: creatorId()
+		, currency()
+		, description()
+		, status()
+		, subtotal()
+		, transactionId()
+		, transactionDate()
+		, playerId()
+		, playerName()
+		, metrics()
+	{
+	}
+
+};
+
+USTRUCT(BlueprintType)
 struct FNexusAttributionGetCreatorsRequestParams
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 page;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 pageSize;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString groupId;
 
 	FNexusAttributionGetCreatorsRequestParams()
@@ -172,7 +227,7 @@ struct FNexusAttributionGetCreatorByUuidRequestParams
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString creatorSlugOrId;
 
 	FNexusAttributionGetCreatorByUuidRequestParams()
@@ -187,13 +242,13 @@ struct FNexusAttributionGetCreators200Response
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 currentPage;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 currentPageSize;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TArray<FNexusAttributionCreator> creators;
 
 	FNexusAttributionGetCreators200Response()
@@ -206,35 +261,77 @@ struct FNexusAttributionGetCreators200Response
 };
 
 USTRUCT(BlueprintType)
+struct FNexusAttributiongroups_Struct_Element
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite)
+	FString groupName;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString groupId;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString status;
+
+	FNexusAttributiongroups_Struct_Element()
+	: groupName()
+		, groupId()
+		, status()
+	{
+	}
+
+};
+
+USTRUCT(BlueprintType)
+struct FNexusAttributioncreator_Struct
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite)
+	FString id;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString name;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString logoImage;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString nexusUrl;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString code;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString profileImage;
+
+	UPROPERTY(BlueprintReadWrite)
+	TArray<FNexusAttributiongroups_Struct_Element> groups;
+
+	FNexusAttributioncreator_Struct()
+	: id()
+		, name()
+		, logoImage()
+		, nexusUrl()
+		, code()
+		, profileImage()
+		, groups()
+	{
+	}
+
+};
+
+USTRUCT(BlueprintType)
 struct FNexusAttributionGetCreatorByUuid200Response
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
-	TArray<FNexusAttributionCreatorGroup> groups;
-
-	UPROPERTY()
-	FString id;
-
-	UPROPERTY()
-	FString name;
-
-	UPROPERTY()
-	FString logoImage;
-
-	UPROPERTY()
-	FString nexusUrl;
-
-	UPROPERTY()
-	FString profileImage;
+	UPROPERTY(BlueprintReadWrite)
+	FNexusAttributioncreator_Struct creator;
 
 	FNexusAttributionGetCreatorByUuid200Response()
-	: groups()
-		, id()
-		, name()
-		, logoImage()
-		, nexusUrl()
-		, profileImage()
+	: creator()
 	{
 	}
 

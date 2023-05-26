@@ -12,23 +12,21 @@
 #include "ReferralAPI.generated.h"
 
 /**
- * Hullo there, this is the Nexus Unreal SDK, and this is my cool temp comment.
- * TODO: Here's the old descriptions from the two structs and delegate:
+ * Auto-generated header file for the Nexus Unreal SDK.
+ * Sections:
+ *  - Request and Response Types	- Types for this header
+ *  - API Functions					- Static class containing functions
+ *  - Blueprint Function Nodes		- Blueprint support
  *
- * Request:
- * A struct containing input values accepted by <NAME>
+ * Detailed documentation for the Unreal SDK is available at https://docs.nexus.gg
  *
- * Response:
- * A struct containing output values returned by <NAME>.
- * Always check bSuccess, if it is false, all other data is empty / defaulted.
- *
- * Delegate:
- * Declares a delegate that is executed when <NAME> has recieved
- * and decoded an HTTP response (even on failure).
- * Keep in mind that this is executed on the HTTP thread.
- *
- * @param Response Struct filled with data returned by the API.
- *
+ * Quick start:
+ * Pick a function from the API functions section and check out the parameters it takes.
+ * Fill out a request parameters structure for the function.
+ * Set up a few delegate callbacks depending on how many the function takes,
+ * some take just a success and error delegate, though they may take more passed in via a struct.
+ * Call the function! You will recieve a success or error callback later depending on parameters
+ * passed in and server availability.
  */
 
 /*---------------------------------------------------------------------------------------------
@@ -40,19 +38,19 @@ struct FNexusReferralReferral
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString id;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString code;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString playerId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString playerName;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FDateTime referralDate;
 
 	FNexusReferralReferral()
@@ -71,10 +69,10 @@ struct FNexusReferralReferralError
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString code;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString message;
 
 	FNexusReferralReferralError()
@@ -90,16 +88,16 @@ struct FNexusReferralReferralCodeResponse
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString code;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	bool isPrimary;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	bool isGenerated;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	bool isManaged;
 
 	FNexusReferralReferralCodeResponse()
@@ -117,19 +115,19 @@ struct FNexusReferralGetReferralInfoByPlayerIdRequestParams
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString playerId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString groupId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 page;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 pageSize;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	bool excludeReferralList;
 
 	FNexusReferralGetReferralInfoByPlayerIdRequestParams()
@@ -148,10 +146,10 @@ struct FNexusReferralGetPlayerCurrentReferralRequestParams
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString playerId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString groupId;
 
 	FNexusReferralGetPlayerCurrentReferralRequestParams()
@@ -167,19 +165,19 @@ struct FNexusReferralGetReferralInfoByCodeRequestParams
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString code;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString groupId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 page;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 pageSize;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	bool excludeReferralList;
 
 	FNexusReferralGetReferralInfoByCodeRequestParams()
@@ -198,28 +196,28 @@ struct FNexusReferralGetReferralInfoByPlayerId200Response
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString groupId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString groupName;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TArray<FNexusReferralReferralCodeResponse> referralCodes;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString playerId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 currentPage;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 currentPageSize;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 totalCount;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TArray<FNexusReferralReferral> referrals;
 
 	FNexusReferralGetReferralInfoByPlayerId200Response()
@@ -241,7 +239,7 @@ struct FNexusReferralGetPlayerCurrentReferral404Response
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString code;
 
 	FNexusReferralGetPlayerCurrentReferral404Response()
@@ -256,28 +254,28 @@ struct FNexusReferralGetReferralInfoByCode200Response
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString groupId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString groupName;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TArray<FNexusReferralReferralCodeResponse> referralCodes;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString playerId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 currentPage;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 currentPageSize;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 totalCount;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TArray<FNexusReferralReferral> referrals;
 
 	FNexusReferralGetReferralInfoByCode200Response()

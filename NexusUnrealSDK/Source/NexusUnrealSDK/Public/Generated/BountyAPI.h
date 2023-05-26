@@ -12,23 +12,21 @@
 #include "BountyAPI.generated.h"
 
 /**
- * Hullo there, this is the Nexus Unreal SDK, and this is my cool temp comment.
- * TODO: Here's the old descriptions from the two structs and delegate:
+ * Auto-generated header file for the Nexus Unreal SDK.
+ * Sections:
+ *  - Request and Response Types	- Types for this header
+ *  - API Functions					- Static class containing functions
+ *  - Blueprint Function Nodes		- Blueprint support
  *
- * Request:
- * A struct containing input values accepted by <NAME>
+ * Detailed documentation for the Unreal SDK is available at https://docs.nexus.gg
  *
- * Response:
- * A struct containing output values returned by <NAME>.
- * Always check bSuccess, if it is false, all other data is empty / defaulted.
- *
- * Delegate:
- * Declares a delegate that is executed when <NAME> has recieved
- * and decoded an HTTP response (even on failure).
- * Keep in mind that this is executed on the HTTP thread.
- *
- * @param Response Struct filled with data returned by the API.
- *
+ * Quick start:
+ * Pick a function from the API functions section and check out the parameters it takes.
+ * Fill out a request parameters structure for the function.
+ * Set up a few delegate callbacks depending on how many the function takes,
+ * some take just a success and error delegate, though they may take more passed in via a struct.
+ * Call the function! You will recieve a success or error callback later depending on parameters
+ * passed in and server availability.
  */
 
 /*---------------------------------------------------------------------------------------------
@@ -40,13 +38,13 @@ struct FNexusBountyBountySku
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString id;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString name;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString slug;
 
 	FNexusBountyBountySku()
@@ -63,19 +61,19 @@ struct FNexusBountyBountyProgressReward
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString id;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString name;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString externalId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	bool rewardCompleted;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString rewardReferenceId;
 
 	FNexusBountyBountyProgressReward()
@@ -94,16 +92,16 @@ struct FNexusBountyCreator
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString id;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString playerId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString name;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TArray<FString> slugs;
 
 	FNexusBountyCreator()
@@ -121,13 +119,13 @@ struct FNexusBountyCreatorGroupEvent
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString eventCode;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString playerId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString referralCode;
 
 	FNexusBountyCreatorGroupEvent()
@@ -144,10 +142,10 @@ struct FNexusBountyBountyError
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString code;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString message;
 
 	FNexusBountyBountyError()
@@ -163,13 +161,13 @@ struct FNexusBountycategory_Struct
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString id;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString name;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString slug;
 
 	FNexusBountycategory_Struct()
@@ -186,10 +184,10 @@ struct FNexusBountypublisher_Struct
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString id;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString name;
 
 	FNexusBountypublisher_Struct()
@@ -205,10 +203,10 @@ struct FNexusBountydependants_Struct_Element
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString id;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString name;
 
 	FNexusBountydependants_Struct_Element()
@@ -224,10 +222,10 @@ struct FNexusBountyprerequisites_Struct_Element
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString id;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString name;
 
 	FNexusBountyprerequisites_Struct_Element()
@@ -243,16 +241,16 @@ struct FNexusBountyobjective_Struct
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString id;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString name;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	double count;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString condition;
 
 	FNexusBountyobjective_Struct()
@@ -270,16 +268,16 @@ struct FNexusBountyBountyObjectiveProgress
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString id;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	bool completed;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	double count;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FNexusBountyobjective_Struct objective;
 
 	FNexusBountyBountyObjectiveProgress()
@@ -297,25 +295,25 @@ struct FNexusBountyBountyReward
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString id;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString name;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString type;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FNexusBountyBountySku sku;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	double amount;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString currency;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString externalId;
 
 	FNexusBountyBountyReward()
@@ -336,37 +334,37 @@ struct FNexusBountyBountyObjective
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString id;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString name;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString type;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString condition;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	double count;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString eventType;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString eventCode;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString nexusPurchaseObjectiveType;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TArray<FNexusBountyBountySku> skus;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FNexusBountycategory_Struct category;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FNexusBountypublisher_Struct publisher;
 
 	FNexusBountyBountyObjective()
@@ -391,13 +389,13 @@ struct FNexusBountycompletedObjectives_Struct_Element
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString objectiveGroupId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TArray<FNexusBountyBountyObjective> objectives;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TArray<FNexusBountyBountyReward> rewards;
 
 	FNexusBountycompletedObjectives_Struct_Element()
@@ -414,43 +412,43 @@ struct FNexusBountyBounty
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString id;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString name;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString description;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString imageSrc;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString rewardDescription;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	double limit;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FDateTime startsAt;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FDateTime endsAt;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FDateTime lastProgressCheck;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TArray<FNexusBountyBountyObjective> objectives;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TArray<FNexusBountyBountyReward> rewards;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TArray<FNexusBountydependants_Struct_Element> dependants;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TArray<FNexusBountyprerequisites_Struct_Element> prerequisites;
 
 	FNexusBountyBounty()
@@ -477,25 +475,25 @@ struct FNexusBountyBountyProgress
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString id;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	bool completed;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	double completionCount;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FDateTime lastProgressCheck;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString currentObjectiveGroupId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TArray<FNexusBountyBountyObjectiveProgress> currentObjectives;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TArray<FNexusBountycompletedObjectives_Struct_Element> completedObjectives;
 
 	FNexusBountyBountyProgress()
@@ -516,13 +514,13 @@ struct FNexusBountyGetBountiesRequestParams
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString groupId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 page;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 pageSize;
 
 	FNexusBountyGetBountiesRequestParams()
@@ -539,19 +537,19 @@ struct FNexusBountyGetBountyRequestParams
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString groupId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	bool includeProgress;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 page;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 pageSize;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString bountyId;
 
 	FNexusBountyGetBountyRequestParams()
@@ -570,16 +568,16 @@ struct FNexusBountyGetCreatorBountiesByIDRequestParams
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString groupId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 page;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 pageSize;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString creatorId;
 
 	FNexusBountyGetCreatorBountiesByIDRequestParams()
@@ -597,22 +595,22 @@ struct FNexusBountyGetBounties200Response
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString groupId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString groupName;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 currentPage;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 currentPageSize;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 totalCount;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TArray<FNexusBountyBounty> bounties;
 
 	FNexusBountyGetBounties200Response()
@@ -632,28 +630,28 @@ struct FNexusBountydata_Struct_Element
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString id;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	bool completed;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	double completionCount;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FDateTime lastProgressCheck;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString currentObjectiveGroupId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TArray<FNexusBountyBountyObjectiveProgress> currentObjectives;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TArray<FNexusBountycompletedObjectives_Struct_Element> completedObjectives;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FNexusBountyCreator creator;
 
 	FNexusBountydata_Struct_Element()
@@ -675,16 +673,16 @@ struct FNexusBountyprogress_Struct
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 currentPage;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 currentPageSize;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 totalCount;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TArray<FNexusBountydata_Struct_Element> data;
 
 	FNexusBountyprogress_Struct()
@@ -702,16 +700,16 @@ struct FNexusBountyGetBounty200Response
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString groupId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString groupName;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FNexusBountyBounty bounty;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FNexusBountyprogress_Struct progress;
 
 	FNexusBountyGetBounty200Response()
@@ -729,28 +727,28 @@ struct FNexusBountyGetCreatorBountiesByID200Response
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString groupId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString groupName;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 currentPage;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 currentPageSize;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	int32 totalCount;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString creatorId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString playerId;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FNexusBountyprogress_Struct progress;
 
 	FNexusBountyGetCreatorBountiesByID200Response()
