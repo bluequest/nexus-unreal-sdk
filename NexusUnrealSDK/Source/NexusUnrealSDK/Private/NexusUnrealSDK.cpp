@@ -1,6 +1,9 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "NexusUnrealSDK.h"
+#include "NexusPrivate.h"
+
+DEFINE_LOG_CATEGORY(LogNexusSDK)
 
 #define LOCTEXT_NAMESPACE "FNexusUnrealSDKModule"
 
