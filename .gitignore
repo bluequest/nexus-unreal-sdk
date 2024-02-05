@@ -1,3 +1,4 @@
 # Just need to ignore intermediate and binaries folder for this plugin.
 Intermediate/
 Binaries/
+.vs/

@@ -203,10 +203,13 @@ struct FNexusReferralGetReferralInfoByPlayerId200Response
 	FString groupName;
 
 	UPROPERTY(BlueprintReadWrite)
-	TArray<FNexusReferralReferralCodeResponse> referralCodes;
+	TArray<FNexusReferralReferralCodeResponse> codes;
 
 	UPROPERTY(BlueprintReadWrite)
 	FString playerId;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString memberId;
 
 	UPROPERTY(BlueprintReadWrite)
 	int32 currentPage;
@@ -223,8 +226,9 @@ struct FNexusReferralGetReferralInfoByPlayerId200Response
 	FNexusReferralGetReferralInfoByPlayerId200Response()
 	: groupId()
 		, groupName()
-		, referralCodes()
+		, codes()
 		, playerId()
+		, memberId()
 		, currentPage()
 		, currentPageSize()
 		, totalCount()

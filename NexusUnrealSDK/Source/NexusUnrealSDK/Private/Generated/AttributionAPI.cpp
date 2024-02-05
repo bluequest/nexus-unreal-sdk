@@ -26,13 +26,13 @@
 		API Functions
 ---------------------------------------------------------------------------------------------*/
 
-namespace FGetCreatorsHelpers
+namespace FGetMembersHelpers
 {
-	class FOnGetCreatorsRequestContext final : public NexusSDK::FRequestContext
+	class FOnGetMembersRequestContext final : public NexusSDK::FRequestContext
 	{
 	public:
-		FOnGetCreatorsRequestContext() = delete;
-		FOnGetCreatorsRequestContext(const FNexusAttributionAPI::FOnGetCreators200ResponseCallback& InCallback, const FNexusOnHttpErrorDelegate& InErrorDelegate) 
+		FOnGetMembersRequestContext() = delete;
+		FOnGetMembersRequestContext(const FNexusAttributionAPI::FOnGetMembers200ResponseCallback& InCallback, const FNexusOnHttpErrorDelegate& InErrorDelegate) 
 			: Callback(InCallback)
 			, ErrorDelegate(InErrorDelegate)
 		{}
@@ -42,7 +42,7 @@ namespace FGetCreatorsHelpers
 			if (!bConnectedSuccessfully || !Response.IsValid())
 			{
 				// Didn't connect, or the response was null, bail
-				UE_LOG(LogNexusSDK, Error, TEXT("GetCreators: Connection failed, or the response was invalid"));
+				UE_LOG(LogNexusSDK, Error, TEXT("GetMembers: Connection failed, or the response was invalid"));
 
 				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 				FNexusUnrealSDKModule::Get().RemoveRequest(this);
@@ -51,7 +51,7 @@ namespace FGetCreatorsHelpers
 
 			if (Response->GetResponseCode() == 200)
 			{
-				FNexusAttributionGetCreators200Response OutputResponse;
+				FNexusAttributionGetMembers200Response OutputResponse;
 
 				// Create a json object and reader
 				const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
@@ -61,7 +61,7 @@ namespace FGetCreatorsHelpers
 				if (!FJsonSerializer::Deserialize(Reader, RootObject))
 				{
 					// Invalid json?
-					UE_LOG(LogNexusSDK, Error, TEXT("GetCreators: Failed to deserialize json"));
+					UE_LOG(LogNexusSDK, Error, TEXT("GetMembers: Failed to deserialize json"));
 
 					ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 					FNexusUnrealSDKModule::Get().RemoveRequest(this);
@@ -73,7 +73,7 @@ namespace FGetCreatorsHelpers
 				bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
 				if ( !bResult )
 				{
-					UE_LOG(LogNexusSDK, Error, TEXT("GetCreators - JsonObjectToUStruct: %s"), *FailureReason.ToString());
+					UE_LOG(LogNexusSDK, Error, TEXT("GetMembers - JsonObjectToUStruct: %s"), *FailureReason.ToString());
 
 					// Hmm, this probably shouldn't be an error, false doesn't indicate complete failure, just that some part of the json
 					// wasn't recognised using reflection... Either way, this "shouldn't" ever happen. So alert a programmer running in the debugger.
@@ -89,7 +89,7 @@ namespace FGetCreatorsHelpers
 
 			if (Response->GetResponseCode() != 200)
 			{
-				UE_LOG(LogNexusSDK, Error, TEXT("GetCreators: Recieved response code %d, which is an error!"), Response->GetResponseCode());
+				UE_LOG(LogNexusSDK, Error, TEXT("GetMembers: Recieved response code %d, which is an error!"), Response->GetResponseCode());
 
 				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 			}
@@ -99,12 +99,12 @@ namespace FGetCreatorsHelpers
 		}
 
 	private:
-		FNexusAttributionAPI::FOnGetCreators200ResponseCallback Callback;
+		FNexusAttributionAPI::FOnGetMembers200ResponseCallback Callback;
 		FNexusOnHttpErrorDelegate ErrorDelegate;
 
 	};
 
-	bool GetCreators_IsValid(const FNexusAttributionGetCreatorsRequestParams& Request)
+	bool GetMembers_IsValid(const FNexusAttributionGetMembersRequestParams& Request)
 	{
 		if (Request.page > 9999)
 			return false;
@@ -118,13 +118,13 @@ namespace FGetCreatorsHelpers
 		return true;
 	}
 
-} // namespace FGetCreatorsHelpers
+} // namespace FGetMembersHelpers
 
-void FNexusAttributionAPI::GetCreators(const FNexusAttributionGetCreatorsRequestParams& RequestParams, const FOnGetCreators200ResponseCallback& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate)
+void FNexusAttributionAPI::GetMembers(const FNexusAttributionGetMembersRequestParams& RequestParams, const FOnGetMembers200ResponseCallback& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate)
 {
-	if (!FGetCreatorsHelpers::GetCreators_IsValid(RequestParams))
+	if (!FGetMembersHelpers::GetMembers_IsValid(RequestParams))
 	{
-		UE_LOG(LogNexusSDK, Error, TEXT("Invalid parameters passed to GetCreators"));
+		UE_LOG(LogNexusSDK, Error, TEXT("Invalid parameters passed to GetMembers"));
 
 		ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 		return;
@@ -134,16 +134,16 @@ void FNexusAttributionAPI::GetCreators(const FNexusAttributionGetCreatorsRequest
 
 	{
 		// Initialise some bits and pieces ahead of time
-		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/attributions/creators?page=%d&pageSize=%d&groupId=%s"), RequestParams.page, RequestParams.pageSize, *RequestParams.groupId);
+		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/manage/members?page=%d&pageSize=%d&groupId=%s"), RequestParams.page, RequestParams.pageSize, *RequestParams.groupId);
 		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
-		TUniquePtr<FGetCreatorsHelpers::FOnGetCreatorsRequestContext> RequestContext = MakeUnique<FGetCreatorsHelpers::FOnGetCreatorsRequestContext>(ResponseDelegate, ErrorDelegate);
+		TUniquePtr<FGetMembersHelpers::FOnGetMembersRequestContext> RequestContext = MakeUnique<FGetMembersHelpers::FOnGetMembersRequestContext>(ResponseDelegate, ErrorDelegate);
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
 		HttpRequest->SetURL(URLString);
 		HttpRequest->SetHeader(TEXT("accept"), TEXT("application/json"));
 		HttpRequest->SetHeader(TEXT("x-shared-secret"), PublicKey);
-		HttpRequest->OnProcessRequestComplete().BindRaw(RequestContext.Get(), &FGetCreatorsHelpers::FOnGetCreatorsRequestContext::ProcessRequestComplete);
+		HttpRequest->OnProcessRequestComplete().BindRaw(RequestContext.Get(), &FGetMembersHelpers::FOnGetMembersRequestContext::ProcessRequestComplete);
 
 		// Hand ownership of the request context over to the module
 		FNexusUnrealSDKModule::Get().AddRequest(MoveTemp(RequestContext));
@@ -153,13 +153,13 @@ void FNexusAttributionAPI::GetCreators(const FNexusAttributionGetCreatorsRequest
 	HttpRequest->ProcessRequest();
 }
 
-namespace FGetCreatorByUuidHelpers
+namespace FGetMemberByCodeOrUuidHelpers
 {
-	class FOnGetCreatorByUuidRequestContext final : public NexusSDK::FRequestContext
+	class FOnGetMemberByCodeOrUuidRequestContext final : public NexusSDK::FRequestContext
 	{
 	public:
-		FOnGetCreatorByUuidRequestContext() = delete;
-		FOnGetCreatorByUuidRequestContext(const FNexusAttributionAPI::FOnGetCreatorByUuid200ResponseCallback& InCallback, const FNexusOnHttpErrorDelegate& InErrorDelegate) 
+		FOnGetMemberByCodeOrUuidRequestContext() = delete;
+		FOnGetMemberByCodeOrUuidRequestContext(const FNexusAttributionAPI::FOnGetMemberByCodeOrUuid200ResponseCallback& InCallback, const FNexusOnHttpErrorDelegate& InErrorDelegate) 
 			: Callback(InCallback)
 			, ErrorDelegate(InErrorDelegate)
 		{}
@@ -169,7 +169,7 @@ namespace FGetCreatorByUuidHelpers
 			if (!bConnectedSuccessfully || !Response.IsValid())
 			{
 				// Didn't connect, or the response was null, bail
-				UE_LOG(LogNexusSDK, Error, TEXT("GetCreatorByUuid: Connection failed, or the response was invalid"));
+				UE_LOG(LogNexusSDK, Error, TEXT("GetMemberByCodeOrUuid: Connection failed, or the response was invalid"));
 
 				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 				FNexusUnrealSDKModule::Get().RemoveRequest(this);
@@ -178,7 +178,7 @@ namespace FGetCreatorByUuidHelpers
 
 			if (Response->GetResponseCode() == 200)
 			{
-				FNexusAttributionGetCreatorByUuid200Response OutputResponse;
+				FNexusAttributionMember OutputResponse;
 
 				// Create a json object and reader
 				const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
@@ -188,7 +188,7 @@ namespace FGetCreatorByUuidHelpers
 				if (!FJsonSerializer::Deserialize(Reader, RootObject))
 				{
 					// Invalid json?
-					UE_LOG(LogNexusSDK, Error, TEXT("GetCreatorByUuid: Failed to deserialize json"));
+					UE_LOG(LogNexusSDK, Error, TEXT("GetMemberByCodeOrUuid: Failed to deserialize json"));
 
 					ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 					FNexusUnrealSDKModule::Get().RemoveRequest(this);
@@ -200,7 +200,7 @@ namespace FGetCreatorByUuidHelpers
 				bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
 				if ( !bResult )
 				{
-					UE_LOG(LogNexusSDK, Error, TEXT("GetCreatorByUuid - JsonObjectToUStruct: %s"), *FailureReason.ToString());
+					UE_LOG(LogNexusSDK, Error, TEXT("GetMemberByCodeOrUuid - JsonObjectToUStruct: %s"), *FailureReason.ToString());
 
 					// Hmm, this probably shouldn't be an error, false doesn't indicate complete failure, just that some part of the json
 					// wasn't recognised using reflection... Either way, this "shouldn't" ever happen. So alert a programmer running in the debugger.
@@ -216,7 +216,7 @@ namespace FGetCreatorByUuidHelpers
 
 			if (Response->GetResponseCode() != 200)
 			{
-				UE_LOG(LogNexusSDK, Error, TEXT("GetCreatorByUuid: Recieved response code %d, which is an error!"), Response->GetResponseCode());
+				UE_LOG(LogNexusSDK, Error, TEXT("GetMemberByCodeOrUuid: Recieved response code %d, which is an error!"), Response->GetResponseCode());
 
 				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 			}
@@ -226,30 +226,136 @@ namespace FGetCreatorByUuidHelpers
 		}
 
 	private:
-		FNexusAttributionAPI::FOnGetCreatorByUuid200ResponseCallback Callback;
+		FNexusAttributionAPI::FOnGetMemberByCodeOrUuid200ResponseCallback Callback;
 		FNexusOnHttpErrorDelegate ErrorDelegate;
 
 	};
 
 
-} // namespace FGetCreatorByUuidHelpers
+} // namespace FGetMemberByCodeOrUuidHelpers
 
-void FNexusAttributionAPI::GetCreatorByUuid(const FNexusAttributionGetCreatorByUuidRequestParams& RequestParams, const FOnGetCreatorByUuid200ResponseCallback& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate)
+void FNexusAttributionAPI::GetMemberByCodeOrUuid(const FNexusAttributionGetMemberByCodeOrUuidRequestParams& RequestParams, const FOnGetMemberByCodeOrUuid200ResponseCallback& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate)
 {
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
 
 	{
 		// Initialise some bits and pieces ahead of time
-		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/attributions/creators/%s"), *RequestParams.creatorSlugOrId);
+		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/manage/members/%s"), *RequestParams.memberCodeOrID);
 		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
-		TUniquePtr<FGetCreatorByUuidHelpers::FOnGetCreatorByUuidRequestContext> RequestContext = MakeUnique<FGetCreatorByUuidHelpers::FOnGetCreatorByUuidRequestContext>(ResponseDelegate, ErrorDelegate);
+		TUniquePtr<FGetMemberByCodeOrUuidHelpers::FOnGetMemberByCodeOrUuidRequestContext> RequestContext = MakeUnique<FGetMemberByCodeOrUuidHelpers::FOnGetMemberByCodeOrUuidRequestContext>(ResponseDelegate, ErrorDelegate);
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
 		HttpRequest->SetURL(URLString);
 		HttpRequest->SetHeader(TEXT("accept"), TEXT("application/json"));
 		HttpRequest->SetHeader(TEXT("x-shared-secret"), PublicKey);
-		HttpRequest->OnProcessRequestComplete().BindRaw(RequestContext.Get(), &FGetCreatorByUuidHelpers::FOnGetCreatorByUuidRequestContext::ProcessRequestComplete);
+		HttpRequest->OnProcessRequestComplete().BindRaw(RequestContext.Get(), &FGetMemberByCodeOrUuidHelpers::FOnGetMemberByCodeOrUuidRequestContext::ProcessRequestComplete);
+
+		// Hand ownership of the request context over to the module
+		FNexusUnrealSDKModule::Get().AddRequest(MoveTemp(RequestContext));
+	}
+
+	// Send it!
+	HttpRequest->ProcessRequest();
+}
+
+namespace FGetMemberByPlayerIdHelpers
+{
+	class FOnGetMemberByPlayerIdRequestContext final : public NexusSDK::FRequestContext
+	{
+	public:
+		FOnGetMemberByPlayerIdRequestContext() = delete;
+		FOnGetMemberByPlayerIdRequestContext(const FNexusAttributionAPI::FOnGetMemberByPlayerId200ResponseCallback& InCallback, const FNexusOnHttpErrorDelegate& InErrorDelegate) 
+			: Callback(InCallback)
+			, ErrorDelegate(InErrorDelegate)
+		{}
+
+		void ProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
+		{
+			if (!bConnectedSuccessfully || !Response.IsValid())
+			{
+				// Didn't connect, or the response was null, bail
+				UE_LOG(LogNexusSDK, Error, TEXT("GetMemberByPlayerId: Connection failed, or the response was invalid"));
+
+				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+				FNexusUnrealSDKModule::Get().RemoveRequest(this);
+				return;
+			}
+
+			if (Response->GetResponseCode() == 200)
+			{
+				FNexusAttributionGetMemberByPlayerId200Response OutputResponse;
+
+				// Create a json object and reader
+				const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
+				TSharedPtr<FJsonObject> RootObject;
+
+				// Deserialize it!
+				if (!FJsonSerializer::Deserialize(Reader, RootObject))
+				{
+					// Invalid json?
+					UE_LOG(LogNexusSDK, Error, TEXT("GetMemberByPlayerId: Failed to deserialize json"));
+
+					ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+					FNexusUnrealSDKModule::Get().RemoveRequest(this);
+					return;
+				}
+
+				// Parse the response!
+				FText FailureReason;
+				bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
+				if ( !bResult )
+				{
+					UE_LOG(LogNexusSDK, Error, TEXT("GetMemberByPlayerId - JsonObjectToUStruct: %s"), *FailureReason.ToString());
+
+					// Hmm, this probably shouldn't be an error, false doesn't indicate complete failure, just that some part of the json
+					// wasn't recognised using reflection... Either way, this "shouldn't" ever happen. So alert a programmer running in the debugger.
+					UE_DEBUG_BREAK();
+					ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
+					FNexusUnrealSDKModule::Get().RemoveRequest(this);
+					return;
+				}
+
+				// Run the main callback!
+				Callback.ExecuteIfBound(OutputResponse);
+			}
+
+			if (Response->GetResponseCode() != 200)
+			{
+				UE_LOG(LogNexusSDK, Error, TEXT("GetMemberByPlayerId: Recieved response code %d, which is an error!"), Response->GetResponseCode());
+
+				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
+			}
+			
+			// Now remove and delete ourselves from the module cache
+			FNexusUnrealSDKModule::Get().RemoveRequest(this);
+		}
+
+	private:
+		FNexusAttributionAPI::FOnGetMemberByPlayerId200ResponseCallback Callback;
+		FNexusOnHttpErrorDelegate ErrorDelegate;
+
+	};
+
+
+} // namespace FGetMemberByPlayerIdHelpers
+
+void FNexusAttributionAPI::GetMemberByPlayerId(const FNexusAttributionGetMemberByPlayerIdRequestParams& RequestParams, const FOnGetMemberByPlayerId200ResponseCallback& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate)
+{
+	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
+
+	{
+		// Initialise some bits and pieces ahead of time
+		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/manage/members/player/%s"), *RequestParams.playerId);
+		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
+		TUniquePtr<FGetMemberByPlayerIdHelpers::FOnGetMemberByPlayerIdRequestContext> RequestContext = MakeUnique<FGetMemberByPlayerIdHelpers::FOnGetMemberByPlayerIdRequestContext>(ResponseDelegate, ErrorDelegate);
+
+		// Set-up the HTTP request
+		HttpRequest->SetVerb(TEXT("GET"));
+		HttpRequest->SetURL(URLString);
+		HttpRequest->SetHeader(TEXT("accept"), TEXT("application/json"));
+		HttpRequest->SetHeader(TEXT("x-shared-secret"), PublicKey);
+		HttpRequest->OnProcessRequestComplete().BindRaw(RequestContext.Get(), &FGetMemberByPlayerIdHelpers::FOnGetMemberByPlayerIdRequestContext::ProcessRequestComplete);
 
 		// Hand ownership of the request context over to the module
 		FNexusUnrealSDKModule::Get().AddRequest(MoveTemp(RequestContext));
@@ -263,73 +369,109 @@ void FNexusAttributionAPI::GetCreatorByUuid(const FNexusAttributionGetCreatorByU
 		Blueprint Function Nodes
 ---------------------------------------------------------------------------------------------*/
 
-UNexusGetCreatorsNode::UNexusGetCreatorsNode()
+UNexusGetMembersNode::UNexusGetMembersNode()
 	: Super()
 {
 }
 
-void UNexusGetCreatorsNode::WhenError(int32 ErrorCode)
+void UNexusGetMembersNode::WhenError(int32 ErrorCode)
 {
 	OnError.Broadcast(ErrorCode);
 	SetReadyToDestroy();
 }
 
 
-UNexusGetCreatorsNode* UNexusGetCreatorsNode::GetCreators(UObject* WorldContextObject, const FNexusAttributionGetCreatorsRequestParams& InRequestParams)
+UNexusGetMembersNode* UNexusGetMembersNode::GetMembers(UObject* WorldContextObject, const FNexusAttributionGetMembersRequestParams& InRequestParams)
 {
-	UNexusGetCreatorsNode* Task = NewObject<UNexusGetCreatorsNode>();
+	UNexusGetMembersNode* Task = NewObject<UNexusGetMembersNode>();
 	Task->RequestParams = InRequestParams;
 	Task->RegisterWithGameInstance(WorldContextObject);
 
 	return Task;
 }
 
-void UNexusGetCreatorsNode::Activate()
+void UNexusGetMembersNode::Activate()
 {	
 
-	FNexusAttributionAPI::GetCreators(RequestParams, 
-		FNexusAttributionAPI::FOnGetCreators200ResponseCallback::CreateUObject(this, &ThisClass::When200Callback),
+	FNexusAttributionAPI::GetMembers(RequestParams, 
+		FNexusAttributionAPI::FOnGetMembers200ResponseCallback::CreateUObject(this, &ThisClass::When200Callback),
 		FNexusOnHttpErrorDelegate::CreateUObject(this, &ThisClass::WhenError));
 }
 
 
-void UNexusGetCreatorsNode::When200Callback(const FNexusAttributionGetCreators200Response& Param0)
+void UNexusGetMembersNode::When200Callback(const FNexusAttributionGetMembers200Response& Param0)
 {
 	On200Response.Broadcast(Param0);
 	SetReadyToDestroy();
 }
 
-UNexusGetCreatorByUuidNode::UNexusGetCreatorByUuidNode()
+UNexusGetMemberByCodeOrUuidNode::UNexusGetMemberByCodeOrUuidNode()
 	: Super()
 {
 }
 
-void UNexusGetCreatorByUuidNode::WhenError(int32 ErrorCode)
+void UNexusGetMemberByCodeOrUuidNode::WhenError(int32 ErrorCode)
 {
 	OnError.Broadcast(ErrorCode);
 	SetReadyToDestroy();
 }
 
 
-UNexusGetCreatorByUuidNode* UNexusGetCreatorByUuidNode::GetCreatorByUuid(UObject* WorldContextObject, const FNexusAttributionGetCreatorByUuidRequestParams& InRequestParams)
+UNexusGetMemberByCodeOrUuidNode* UNexusGetMemberByCodeOrUuidNode::GetMemberByCodeOrUuid(UObject* WorldContextObject, const FNexusAttributionGetMemberByCodeOrUuidRequestParams& InRequestParams)
 {
-	UNexusGetCreatorByUuidNode* Task = NewObject<UNexusGetCreatorByUuidNode>();
+	UNexusGetMemberByCodeOrUuidNode* Task = NewObject<UNexusGetMemberByCodeOrUuidNode>();
 	Task->RequestParams = InRequestParams;
 	Task->RegisterWithGameInstance(WorldContextObject);
 
 	return Task;
 }
 
-void UNexusGetCreatorByUuidNode::Activate()
+void UNexusGetMemberByCodeOrUuidNode::Activate()
 {	
 
-	FNexusAttributionAPI::GetCreatorByUuid(RequestParams, 
-		FNexusAttributionAPI::FOnGetCreatorByUuid200ResponseCallback::CreateUObject(this, &ThisClass::When200Callback),
+	FNexusAttributionAPI::GetMemberByCodeOrUuid(RequestParams, 
+		FNexusAttributionAPI::FOnGetMemberByCodeOrUuid200ResponseCallback::CreateUObject(this, &ThisClass::When200Callback),
 		FNexusOnHttpErrorDelegate::CreateUObject(this, &ThisClass::WhenError));
 }
 
 
-void UNexusGetCreatorByUuidNode::When200Callback(const FNexusAttributionGetCreatorByUuid200Response& Param0)
+void UNexusGetMemberByCodeOrUuidNode::When200Callback(const FNexusAttributionMember& Param0)
+{
+	On200Response.Broadcast(Param0);
+	SetReadyToDestroy();
+}
+
+UNexusGetMemberByPlayerIdNode::UNexusGetMemberByPlayerIdNode()
+	: Super()
+{
+}
+
+void UNexusGetMemberByPlayerIdNode::WhenError(int32 ErrorCode)
+{
+	OnError.Broadcast(ErrorCode);
+	SetReadyToDestroy();
+}
+
+
+UNexusGetMemberByPlayerIdNode* UNexusGetMemberByPlayerIdNode::GetMemberByPlayerId(UObject* WorldContextObject, const FNexusAttributionGetMemberByPlayerIdRequestParams& InRequestParams)
+{
+	UNexusGetMemberByPlayerIdNode* Task = NewObject<UNexusGetMemberByPlayerIdNode>();
+	Task->RequestParams = InRequestParams;
+	Task->RegisterWithGameInstance(WorldContextObject);
+
+	return Task;
+}
+
+void UNexusGetMemberByPlayerIdNode::Activate()
+{	
+
+	FNexusAttributionAPI::GetMemberByPlayerId(RequestParams, 
+		FNexusAttributionAPI::FOnGetMemberByPlayerId200ResponseCallback::CreateUObject(this, &ThisClass::When200Callback),
+		FNexusOnHttpErrorDelegate::CreateUObject(this, &ThisClass::WhenError));
+}
+
+
+void UNexusGetMemberByPlayerIdNode::When200Callback(const FNexusAttributionGetMemberByPlayerId200Response& Param0)
 {
 	On200Response.Broadcast(Param0);
 	SetReadyToDestroy();
