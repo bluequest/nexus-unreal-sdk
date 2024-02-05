@@ -354,13 +354,13 @@ void FNexusBountyAPI::GetBounty(const FNexusBountyGetBountyRequestParams& Reques
 	HttpRequest->ProcessRequest();
 }
 
-namespace FGetCreatorBountiesByIDHelpers
+namespace FGetMemberBountiesByIDHelpers
 {
-	class FOnGetCreatorBountiesByIDRequestContext final : public NexusSDK::FRequestContext
+	class FOnGetMemberBountiesByIDRequestContext final : public NexusSDK::FRequestContext
 	{
 	public:
-		FOnGetCreatorBountiesByIDRequestContext() = delete;
-		FOnGetCreatorBountiesByIDRequestContext(const FNexusBountyAPI::FOnGetCreatorBountiesByIDResponse& InCallback, const FNexusOnHttpErrorDelegate& InErrorDelegate) 
+		FOnGetMemberBountiesByIDRequestContext() = delete;
+		FOnGetMemberBountiesByIDRequestContext(const FNexusBountyAPI::FOnGetMemberBountiesByIDResponse& InCallback, const FNexusOnHttpErrorDelegate& InErrorDelegate) 
 			: Callback(InCallback)
 			, ErrorDelegate(InErrorDelegate)
 		{}
@@ -370,7 +370,7 @@ namespace FGetCreatorBountiesByIDHelpers
 			if (!bConnectedSuccessfully || !Response.IsValid())
 			{
 				// Didn't connect, or the response was null, bail
-				UE_LOG(LogNexusSDK, Error, TEXT("GetCreatorBountiesByID: Connection failed, or the response was invalid"));
+				UE_LOG(LogNexusSDK, Error, TEXT("GetMemberBountiesByID: Connection failed, or the response was invalid"));
 
 				ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 				FNexusUnrealSDKModule::Get().RemoveRequest(this);
@@ -379,7 +379,7 @@ namespace FGetCreatorBountiesByIDHelpers
 
 			if (Response->GetResponseCode() == 200)
 			{
-				FNexusBountyGetCreatorBountiesByID200Response OutputResponse;
+				FNexusBountyGetMemberBountiesByID200Response OutputResponse;
 
 				// Create a json object and reader
 				const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
@@ -389,7 +389,7 @@ namespace FGetCreatorBountiesByIDHelpers
 				if (!FJsonSerializer::Deserialize(Reader, RootObject))
 				{
 					// Invalid json?
-					UE_LOG(LogNexusSDK, Error, TEXT("GetCreatorBountiesByID: Failed to deserialize json"));
+					UE_LOG(LogNexusSDK, Error, TEXT("GetMemberBountiesByID: Failed to deserialize json"));
 
 					ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 					FNexusUnrealSDKModule::Get().RemoveRequest(this);
@@ -401,7 +401,7 @@ namespace FGetCreatorBountiesByIDHelpers
 				bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
 				if ( !bResult )
 				{
-					UE_LOG(LogNexusSDK, Error, TEXT("GetCreatorBountiesByID - JsonObjectToUStruct: %s"), *FailureReason.ToString());
+					UE_LOG(LogNexusSDK, Error, TEXT("GetMemberBountiesByID - JsonObjectToUStruct: %s"), *FailureReason.ToString());
 
 					// Hmm, this probably shouldn't be an error, false doesn't indicate complete failure, just that some part of the json
 					// wasn't recognised using reflection... Either way, this "shouldn't" ever happen. So alert a programmer running in the debugger.
@@ -426,7 +426,7 @@ namespace FGetCreatorBountiesByIDHelpers
 				if (!FJsonSerializer::Deserialize(Reader, RootObject))
 				{
 					// Invalid json?
-					UE_LOG(LogNexusSDK, Error, TEXT("GetCreatorBountiesByID: Failed to deserialize json"));
+					UE_LOG(LogNexusSDK, Error, TEXT("GetMemberBountiesByID: Failed to deserialize json"));
 
 					ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 					FNexusUnrealSDKModule::Get().RemoveRequest(this);
@@ -438,7 +438,7 @@ namespace FGetCreatorBountiesByIDHelpers
 				bool bResult = FJsonObjectConverter::JsonObjectToUStruct(RootObject.ToSharedRef(), &OutputResponse, 0, 0, false, &FailureReason);
 				if ( !bResult )
 				{
-					UE_LOG(LogNexusSDK, Error, TEXT("GetCreatorBountiesByID - JsonObjectToUStruct: %s"), *FailureReason.ToString());
+					UE_LOG(LogNexusSDK, Error, TEXT("GetMemberBountiesByID - JsonObjectToUStruct: %s"), *FailureReason.ToString());
 
 					// Hmm, this probably shouldn't be an error, false doesn't indicate complete failure, just that some part of the json
 					// wasn't recognised using reflection... Either way, this "shouldn't" ever happen. So alert a programmer running in the debugger.
@@ -454,7 +454,7 @@ namespace FGetCreatorBountiesByIDHelpers
 
 			if (Response->GetResponseCode() != 200 && Response->GetResponseCode() != 400)
 			{
-				UE_LOG(LogNexusSDK, Error, TEXT("GetCreatorBountiesByID: Recieved response code %d, which is an error!"), Response->GetResponseCode());
+				UE_LOG(LogNexusSDK, Error, TEXT("GetMemberBountiesByID: Recieved response code %d, which is an error!"), Response->GetResponseCode());
 
 				ErrorDelegate.ExecuteIfBound(Response->GetResponseCode());
 			}
@@ -464,12 +464,12 @@ namespace FGetCreatorBountiesByIDHelpers
 		}
 
 	private:
-		FNexusBountyAPI::FOnGetCreatorBountiesByIDResponse Callback;
+		FNexusBountyAPI::FOnGetMemberBountiesByIDResponse Callback;
 		FNexusOnHttpErrorDelegate ErrorDelegate;
 
 	};
 
-	bool GetCreatorBountiesByID_IsValid(const FNexusBountyGetCreatorBountiesByIDRequestParams& Request)
+	bool GetMemberBountiesByID_IsValid(const FNexusBountyGetMemberBountiesByIDRequestParams& Request)
 	{
 		if (Request.page > 9999)
 			return false;
@@ -483,13 +483,13 @@ namespace FGetCreatorBountiesByIDHelpers
 		return true;
 	}
 
-} // namespace FGetCreatorBountiesByIDHelpers
+} // namespace FGetMemberBountiesByIDHelpers
 
-void FNexusBountyAPI::GetCreatorBountiesByID(const FNexusBountyGetCreatorBountiesByIDRequestParams& RequestParams, const FOnGetCreatorBountiesByIDResponse& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate)
+void FNexusBountyAPI::GetMemberBountiesByID(const FNexusBountyGetMemberBountiesByIDRequestParams& RequestParams, const FOnGetMemberBountiesByIDResponse& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate)
 {
-	if (!FGetCreatorBountiesByIDHelpers::GetCreatorBountiesByID_IsValid(RequestParams))
+	if (!FGetMemberBountiesByIDHelpers::GetMemberBountiesByID_IsValid(RequestParams))
 	{
-		UE_LOG(LogNexusSDK, Error, TEXT("Invalid parameters passed to GetCreatorBountiesByID"));
+		UE_LOG(LogNexusSDK, Error, TEXT("Invalid parameters passed to GetMemberBountiesByID"));
 
 		ErrorDelegate.ExecuteIfBound(EHttpResponseCodes::Unknown);
 		return;
@@ -499,16 +499,16 @@ void FNexusBountyAPI::GetCreatorBountiesByID(const FNexusBountyGetCreatorBountie
 
 	{
 		// Initialise some bits and pieces ahead of time
-		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/bounties/creator/id/%s?groupId=%s&page=%d&pageSize=%d"), *RequestParams.creatorId, *RequestParams.groupId, RequestParams.page, RequestParams.pageSize);
+		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/bounties/member/id/%s?groupId=%s&page=%d&pageSize=%d"), *RequestParams.memberId, *RequestParams.groupId, RequestParams.page, RequestParams.pageSize);
 		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
-		TUniquePtr<FGetCreatorBountiesByIDHelpers::FOnGetCreatorBountiesByIDRequestContext> RequestContext = MakeUnique<FGetCreatorBountiesByIDHelpers::FOnGetCreatorBountiesByIDRequestContext>(ResponseDelegate, ErrorDelegate);
+		TUniquePtr<FGetMemberBountiesByIDHelpers::FOnGetMemberBountiesByIDRequestContext> RequestContext = MakeUnique<FGetMemberBountiesByIDHelpers::FOnGetMemberBountiesByIDRequestContext>(ResponseDelegate, ErrorDelegate);
 
 		// Set-up the HTTP request
 		HttpRequest->SetVerb(TEXT("GET"));
 		HttpRequest->SetURL(URLString);
 		HttpRequest->SetHeader(TEXT("accept"), TEXT("application/json"));
 		HttpRequest->SetHeader(TEXT("x-shared-secret"), PublicKey);
-		HttpRequest->OnProcessRequestComplete().BindRaw(RequestContext.Get(), &FGetCreatorBountiesByIDHelpers::FOnGetCreatorBountiesByIDRequestContext::ProcessRequestComplete);
+		HttpRequest->OnProcessRequestComplete().BindRaw(RequestContext.Get(), &FGetMemberBountiesByIDHelpers::FOnGetMemberBountiesByIDRequestContext::ProcessRequestComplete);
 
 		// Hand ownership of the request context over to the module
 		FNexusUnrealSDKModule::Get().AddRequest(MoveTemp(RequestContext));
@@ -608,44 +608,44 @@ void UNexusGetBountyNode::When400Callback(const FNexusBountyBountyError& Param0)
 	SetReadyToDestroy();
 }
 
-UNexusGetCreatorBountiesByIDNode::UNexusGetCreatorBountiesByIDNode()
+UNexusGetMemberBountiesByIDNode::UNexusGetMemberBountiesByIDNode()
 	: Super()
 {
 }
 
-void UNexusGetCreatorBountiesByIDNode::WhenError(int32 ErrorCode)
+void UNexusGetMemberBountiesByIDNode::WhenError(int32 ErrorCode)
 {
 	OnError.Broadcast(ErrorCode);
 	SetReadyToDestroy();
 }
 
 
-UNexusGetCreatorBountiesByIDNode* UNexusGetCreatorBountiesByIDNode::GetCreatorBountiesByID(UObject* WorldContextObject, const FNexusBountyGetCreatorBountiesByIDRequestParams& InRequestParams)
+UNexusGetMemberBountiesByIDNode* UNexusGetMemberBountiesByIDNode::GetMemberBountiesByID(UObject* WorldContextObject, const FNexusBountyGetMemberBountiesByIDRequestParams& InRequestParams)
 {
-	UNexusGetCreatorBountiesByIDNode* Task = NewObject<UNexusGetCreatorBountiesByIDNode>();
+	UNexusGetMemberBountiesByIDNode* Task = NewObject<UNexusGetMemberBountiesByIDNode>();
 	Task->RequestParams = InRequestParams;
 	Task->RegisterWithGameInstance(WorldContextObject);
 
 	return Task;
 }
 
-void UNexusGetCreatorBountiesByIDNode::Activate()
+void UNexusGetMemberBountiesByIDNode::Activate()
 {	
 
-	FNexusBountyAPI::FOnGetCreatorBountiesByIDResponse Callback;
-	Callback.On200Response = FNexusBountyAPI::FOnGetCreatorBountiesByID200ResponseCallback::CreateUObject(this, &ThisClass::When200Callback);
-	Callback.On400Response = FNexusBountyAPI::FOnGetCreatorBountiesByID400ResponseCallback::CreateUObject(this, &ThisClass::When400Callback);
-	FNexusBountyAPI::GetCreatorBountiesByID(RequestParams, Callback, FNexusOnHttpErrorDelegate::CreateUObject(this, &ThisClass::WhenError));
+	FNexusBountyAPI::FOnGetMemberBountiesByIDResponse Callback;
+	Callback.On200Response = FNexusBountyAPI::FOnGetMemberBountiesByID200ResponseCallback::CreateUObject(this, &ThisClass::When200Callback);
+	Callback.On400Response = FNexusBountyAPI::FOnGetMemberBountiesByID400ResponseCallback::CreateUObject(this, &ThisClass::When400Callback);
+	FNexusBountyAPI::GetMemberBountiesByID(RequestParams, Callback, FNexusOnHttpErrorDelegate::CreateUObject(this, &ThisClass::WhenError));
 }
 
 
-void UNexusGetCreatorBountiesByIDNode::When200Callback(const FNexusBountyGetCreatorBountiesByID200Response& Param0)
+void UNexusGetMemberBountiesByIDNode::When200Callback(const FNexusBountyGetMemberBountiesByID200Response& Param0)
 {
 	On200Response.Broadcast(Param0);
 	SetReadyToDestroy();
 }
 
-void UNexusGetCreatorBountiesByIDNode::When400Callback(const FNexusBountyBountyError& Param0)
+void UNexusGetMemberBountiesByIDNode::When400Callback(const FNexusBountyBountyError& Param0)
 {
 	On400Response.Broadcast(Param0);
 	SetReadyToDestroy();
