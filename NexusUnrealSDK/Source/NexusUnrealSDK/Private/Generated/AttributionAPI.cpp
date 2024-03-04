@@ -1,9 +1,3 @@
-/**
- * NOTE NOTE NOTE
- * GENERATED CODE
- * ANY CHANGES TO THIS FILE WILL BE OVERWRITTEN
- * PLEASE MAKE ANY CHANGES TO THE SDK TEMPLATES IN THE SDK GENERATOR
- */
 
 #include "Generated/AttributionAPI.h"
 #include "Interfaces/IHttpRequest.h"
@@ -131,10 +125,11 @@ void FNexusAttributionAPI::GetMembers(const FNexusAttributionGetMembersRequestPa
 	}
 
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
+	FString BaseURL = UNexusUnrealSDKSettings::Get()->GetBaseURL();
 
 	{
 		// Initialise some bits and pieces ahead of time
-		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/manage/members?page=%d&pageSize=%d&groupId=%s"), RequestParams.page, RequestParams.pageSize, *RequestParams.groupId);
+		FString URLString = FString::Printf(TEXT("%s/manage/members?page=%d&pageSize=%d&groupId=%s"),*BaseURL, RequestParams.page, RequestParams.pageSize, *RequestParams.groupId);
 		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
 		TUniquePtr<FGetMembersHelpers::FOnGetMembersRequestContext> RequestContext = MakeUnique<FGetMembersHelpers::FOnGetMembersRequestContext>(ResponseDelegate, ErrorDelegate);
 
@@ -237,10 +232,11 @@ namespace FGetMemberByCodeOrUuidHelpers
 void FNexusAttributionAPI::GetMemberByCodeOrUuid(const FNexusAttributionGetMemberByCodeOrUuidRequestParams& RequestParams, const FOnGetMemberByCodeOrUuid200ResponseCallback& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate)
 {
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
+	FString BaseURL = UNexusUnrealSDKSettings::Get()->GetBaseURL();
 
 	{
 		// Initialise some bits and pieces ahead of time
-		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/manage/members/%s"), *RequestParams.memberCodeOrID);
+		FString URLString = FString::Printf(TEXT("%s/manage/members/%s?groupId=%s"),*BaseURL, *RequestParams.memberCodeOrID, *RequestParams.groupId);
 		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
 		TUniquePtr<FGetMemberByCodeOrUuidHelpers::FOnGetMemberByCodeOrUuidRequestContext> RequestContext = MakeUnique<FGetMemberByCodeOrUuidHelpers::FOnGetMemberByCodeOrUuidRequestContext>(ResponseDelegate, ErrorDelegate);
 
@@ -284,7 +280,7 @@ namespace FGetMemberByPlayerIdHelpers
 
 			if (Response->GetResponseCode() == 200)
 			{
-				FNexusAttributionGetMemberByPlayerId200Response OutputResponse;
+				FNexusAttributionMember OutputResponse;
 
 				// Create a json object and reader
 				const TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(Response->GetContentAsString());
@@ -343,10 +339,11 @@ namespace FGetMemberByPlayerIdHelpers
 void FNexusAttributionAPI::GetMemberByPlayerId(const FNexusAttributionGetMemberByPlayerIdRequestParams& RequestParams, const FOnGetMemberByPlayerId200ResponseCallback& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate)
 {
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
+	FString BaseURL = UNexusUnrealSDKSettings::Get()->GetBaseURL();
 
 	{
 		// Initialise some bits and pieces ahead of time
-		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/manage/members/player/%s"), *RequestParams.playerId);
+		FString URLString = FString::Printf(TEXT("%s/manage/members/player/%s?groupId=%s"),*BaseURL, *RequestParams.playerId, *RequestParams.groupId);
 		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
 		TUniquePtr<FGetMemberByPlayerIdHelpers::FOnGetMemberByPlayerIdRequestContext> RequestContext = MakeUnique<FGetMemberByPlayerIdHelpers::FOnGetMemberByPlayerIdRequestContext>(ResponseDelegate, ErrorDelegate);
 
@@ -471,7 +468,7 @@ void UNexusGetMemberByPlayerIdNode::Activate()
 }
 
 
-void UNexusGetMemberByPlayerIdNode::When200Callback(const FNexusAttributionGetMemberByPlayerId200Response& Param0)
+void UNexusGetMemberByPlayerIdNode::When200Callback(const FNexusAttributionMember& Param0)
 {
 	On200Response.Broadcast(Param0);
 	SetReadyToDestroy();

@@ -1,9 +1,3 @@
-/**
- * NOTE NOTE NOTE
- * GENERATED CODE
- * ANY CHANGES TO THIS FILE WILL BE OVERWRITTEN
- * PLEASE MAKE ANY CHANGES TO THE SDK TEMPLATES IN THE SDK GENERATOR
- */
 
 #include "Generated/BountyAPI.h"
 #include "Interfaces/IHttpRequest.h"
@@ -168,10 +162,11 @@ void FNexusBountyAPI::GetBounties(const FNexusBountyGetBountiesRequestParams& Re
 	}
 
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
+	FString BaseURL = UNexusUnrealSDKSettings::Get()->GetBaseURL();
 
 	{
 		// Initialise some bits and pieces ahead of time
-		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/bounties/?groupId=%s&page=%d&pageSize=%d"), *RequestParams.groupId, RequestParams.page, RequestParams.pageSize);
+		FString URLString = FString::Printf(TEXT("%s?groupId=%s&page=%d&pageSize=%d"),*BaseURL, *RequestParams.groupId, RequestParams.page, RequestParams.pageSize);
 		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
 		TUniquePtr<FGetBountiesHelpers::FOnGetBountiesRequestContext> RequestContext = MakeUnique<FGetBountiesHelpers::FOnGetBountiesRequestContext>(ResponseDelegate, ErrorDelegate);
 
@@ -332,10 +327,11 @@ void FNexusBountyAPI::GetBounty(const FNexusBountyGetBountyRequestParams& Reques
 	}
 
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
+	FString BaseURL = UNexusUnrealSDKSettings::Get()->GetBaseURL();
 
 	{
 		// Initialise some bits and pieces ahead of time
-		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/bounties/%s?groupId=%s&includeProgress=%c&page=%d&pageSize=%d"), *RequestParams.bountyId, *RequestParams.groupId, RequestParams.includeProgress, RequestParams.page, RequestParams.pageSize);
+		FString URLString = FString::Printf(TEXT("%s/%s?groupId=%s&includeProgress=%c&page=%d&pageSize=%d"),*BaseURL, *RequestParams.bountyId, *RequestParams.groupId, RequestParams.includeProgress, RequestParams.page, RequestParams.pageSize);
 		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
 		TUniquePtr<FGetBountyHelpers::FOnGetBountyRequestContext> RequestContext = MakeUnique<FGetBountyHelpers::FOnGetBountyRequestContext>(ResponseDelegate, ErrorDelegate);
 
@@ -496,10 +492,11 @@ void FNexusBountyAPI::GetMemberBountiesByID(const FNexusBountyGetMemberBountiesB
 	}
 
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
+	FString BaseURL = UNexusUnrealSDKSettings::Get()->GetBaseURL();
 
 	{
 		// Initialise some bits and pieces ahead of time
-		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/bounties/member/id/%s?groupId=%s&page=%d&pageSize=%d"), *RequestParams.memberId, *RequestParams.groupId, RequestParams.page, RequestParams.pageSize);
+		FString URLString = FString::Printf(TEXT("%s/member/id/%s?groupId=%s&page=%d&pageSize=%d"),*BaseURL, *RequestParams.memberId, *RequestParams.groupId, RequestParams.page, RequestParams.pageSize);
 		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
 		TUniquePtr<FGetMemberBountiesByIDHelpers::FOnGetMemberBountiesByIDRequestContext> RequestContext = MakeUnique<FGetMemberBountiesByIDHelpers::FOnGetMemberBountiesByIDRequestContext>(ResponseDelegate, ErrorDelegate);
 

@@ -1,9 +1,3 @@
-/**
- * NOTE NOTE NOTE
- * GENERATED CODE
- * ANY CHANGES TO THIS FILE WILL BE OVERWRITTEN
- * PLEASE MAKE ANY CHANGES TO THE SDK TEMPLATES IN THE SDK GENERATOR
- */
 #pragma once
 
 #include "CoreMinimal.h"
@@ -55,6 +49,21 @@ struct FNexusAttributionCode
 		, isPrimary()
 		, isGenerated()
 		, isManaged()
+	{
+	}
+
+};
+
+USTRUCT(BlueprintType)
+struct FNexusAttributionPlayerMetadata
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite)
+	FString displayName;
+
+	FNexusAttributionPlayerMetadata()
+	: displayName()
 	{
 	}
 
@@ -210,41 +219,6 @@ struct FNexusAttributionMetrics
 };
 
 USTRUCT(BlueprintType)
-struct FNexusAttributionMember
-{
-	GENERATED_BODY()
-
-	UPROPERTY(BlueprintReadWrite)
-	FString id;
-
-	UPROPERTY(BlueprintReadWrite)
-	FString name;
-
-	UPROPERTY(BlueprintReadWrite)
-	FString playerId;
-
-	UPROPERTY(BlueprintReadWrite)
-	FString logoImage;
-
-	UPROPERTY(BlueprintReadWrite)
-	FString profileImage;
-
-	UPROPERTY(BlueprintReadWrite)
-	TArray<FNexusAttributionCode> codes;
-
-	FNexusAttributionMember()
-	: id()
-		, name()
-		, playerId()
-		, logoImage()
-		, profileImage()
-		, codes()
-	{
-	}
-
-};
-
-USTRUCT(BlueprintType)
 struct FNexusAttributionScheduledRevShare
 {
 	GENERATED_BODY()
@@ -375,6 +349,45 @@ struct FNexusAttributionTransaction
 };
 
 USTRUCT(BlueprintType)
+struct FNexusAttributionMember
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite)
+	FString id;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString name;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString playerId;
+
+	UPROPERTY(BlueprintReadWrite)
+	FNexusAttributionPlayerMetadata playerMetadata;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString logoImage;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString profileImage;
+
+	UPROPERTY(BlueprintReadWrite)
+	TArray<FNexusAttributionCode> codes;
+
+	FNexusAttributionMember()
+	: id()
+		, name()
+		, playerId()
+		, playerMetadata()
+		, logoImage()
+		, profileImage()
+		, codes()
+	{
+	}
+
+};
+
+USTRUCT(BlueprintType)
 struct FNexusAttributionGetMembersRequestParams
 {
 	GENERATED_BODY()
@@ -405,8 +418,12 @@ struct FNexusAttributionGetMemberByCodeOrUuidRequestParams
 	UPROPERTY(BlueprintReadWrite)
 	FString memberCodeOrID;
 
+	UPROPERTY(BlueprintReadWrite)
+	FString groupId;
+
 	FNexusAttributionGetMemberByCodeOrUuidRequestParams()
 	: memberCodeOrID()
+		, groupId()
 	{
 	}
 
@@ -420,8 +437,12 @@ struct FNexusAttributionGetMemberByPlayerIdRequestParams
 	UPROPERTY(BlueprintReadWrite)
 	FString playerId;
 
+	UPROPERTY(BlueprintReadWrite)
+	FString groupId;
+
 	FNexusAttributionGetMemberByPlayerIdRequestParams()
 	: playerId()
+		, groupId()
 	{
 	}
 
@@ -462,68 +483,6 @@ struct FNexusAttributionGetMembers200Response
 
 };
 
-USTRUCT(BlueprintType)
-struct FNexusAttributiongroups_Struct_Element
-{
-	GENERATED_BODY()
-
-	UPROPERTY(BlueprintReadWrite)
-	FString groupName;
-
-	UPROPERTY(BlueprintReadWrite)
-	FString groupId;
-
-	UPROPERTY(BlueprintReadWrite)
-	FString status;
-
-	FNexusAttributiongroups_Struct_Element()
-	: groupName()
-		, groupId()
-		, status()
-	{
-	}
-
-};
-
-USTRUCT(BlueprintType)
-struct FNexusAttributionGetMemberByPlayerId200Response
-{
-	GENERATED_BODY()
-
-	UPROPERTY(BlueprintReadWrite)
-	FString id;
-
-	UPROPERTY(BlueprintReadWrite)
-	FString name;
-
-	UPROPERTY(BlueprintReadWrite)
-	FString playerId;
-
-	UPROPERTY(BlueprintReadWrite)
-	FString logoImage;
-
-	UPROPERTY(BlueprintReadWrite)
-	FString profileImage;
-
-	UPROPERTY(BlueprintReadWrite)
-	TArray<FNexusAttributionCode> codes;
-
-	UPROPERTY(BlueprintReadWrite)
-	TArray<FNexusAttributiongroups_Struct_Element> groups;
-
-	FNexusAttributionGetMemberByPlayerId200Response()
-	: id()
-		, name()
-		, playerId()
-		, logoImage()
-		, profileImage()
-		, codes()
-		, groups()
-	{
-	}
-
-};
-
 /*---------------------------------------------------------------------------------------------
 		API Functions
 ---------------------------------------------------------------------------------------------*/
@@ -537,7 +496,7 @@ public:
 	DECLARE_DELEGATE_OneParam(FOnGetMemberByCodeOrUuid200ResponseCallback, const FNexusAttributionMember& /*Response*/);
 	static void GetMemberByCodeOrUuid(const FNexusAttributionGetMemberByCodeOrUuidRequestParams& RequestParams, const FOnGetMemberByCodeOrUuid200ResponseCallback& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate = {});
 
-	DECLARE_DELEGATE_OneParam(FOnGetMemberByPlayerId200ResponseCallback, const FNexusAttributionGetMemberByPlayerId200Response& /*Response*/);
+	DECLARE_DELEGATE_OneParam(FOnGetMemberByPlayerId200ResponseCallback, const FNexusAttributionMember& /*Response*/);
 	static void GetMemberByPlayerId(const FNexusAttributionGetMemberByPlayerIdRequestParams& RequestParams, const FOnGetMemberByPlayerId200ResponseCallback& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate = {});
 
 };
@@ -623,12 +582,12 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", Category = "Nexus|Attribution", WorldContext = "WorldContextObject"))
 	static UNexusGetMemberByPlayerIdNode* GetMemberByPlayerId(UObject* WorldContextObject, const FNexusAttributionGetMemberByPlayerIdRequestParams& InRequestParams);
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetMemberByPlayerId200Response, const FNexusAttributionGetMemberByPlayerId200Response& /*Response*/, Param0);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGetMemberByPlayerId200Response, const FNexusAttributionMember& /*Response*/, Param0);
 
 	UPROPERTY(BlueprintAssignable)
 	FGetMemberByPlayerId200Response On200Response;
 
-	void When200Callback(const FNexusAttributionGetMemberByPlayerId200Response& Param0);
+	void When200Callback(const FNexusAttributionMember& Param0);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNexusGetMemberByPlayerIdError, int32, ErrorCode);
 

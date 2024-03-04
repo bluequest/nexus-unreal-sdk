@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NexusEnvironmentEnum.h"
 #include "NexusSettings.generated.h"
 
 /**
@@ -25,4 +26,22 @@ public:
 		DisplayName = "Public API Key",
 		ToolTip = "This is your public facing Nexus API key."))
 	FName PublicKey;
+
+	UPROPERTY(Config, EditAnywhere, Category = "General", meta = (
+		DisplayName = "Nexus Environment",
+		ToolTip = "Select a nexus environment"))
+	ENexusEnvironment NexusEnvironment;
+
+	FString GetBaseURL() const
+	{
+		switch (NexusEnvironment)
+		{
+		case ENexusEnvironment::Production:
+			return TEXT("https://api.nexus.gg/v1");
+		case ENexusEnvironment::Sandbox:
+			return TEXT("https://api.nexus-dev.gg/v1");
+		default:
+			return TEXT("");
+		}
+	}
 };

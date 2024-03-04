@@ -1,9 +1,3 @@
-/**
- * NOTE NOTE NOTE
- * GENERATED CODE
- * ANY CHANGES TO THIS FILE WILL BE OVERWRITTEN
- * PLEASE MAKE ANY CHANGES TO THE SDK TEMPLATES IN THE SDK GENERATOR
- */
 
 #include "Generated/ReferralAPI.h"
 #include "Interfaces/IHttpRequest.h"
@@ -168,10 +162,11 @@ void FNexusReferralAPI::GetReferralInfoByPlayerId(const FNexusReferralGetReferra
 	}
 
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
+	FString BaseURL = UNexusUnrealSDKSettings::Get()->GetBaseURL();
 
 	{
 		// Initialise some bits and pieces ahead of time
-		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/referrals/player/%s?groupId=%s&page=%d&pageSize=%d&excludeReferralList=%c"), *RequestParams.playerId, *RequestParams.groupId, RequestParams.page, RequestParams.pageSize, RequestParams.excludeReferralList);
+		FString URLString = FString::Printf(TEXT("%s/player/%s?groupId=%s&page=%d&pageSize=%d&excludeReferralList=%c"),*BaseURL, *RequestParams.playerId, *RequestParams.groupId, RequestParams.page, RequestParams.pageSize, RequestParams.excludeReferralList);
 		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
 		TUniquePtr<FGetReferralInfoByPlayerIdHelpers::FOnGetReferralInfoByPlayerIdRequestContext> RequestContext = MakeUnique<FGetReferralInfoByPlayerIdHelpers::FOnGetReferralInfoByPlayerIdRequestContext>(ResponseDelegate, ErrorDelegate);
 
@@ -285,10 +280,11 @@ namespace FGetPlayerCurrentReferralHelpers
 void FNexusReferralAPI::GetPlayerCurrentReferral(const FNexusReferralGetPlayerCurrentReferralRequestParams& RequestParams, const FOnGetPlayerCurrentReferralResponse& ResponseDelegate, const FNexusOnHttpErrorDelegate& ErrorDelegate)
 {
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
+	FString BaseURL = UNexusUnrealSDKSettings::Get()->GetBaseURL();
 
 	{
 		// Initialise some bits and pieces ahead of time
-		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/referrals/player/%s/code?groupId=%s"), *RequestParams.playerId, *RequestParams.groupId);
+		FString URLString = FString::Printf(TEXT("%s/player/%s/code?groupId=%s"),*BaseURL, *RequestParams.playerId, *RequestParams.groupId);
 		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
 		TUniquePtr<FGetPlayerCurrentReferralHelpers::FOnGetPlayerCurrentReferralRequestContext> RequestContext = MakeUnique<FGetPlayerCurrentReferralHelpers::FOnGetPlayerCurrentReferralRequestContext>(ResponseDelegate, ErrorDelegate);
 
@@ -449,10 +445,11 @@ void FNexusReferralAPI::GetReferralInfoByCode(const FNexusReferralGetReferralInf
 	}
 
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
+	FString BaseURL = UNexusUnrealSDKSettings::Get()->GetBaseURL();
 
 	{
 		// Initialise some bits and pieces ahead of time
-		FString URLString = FString::Printf(TEXT("https://api.nexus.gg/v1/referrals/code/%s?groupId=%s&page=%d&pageSize=%d&excludeReferralList=%c"), *RequestParams.code, *RequestParams.groupId, RequestParams.page, RequestParams.pageSize, RequestParams.excludeReferralList);
+		FString URLString = FString::Printf(TEXT("%s/code/%s?groupId=%s&page=%d&pageSize=%d&excludeReferralList=%c"),*BaseURL, *RequestParams.code, *RequestParams.groupId, RequestParams.page, RequestParams.pageSize, RequestParams.excludeReferralList);
 		FString PublicKey = UNexusUnrealSDKSettings::Get()->PublicKey.ToString();
 		TUniquePtr<FGetReferralInfoByCodeHelpers::FOnGetReferralInfoByCodeRequestContext> RequestContext = MakeUnique<FGetReferralInfoByCodeHelpers::FOnGetReferralInfoByCodeRequestContext>(ResponseDelegate, ErrorDelegate);
 
